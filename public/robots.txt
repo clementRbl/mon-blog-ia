@@ -1,2 +1,6 @@
+# Robots.txt pour Blog IA Engineering
 User-Agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: https://clementRbl.github.io/mon-blog-ia/sitemap.xml
