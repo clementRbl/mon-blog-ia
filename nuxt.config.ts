@@ -54,6 +54,13 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/svg+xml', href: '/mon-blog-ia/favicon.svg' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/mon-blog-ia/favicon.svg' },
       ],
+      script: [
+        {
+          defer: true,
+          src: 'https://cloud.umami.is/script.js',
+          'data-website-id': 'd6a8ee08-52c7-4346-96f9-3fccf5c0fa87'
+        }
+      ],
       templateParams: {
         siteDescription: 'Le carnet de note d\'un futur IA Engineer.',
       },
