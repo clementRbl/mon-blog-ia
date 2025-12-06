@@ -31,7 +31,6 @@
 
     <footer class="border-t-2 border-om-dark py-8 text-center bg-om-paperDark">
       <div class="container mx-auto font-mono text-xs text-om-dark/60">
-        <p class="mb-2">Généré avec Nuxt 4 & Intelligence Artificielle</p>
         <p class="mb-3">© 2025 Clément Reboul • France</p>
         <nav class="flex justify-center gap-4 text-[10px] uppercase">
           <a href="https://github.com/clementRbl/mon-blog-ia" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia transition-colors flex items-center gap-1">
