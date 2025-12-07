@@ -56,6 +56,7 @@ export default defineNuxtConfig({
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       meta: [
+        { name: 'google-site-verification', content: 'fq0xGAOYCJCn4criCTkLFxOaN2nQyw-DGwc-JypJpcg' },
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'theme-color', content: '#Fdfbf7' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
