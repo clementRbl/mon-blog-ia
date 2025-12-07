@@ -28,7 +28,13 @@ export default defineNuxtConfig({
   },
 
   ogImage: {
-    enabled: true
+    enabled: true,
+    defaults: {
+      component: 'OgImage',
+      props: {
+        image: '/mon-blog-ia/images/og-image.jpg'
+      }
+    }
   },
 
   sitemap: {
@@ -62,6 +68,13 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#Fdfbf7' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'googlebot', content: 'index, follow' },
+        // Open Graph
+        { property: 'og:image', content: 'https://clementRbl.github.io/mon-blog-ia/images/og-image.jpg' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: 'https://clementRbl.github.io/mon-blog-ia/images/og-image.jpg' },
         // Confidentialité et sécurité
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
         { name: 'referrer', content: 'strict-origin-when-cross-origin' },

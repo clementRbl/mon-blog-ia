@@ -36,6 +36,9 @@
       <div class="container mx-auto font-mono text-xs text-om-dark/60">
         <p class="mb-3">© 2025 Clément Reboul • France</p>
         <nav class="flex justify-center gap-4 text-[10px] uppercase" aria-label="Navigation secondaire">
+          <a href="https://www.linkedin.com/in/clement-reboul" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia transition-colors flex items-center gap-1" aria-label="Profil LinkedIn de Clément Reboul">
+            <Icon name="mdi:linkedin" size="14" aria-hidden="true" /> LinkedIn
+          </a>
           <a href="https://github.com/clementRbl/mon-blog-ia" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia transition-colors flex items-center gap-1" aria-label="Voir le code source du blog sur GitHub">
             <Icon name="mdi:github" size="14" aria-hidden="true" /> Code Source
           </a>
