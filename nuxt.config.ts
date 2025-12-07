@@ -8,7 +8,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
-    '@nuxt/content',
     '@nuxt/image',
     '@nuxt/fonts',
     '@nuxt/icon',
@@ -18,7 +17,7 @@ export default defineNuxtConfig({
 
   // Configuration du module SEO
   site: {
-    url: 'https://clementRbl.github.io/mon-blog-ia',
+    url: 'https://clementRbl.github.io',
     name: 'Blog IA Engineering - Clément Reboul',
     description: 'Blog personnel sur l\'intelligence artificielle et le machine learning',
     defaultLocale: 'fr'
@@ -30,6 +29,10 @@ export default defineNuxtConfig({
 
   sitemap: {
     enabled: true
+  },
+
+  robots: {
+    robotsTxt: false // Désactiver la génération automatique car on a déjà robots.txt
   },
 
   // --- Configuration GitHub Pages ---
@@ -70,13 +73,17 @@ export default defineNuxtConfig({
     }
   },
 
-  // --- Configuration SEO via runtimeConfig ---
+  // --- Configuration SEO + Supabase via runtimeConfig ---
+  // Les variables NUXT_PUBLIC_* sont automatiquement chargées depuis .env
   runtimeConfig: {
     public: {
       siteUrl: 'https://clementRbl.github.io/mon-blog-ia',
       siteName: 'Clément Reboul',
       siteDescription: 'Blog personnel IA Engineering.',
       language: 'fr',
+      // Configuration Supabase (chargée depuis .env en dev/build)
+      supabaseUrl: '',
+      supabaseAnonKey: ''
     }
   },
 

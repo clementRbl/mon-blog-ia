@@ -53,6 +53,8 @@
 </template>
 
 <script setup lang="ts">
+const { articles: articlesAPI } = useSupabase()
+
 // Fonction pour slugifier
 const slugify = (text: string) => {
   return text
@@ -63,9 +65,14 @@ const slugify = (text: string) => {
     .replace(/^-+|-+$/g, '')
 }
 
-// Récupérer tous les articles
+// Récupérer tous les articles depuis Supabase
 const { data: allArticles } = await useAsyncData('all-blog-articles-tags', async () => {
-  return await queryCollection('blog').all()
+  const { data, error } = await articlesAPI.getPublished()
+  if (error) {
+    console.error('Erreur lors du chargement des articles:', error)
+    return []
+  }
+  return data || []
 })
 
 // Calculer les tags avec leur nombre d'articles
