@@ -1,3 +1,27 @@
+<script setup lang="ts">
+const { toggleFireMode } = useKonamiCode()
+
+// Triple tap pour mobile/desktop
+let tapCount = 0
+let tapTimer: NodeJS.Timeout | null = null
+
+const handleTitleTap = (e: Event) => {
+  tapCount++
+  
+  if (tapTimer) clearTimeout(tapTimer)
+  
+  if (tapCount === 3) {
+    e.preventDefault() // Empêcher la navigation
+    toggleFireMode()
+    tapCount = 0
+  } else {
+    tapTimer = setTimeout(() => {
+      tapCount = 0
+    }, 500)
+  }
+}
+</script>
+
 <template>
   <div class="min-h-screen bg-om-paper text-om-dark font-sans selection:bg-om-gold selection:text-white flex flex-col">
     <header class="border-b-2 border-om-dark py-6 sticky top-0 bg-om-paper/95 backdrop-blur-sm z-50" role="banner">
@@ -5,8 +29,8 @@
         
         <div class="text-center md:text-left">
           <p class="font-mono text-xs text-om-rust uppercase tracking-widest mb-1">Since 2025 • AI Engineering</p>
-          <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul">
-            <h1 class="font-serif text-4xl font-black tracking-tighter uppercase">
+          <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul" @click="handleTitleTap">
+            <h1 class="font-serif text-4xl font-black tracking-tighter uppercase select-none">
               Clément <span class="text-om-gold group-hover:text-om-sepia transition-colors">Reboul</span>
               <span class="text-om-rust text-lg align-top ml-1">●</span>
             </h1>
@@ -46,6 +70,9 @@
       </div>
     </footer>
 
+    <!-- Easter egg mode pompier -->
+    <FireModeOverlay />
+
   </div>
 </template>
 
@@ -53,5 +80,14 @@
 /* Force le fond couleur papier sur toute la page HTML pour éviter les bandes blanches */
 body {
   background-color: #Fdfbf7;
+}
+
+/* Mode pompier actif */
+body.fire-mode {
+  background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%) !important;
+}
+
+body.fire-mode * {
+  transition: all 0.5s ease;
 }
 </style>
