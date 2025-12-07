@@ -42,7 +42,8 @@ export default defineNuxtConfig({
   // Ignorer les erreurs de prerendering (Supabase non dispo en build)
   nitro: {
     prerender: {
-      failOnError: false
+      failOnError: false,
+      routes: ['/sitemap.xml', '/feed.xml'] // Prégenérer sitemap et RSS
     }
   },
 
