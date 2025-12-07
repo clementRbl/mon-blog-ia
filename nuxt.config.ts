@@ -32,7 +32,7 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    enabled: true
+    enabled: false // Désactivé car on a un sitemap custom dans server/routes/
   },
 
   robots: {
