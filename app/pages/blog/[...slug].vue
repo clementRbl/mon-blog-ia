@@ -1,33 +1,35 @@
 <template>
   <div>
-    <article v-if="article" class="max-w-3xl mx-auto">
+    <article v-if="article" class="max-w-3xl mx-auto" itemscope itemtype="https://schema.org/BlogPosting">
       <!-- Bouton retour -->
-      <div class="mb-6">
+      <nav class="mb-6" aria-label="Fil d'ariane">
         <NuxtLink to="/" 
-          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia hover:text-om-rust transition-colors group">
-          <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" />
+          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia hover:text-om-rust transition-colors group"
+          aria-label="Retour à la liste des articles">
+          <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
           Retour au journal
         </NuxtLink>
-      </div>
+      </nav>
 
       <!-- En-tête de l'article -->
       <header class="mb-12 pb-8 border-b-2 border-om-dark">
-        <div class="flex gap-2 mb-4 flex-wrap">
+        <div class="flex gap-2 mb-4 flex-wrap" role="list" aria-label="Catégories de l'article">
           <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" />
         </div>
         
-        <h1 class="font-serif text-4xl md:text-5xl font-black mb-4 leading-tight text-om-dark">
+        <h1 class="font-serif text-4xl md:text-5xl font-black mb-4 leading-tight text-om-dark" itemprop="headline">
           {{ article.title }}
         </h1>
         
         <div class="flex items-center gap-4 text-sm text-om-ink/70">
-          <time class="font-mono text-om-rust font-bold">
+          <time class="font-mono text-om-rust font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
             {{ new Date(article.date).toLocaleDateString('fr-FR', { 
               year: 'numeric', 
               month: 'long', 
               day: 'numeric' 
             }) }}
           </time>
+          <meta itemprop="author" content="Clément Reboul" />
         </div>
       </header>
 
@@ -42,8 +44,9 @@
         prose-blockquote:border-l-4 prose-blockquote:border-om-rust prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-om-ink/80
         prose-img:border-2 prose-img:border-om-dark prose-img:shadow-paper
         prose-strong:text-om-dark prose-strong:font-bold
-        prose-ul:text-om-ink/90 prose-ol:text-om-ink/90 prose-li:text-om-ink/90">
-        <ContentRenderer :value="article" />
+        prose-ul:text-om-ink/90 prose-ol:text-om-ink/90 prose-li:text-om-ink/90"
+        v-html="htmlContent"
+        itemprop="articleBody">
       </div>
     </article>
 
@@ -61,22 +64,38 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
-const slug = route.params.slug as string[]
+import { marked } from 'marked'
 
-// Récupérer l'article
-const { data: article } = await useAsyncData(`blog-${slug?.join('/')}`, async () => {
+const route = useRoute()
+const { articles: articlesAPI } = useSupabase()
+const slug = Array.isArray(route.params.slug) ? route.params.slug.join('/') : route.params.slug
+
+// Récupérer l'article depuis Supabase
+const { data: article } = await useAsyncData(`blog-${slug}`, async () => {
   try {
-    const path = `/blog/${slug?.join('/')}`
-    return await queryCollection('blog').path(path).first()
+    const { data, error } = await articlesAPI.getBySlug(slug)
+    if (error) throw error
+    return data
   } catch (error) {
+    console.error('Erreur lors du chargement de l\'article:', error)
     return null
+  }
+})
+
+// Parser le Markdown en HTML
+const htmlContent = computed(() => {
+  if (!article.value?.content) return ''
+  try {
+    return marked.parse(article.value.content)
+  } catch (e) {
+    console.error('Erreur parsing Markdown:', e)
+    return article.value.content
   }
 })
 
 // SEO complet pour les articles
 const siteUrl = 'https://clementRbl.github.io/mon-blog-ia'
-const articleUrl = computed(() => article.value ? `${siteUrl}${article.value.path}` : '')
+const articleUrl = computed(() => article.value ? `${siteUrl}/blog/${article.value.slug}` : '')
 
 if (article.value) {
   const publishedDate = new Date(article.value.date).toISOString()
@@ -119,13 +138,15 @@ if (article.value) {
       author: {
         '@type': 'Person',
         name: 'Clément Reboul',
-        url: siteUrl
+        url: siteUrl,
+        sameAs: ['https://github.com/clementRbl']
       },
       datePublished: publishedDate,
-      dateModified: publishedDate,
+      dateModified: article.value.updated_at || publishedDate,
       publisher: {
         '@type': 'Person',
-        name: 'Clément Reboul'
+        name: 'Clément Reboul',
+        url: siteUrl
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
@@ -134,8 +155,17 @@ if (article.value) {
       keywords: keywords,
       articleSection: article.value.tags?.[0] || 'IA',
       inLanguage: 'fr-FR',
-      url: articleUrl.value
+      url: articleUrl.value,
+      wordCount: article.value.content?.split(/\s+/).length || 0
     }
   ])
+} else {
+  // SEO pour page 404
+  useHead({
+    title: 'Article introuvable - Blog IA Engineering',
+    meta: [
+      { name: 'robots', content: 'noindex, nofollow' }
+    ]
+  })
 }
 </script>

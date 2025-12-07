@@ -36,10 +36,10 @@
 
     <!-- Liste des articles -->
     <div v-if="filteredArticles && filteredArticles.length > 0" class="space-y-8">
-      <article v-for="article in filteredArticles" :key="article.path" 
+      <article v-for="article in filteredArticles" :key="article.id" 
         class="group relative border-2 border-om-dark bg-om-paper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer">
         
-        <NuxtLink :to="article.path" class="absolute inset-0 z-10" />
+        <NuxtLink :to="`/blog/${article.slug}`" class="absolute inset-0 z-10" />
 
         <div class="flex justify-between items-start mb-4 gap-4">
           <div class="flex gap-2 flex-wrap">
@@ -91,6 +91,7 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const { articles: articlesAPI } = useSupabase()
 const tagSlug = route.params.tag as string
 
 // Dénormaliser le tag (de slug vers texte)
@@ -109,10 +110,14 @@ const slugify = (text: string) => {
     .replace(/^-+|-+$/g, '')
 }
 
-// Récupérer tous les articles et filtrer par tag
+// Récupérer tous les articles depuis Supabase
 const { data: allArticles } = await useAsyncData('all-blog-articles', async () => {
-  const items = await queryCollection('blog').all()
-  return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const { data, error } = await articlesAPI.getPublished()
+  if (error) {
+    console.error('Erreur lors du chargement des articles:', error)
+    return []
+  }
+  return data || []
 })
 
 // Filtrer les articles par tag

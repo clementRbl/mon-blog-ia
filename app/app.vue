@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen bg-om-paper text-om-dark font-sans selection:bg-om-gold selection:text-white flex flex-col">
-    <header class="border-b-2 border-om-dark py-6 sticky top-0 bg-om-paper/95 backdrop-blur-sm z-50">
+    <header class="border-b-2 border-om-dark py-6 sticky top-0 bg-om-paper/95 backdrop-blur-sm z-50" role="banner">
       <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
         
         <div class="text-center md:text-left">
           <p class="font-mono text-xs text-om-rust uppercase tracking-widest mb-1">Since 2025 • AI Engineering</p>
-          <NuxtLink to="/" class="group">
+          <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul">
             <h1 class="font-serif text-4xl font-black tracking-tighter uppercase">
               Clément <span class="text-om-gold group-hover:text-om-sepia transition-colors">Reboul</span>
               <span class="text-om-rust text-lg align-top ml-1">●</span>
@@ -13,29 +13,32 @@
           </NuxtLink>
         </div>
 
-        <nav class="flex gap-6 font-mono text-sm uppercase font-bold tracking-tight">
-          <NuxtLink to="/" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all">Journal</NuxtLink>
-          <NuxtLink to="/tags" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1">
-            <Icon name="mdi:tag-multiple" size="18" /> Catégories
+        <nav class="flex gap-6 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
+          <NuxtLink to="/" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all" aria-label="Voir tous les articles du journal">Journal</NuxtLink>
+          <NuxtLink to="/tags" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1" aria-label="Explorer les catégories d'articles">
+            <Icon name="mdi:tag-multiple" size="18" aria-hidden="true" /> Catégories
           </NuxtLink>
-          <a href="https://github.com/clementRbl" target="_blank" class="hover:text-om-sepia flex items-center gap-2 transition-all">
-            <Icon name="mdi:github" size="18" /> GitHub
+          <a href="https://github.com/clementRbl" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia flex items-center gap-2 transition-all" aria-label="Voir le profil GitHub de Clément Reboul">
+            <Icon name="mdi:github" size="18" aria-hidden="true" /> GitHub
           </a>
+          <NuxtLink to="/admin" class="hover:text-om-rust flex items-center gap-2 transition-all text-om-gold" aria-label="Accéder à l'interface d'administration">
+            <Icon name="mdi:shield-account" size="18" aria-hidden="true" /> Admin
+          </NuxtLink>
         </nav>
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-12 flex-grow max-w-4xl">
+    <main class="container mx-auto px-4 py-12 flex-grow max-w-4xl" role="main" id="main-content">
       <NuxtPage />
     </main>
 
-    <footer class="border-t-2 border-om-dark py-8 text-center bg-om-paperDark">
+    <footer class="border-t-2 border-om-dark py-8 text-center bg-om-paperDark" role="contentinfo">
       <div class="container mx-auto font-mono text-xs text-om-dark/60">
         <p class="mb-2">Généré avec Nuxt 4 & Intelligence Artificielle</p>
         <p class="mb-3">© 2025 Clément Reboul • France</p>
-        <nav class="flex justify-center gap-4 text-[10px] uppercase">
-          <a href="https://github.com/clementRbl/mon-blog-ia" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia transition-colors flex items-center gap-1">
-            <Icon name="mdi:github" size="14" /> Code Source
+        <nav class="flex justify-center gap-4 text-[10px] uppercase" aria-label="Navigation secondaire">
+          <a href="https://github.com/clementRbl/mon-blog-ia" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia transition-colors flex items-center gap-1" aria-label="Voir le code source du blog sur GitHub">
+            <Icon name="mdi:github" size="14" aria-hidden="true" /> Code Source
           </a>
         </nav>
       </div>

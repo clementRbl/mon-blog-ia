@@ -1,6 +1,37 @@
-# Robots.txt pour Blog IA Engineering
-User-Agent: *
+# Robots.txt pour Blog IA Engineering - Optimisé SEO
+User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /_nuxt/
 
-# Sitemap
+# Sitemaps (IMPORTANT pour indexation Google)
 Sitemap: https://clementRbl.github.io/mon-blog-ia/sitemap.xml
+
+# Moteurs de recherche majeurs - Crawl rapide autorisé
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+
+User-agent: Slurp
+Allow: /
+Disallow: /admin/
+
+# Bots IA - Bloqués pour protéger le contenu
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
