@@ -7,6 +7,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  experimental: {
+    payloadExtraction: false // Désactiver le preload de payload
+  },
+
   modules: [
     '@nuxt/image',
     '@nuxt/fonts',
@@ -58,7 +62,7 @@ export default defineNuxtConfig({
         { name: 'googlebot', content: 'index, follow' },
         // Confidentialité et sécurité
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
-        { name: 'referrer', content: 'no-referrer-when-downgrade' },
+        { name: 'referrer', content: 'strict-origin-when-cross-origin' },
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/mon-blog-ia/favicon.svg' },

@@ -1,16 +1,29 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '~/types/supabase'
+
+// Singleton pour éviter les instances multiples
+let supabaseInstance: SupabaseClient<Database> | null = null
 
 export const useSupabase = () => {
   const config = useRuntimeConfig()
   
-  const supabaseUrl = config.public.supabaseUrl
-  const supabaseKey = config.public.supabaseAnonKey
+  if (!supabaseInstance) {
+    const supabaseUrl = config.public.supabaseUrl
+    const supabaseKey = config.public.supabaseAnonKey
+    
+    supabaseInstance = createClient<Database>(
+      supabaseUrl,
+      supabaseKey,
+      {
+        auth: {
+          persistSession: true,
+          storageKey: 'sb-auth-token'
+        }
+      }
+    )
+  }
   
-  const supabase = createClient<Database>(
-    supabaseUrl,
-    supabaseKey
-  )
+  const supabase = supabaseInstance
 
   return {
     supabase,
