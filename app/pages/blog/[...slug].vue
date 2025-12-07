@@ -29,6 +29,10 @@
               day: 'numeric' 
             }) }}
           </time>
+          <span v-if="article.reading_time" class="flex items-center gap-1 font-mono">
+            <Icon name="mdi:clock-outline" size="16" aria-hidden="true" />
+            {{ article.reading_time }} min de lecture
+          </span>
           <meta itemprop="author" content="Clément Reboul" />
         </div>
       </header>

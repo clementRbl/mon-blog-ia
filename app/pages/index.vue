@@ -46,9 +46,15 @@
             <div class="flex gap-2 flex-wrap relative z-20" role="list" aria-label="Tags de l'article">
               <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" size="sm" />
             </div>
-            <time class="font-mono text-xs text-om-rust font-bold whitespace-nowrap" :datetime="new Date(article.date).toISOString()">
-              {{ new Date(article.date).toLocaleDateString('fr-FR') }}
-            </time>
+            <div class="text-right">
+              <time class="font-mono text-xs text-om-rust font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
+                {{ new Date(article.date).toLocaleDateString('fr-FR') }}
+              </time>
+              <span v-if="article.reading_time" class="font-mono text-xs text-om-ink/60 flex items-center justify-end gap-1 mt-1">
+                <Icon name="mdi:clock-outline" size="14" aria-hidden="true" />
+                {{ article.reading_time }} min
+              </span>
+            </div>
           </div>
 
           <h3 class="font-serif text-2xl font-bold mb-3 text-om-dark group-hover:text-om-sepia transition-colors">
