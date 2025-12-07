@@ -35,6 +35,14 @@ export default defineNuxtConfig({
     robotsTxt: false // Désactiver la génération automatique car on a déjà robots.txt
   },
 
+  // Désactiver le prerendering pour les pages avec Supabase
+  nitro: {
+    prerender: {
+      failOnError: false,
+      ignore: ['/'] // Ne pas prerender la homepage (génération client-side)
+    }
+  },
+
   // --- Configuration GitHub Pages ---
   app: {
     baseURL: '/mon-blog-ia/', 
