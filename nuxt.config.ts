@@ -35,11 +35,10 @@ export default defineNuxtConfig({
     robotsTxt: false // Désactiver la génération automatique car on a déjà robots.txt
   },
 
-  // Désactiver le prerendering pour les pages avec Supabase
+  // Ignorer les erreurs de prerendering (Supabase non dispo en build)
   nitro: {
     prerender: {
-      failOnError: false,
-      ignore: ['/'] // Ne pas prerender la homepage (génération client-side)
+      failOnError: false
     }
   },
 

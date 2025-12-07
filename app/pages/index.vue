@@ -75,12 +75,18 @@ const { articles: articlesAPI } = useSupabase()
 
 // Récupération des articles depuis Supabase
 const { data: articles } = await useAsyncData('blog', async () => {
-  const { data, error } = await articlesAPI.getPublished()
-  if (error) {
-    console.error('Erreur lors du chargement des articles:', error)
+  try {
+    const { data, error } = await articlesAPI.getPublished()
+    if (error) {
+      console.error('Erreur lors du chargement des articles:', error)
+      return []
+    }
+    return data || []
+  } catch (e) {
+    // En cas d'erreur (ex: prerender sans Supabase), retourner tableau vide
+    console.warn('Supabase non disponible, mode dégradé:', e)
     return []
   }
-  return data || []
 })
 
 // Calculer les tags les plus populaires
