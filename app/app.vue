@@ -6,22 +6,23 @@
         <div class="text-center md:text-left">
           <p class="font-mono text-xs text-om-rust uppercase tracking-widest mb-1">Since 2025 • AI Engineering</p>
           <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul">
-            <h1 class="font-serif text-4xl font-black tracking-tighter uppercase">
+            <h1 class="font-serif text-3xl md:text-4xl font-black tracking-tighter uppercase select-none">
               Clément <span class="text-om-gold group-hover:text-om-sepia transition-colors">Reboul</span>
-              <span class="text-om-rust text-lg align-top ml-1">●</span>
+              <span class="text-om-rust text-base md:text-lg align-top ml-1">●</span>
             </h1>
           </NuxtLink>
         </div>
 
-        <nav class="flex gap-6 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
-          <NuxtLink to="/" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all" aria-label="Voir tous les articles du journal">Journal</NuxtLink>
-          <NuxtLink to="/tags" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1" aria-label="Explorer les catégories d'articles">
+        <nav class="flex flex-wrap justify-center gap-4 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
+          <NuxtLink to="/" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all whitespace-nowrap" aria-label="Voir tous les articles du journal">Journal</NuxtLink>
+          <NuxtLink to="/tags" class="hover:text-om-sepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Explorer les catégories d'articles">
             <Icon name="mdi:tag-multiple" size="18" aria-hidden="true" /> Catégories
           </NuxtLink>
-          <a href="https://github.com/clementRbl" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia flex items-center gap-2 transition-all" aria-label="Voir le profil GitHub de Clément Reboul">
-            <Icon name="mdi:github" size="18" aria-hidden="true" /> GitHub
+          <a href="https://github.com/clementRbl" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia flex items-center gap-2 transition-all whitespace-nowrap" aria-label="Voir le profil GitHub de Clément Reboul">
+            <Icon name="mdi:github" size="18" aria-hidden="true" /> 
+            <span class="hidden sm:inline">GitHub</span>
           </a>
-          <NuxtLink to="/admin" class="hover:text-om-rust flex items-center gap-2 transition-all text-om-gold" aria-label="Accéder à l'interface d'administration">
+          <NuxtLink to="/admin" class="hover:text-om-rust flex items-center gap-2 transition-all text-om-gold whitespace-nowrap" aria-label="Accéder à l'interface d'administration">
             <Icon name="mdi:shield-account" size="18" aria-hidden="true" /> Admin
           </NuxtLink>
         </nav>

@@ -12,13 +12,13 @@
     <div v-else>
     <!-- Header Admin -->
     <header class="bg-om-dark text-om-paper border-b-4 border-om-rust">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="font-serif text-2xl font-black">Dashboard Admin</h1>
-        <div class="flex items-center gap-4">
-          <span class="font-mono text-sm">{{ user?.email }}</span>
+      <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 class="font-serif text-xl sm:text-2xl font-black">Dashboard Admin</h1>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <span class="font-mono text-xs sm:text-sm truncate max-w-[200px] sm:max-w-none">{{ user?.email }}</span>
           <button
             @click="handleLogout"
-            class="px-4 py-2 bg-om-rust text-white font-mono text-sm uppercase hover:bg-om-sepia transition-colors"
+            class="px-4 py-2 bg-om-rust text-white font-mono text-xs sm:text-sm uppercase hover:bg-om-sepia transition-colors whitespace-nowrap"
           >
             Déconnexion
           </button>
@@ -51,27 +51,27 @@
           :key="article.id"
           class="bg-white border-2 border-om-dark shadow-paper p-6 hover:shadow-paper-hover transition-shadow"
         >
-          <div class="flex justify-between items-start gap-4">
-            <div class="flex-1">
-              <div class="flex items-center gap-3 mb-2">
-                <h3 class="font-serif text-xl font-bold text-om-dark">
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+                <h3 class="font-serif text-lg sm:text-xl font-bold text-om-dark break-words">
                   {{ article.title }}
                 </h3>
                 <span
                   v-if="article.published"
-                  class="px-2 py-1 bg-green-100 text-green-800 text-xs font-mono uppercase"
+                  class="px-2 py-1 bg-green-100 text-green-800 text-xs font-mono uppercase whitespace-nowrap"
                 >
                   Publié
                 </span>
                 <span
                   v-else
-                  class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-mono uppercase"
+                  class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-mono uppercase whitespace-nowrap"
                 >
                   Brouillon
                 </span>
               </div>
               
-              <p class="text-om-ink/70 text-sm mb-3">{{ article.description }}</p>
+              <p class="text-om-ink/70 text-sm mb-3 break-words">{{ article.description }}</p>
               
               <div class="flex gap-2 mb-3 flex-wrap">
                 <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" />
@@ -87,16 +87,16 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex gap-2">
+            <div class="flex sm:flex-col gap-2 w-full sm:w-auto">
               <NuxtLink
                 :to="`/admin/articles/${article.id}`"
-                class="px-4 py-2 bg-om-sepia text-white font-mono text-sm uppercase hover:bg-om-rust transition-colors"
+                class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-om-sepia text-white font-mono text-xs sm:text-sm uppercase hover:bg-om-rust transition-colors text-center whitespace-nowrap"
               >
                 Éditer
               </NuxtLink>
               <button
                 @click="handleDelete(article.id)"
-                class="px-4 py-2 bg-red-600 text-white font-mono text-sm uppercase hover:bg-red-700 transition-colors"
+                class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-red-600 text-white font-mono text-xs sm:text-sm uppercase hover:bg-red-700 transition-colors whitespace-nowrap"
               >
                 Supprimer
               </button>

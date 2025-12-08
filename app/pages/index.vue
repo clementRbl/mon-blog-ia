@@ -4,7 +4,7 @@
     <div class="flex-shrink-0">
       <h1 class="sr-only">Blog IA Engineering - Articles sur l'Intelligence Artificielle par Clément Reboul</h1>
       <section class="mb-8 border-l-4 border-om-gold pl-6 py-2" aria-label="Citation d'introduction">
-        <blockquote class="font-serif text-3xl md:text-4xl italic leading-tight mb-4 text-om-dark">
+        <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark">
           "L'IA n'est pas de la magie, c'est des mathématiques et du code."
         </blockquote>
       </section>
@@ -57,7 +57,7 @@
             </div>
           </div>
 
-          <h3 class="font-serif text-2xl font-bold mb-3 text-om-dark group-hover:text-om-sepia transition-colors">
+          <h3 class="font-serif text-xl md:text-2xl font-bold mb-3 text-om-dark group-hover:text-om-sepia transition-colors">
             {{ article.title }}
           </h3>
           

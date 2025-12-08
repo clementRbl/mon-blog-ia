@@ -50,7 +50,7 @@
             v-model="form.slug"
             type="text"
             required
-            pattern="[a-z0-9-]+"
+            pattern="[a-z0-9\-]+"
             class="w-full px-4 py-3 border-2 border-om-dark focus:outline-none focus:ring-2 focus:ring-om-rust font-mono"
             placeholder="mon-article-ia"
           />
@@ -121,7 +121,7 @@
             <button
               type="button"
               @click="addNewTag"
-              class="px-6 py-3 bg-om-sepia text-white font-mono uppercase text-sm hover:bg-om-rust transition-colors"
+              class="px-4 sm:px-6 py-3 bg-om-sepia text-white font-mono uppercase text-xs sm:text-sm hover:bg-om-rust transition-colors whitespace-nowrap"
             >
               Ajouter
             </button>
@@ -180,7 +180,7 @@ Paragraphe avec **gras** et *italique*."
         </div>
 
         <!-- Actions -->
-        <div class="flex gap-4">
+        <div class="flex flex-col sm:flex-row gap-4">
           <button
             type="submit"
             :disabled="loading"
@@ -190,7 +190,7 @@ Paragraphe avec **gras** et *italique*."
           </button>
           <NuxtLink
             to="/admin"
-            class="px-6 py-3 bg-gray-300 text-om-dark font-mono uppercase text-sm tracking-wider hover:bg-gray-400 transition-colors text-center"
+            class="px-6 py-3 bg-gray-300 text-om-dark font-mono uppercase text-sm tracking-wider hover:bg-gray-400 transition-colors text-center flex items-center justify-center"
           >
             Annuler
           </NuxtLink>

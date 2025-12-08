@@ -17,7 +17,7 @@
           <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" />
         </div>
         
-        <h1 class="font-serif text-4xl md:text-5xl font-black mb-4 leading-tight text-om-dark" itemprop="headline">
+        <h1 class="font-serif text-3xl md:text-5xl font-black mb-4 leading-tight text-om-dark" itemprop="headline">
           {{ article.title }}
         </h1>
         
