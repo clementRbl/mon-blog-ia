@@ -104,6 +104,8 @@ export default defineNuxtConfig({
   // --- Configuration SEO + Supabase via runtimeConfig ---
   // Les variables NUXT_PUBLIC_* sont automatiquement chargées depuis .env
   runtimeConfig: {
+    vapidPrivateKey: '', // Clé privée VAPID (serveur uniquement)
+    adminKey: '', // Clé secrète pour l'API d'envoi de notifications (serveur uniquement)
     public: {
       siteUrl: 'https://clementRbl.github.io/mon-blog-ia',
       siteName: 'Clément Reboul',
@@ -111,7 +113,9 @@ export default defineNuxtConfig({
       language: 'fr',
       // Configuration Supabase (chargée depuis .env en dev/build)
       supabaseUrl: '',
-      supabaseAnonKey: ''
+      supabaseAnonKey: '',
+      // Configuration Web Push
+      vapidPublicKey: ''
     }
   },
 
@@ -177,6 +181,8 @@ export default defineNuxtConfig({
     workbox: {
       navigateFallback: '/mon-blog-ia/',
       globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,ico,woff,woff2}'],
+      // Importer le script de gestion des push
+      importScripts: ['/mon-blog-ia/push-handlers.js'],
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/clementRbl\.github\.io\/mon-blog-ia\/.*/i,

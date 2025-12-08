@@ -302,6 +302,7 @@ const loadArticle = async () => {
       published: article.published
     }
     selectedTags.value = [...article.tags]
+    originalPublishedState.value = article.published
   } catch (e) {
     console.error('Erreur lors du chargement:', e)
     error.value = 'Impossible de charger l\'article'
@@ -323,14 +324,27 @@ const handleSubmit = async () => {
       date: new Date(form.value.date).toISOString()
     }
 
+    const wasPublished = !isNew.value && originalPublishedState.value
+    const willBePublished = articleData.published
+
     if (isNew.value) {
       // Créer un nouvel article
       const { error: createError } = await articlesAPI.create(articleData)
       if (createError) throw createError
+      
+      // Si l'article est publié dès sa création, envoyer la notification
+      if (willBePublished) {
+        await sendPushNotification(articleData)
+      }
     } else {
       // Mettre à jour l'article existant
       const { error: updateError } = await articlesAPI.update(articleId.value, articleData)
       if (updateError) throw updateError
+      
+      // Si l'article passe de non-publié à publié, envoyer la notification
+      if (!wasPublished && willBePublished) {
+        await sendPushNotification(articleData)
+      }
     }
 
     router.push('/admin')
@@ -341,6 +355,26 @@ const handleSubmit = async () => {
     loading.value = false
   }
 }
+
+// Envoyer une notification push aux abonnés
+const sendPushNotification = async (article: any) => {
+  try {
+    await $fetch('/api/send-push', {
+      method: 'POST',
+      body: {
+        title: '📰 Nouvel article publié !',
+        message: article.title,
+        url: `/mon-blog-ia/blog/${article.slug}`
+      }
+    })
+  } catch (error) {
+    // Erreur silencieuse, ne pas bloquer la publication
+    // Ne pas bloquer la publication si l'envoi échoue
+  }
+}
+
+// Garder l'état initial de publication pour détecter les changements
+const originalPublishedState = ref(false)
 
 // Générer automatiquement le slug à partir du titre
 watch(() => form.value.title, (newTitle) => {
