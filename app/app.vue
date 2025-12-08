@@ -47,6 +47,7 @@
       </div>
     </footer>
 
+    <PwaPrompt />
   </div>
 </template>
 

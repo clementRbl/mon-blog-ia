@@ -16,7 +16,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxtjs/tailwindcss', 
-    '@nuxtjs/seo'          
+    '@nuxtjs/seo',
+    '@vite-pwa/nuxt'
   ],
 
   // Configuration du module SEO
@@ -129,6 +130,108 @@ export default defineNuxtConfig({
           langs: ['python', 'vue', 'bash', 'ts', 'json']
         }
       }
+    }
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    base: '/mon-blog-ia/',
+    scope: '/mon-blog-ia/',
+    manifest: {
+      name: 'Blog IA Engineering - Clément Reboul',
+      short_name: 'Blog IA',
+      description: 'Blog personnel sur l\'intelligence artificielle et le machine learning',
+      theme_color: '#Fdfbf7',
+      background_color: '#Fdfbf7',
+      display: 'standalone',
+      orientation: 'portrait',
+      scope: '/mon-blog-ia/',
+      start_url: '/mon-blog-ia/',
+      lang: 'fr',
+      icons: [
+        {
+          src: '/mon-blog-ia/images/logo.png',
+          sizes: '1024x1024',
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/mon-blog-ia/images/logo.png',
+          sizes: '1024x1024',
+          type: 'image/png',
+          purpose: 'maskable'
+        },
+        {
+          src: '/mon-blog-ia/images/logo.png',
+          sizes: '512x512',
+          type: 'image/png'
+        },
+        {
+          src: '/mon-blog-ia/images/logo.png',
+          sizes: '192x192',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/mon-blog-ia/',
+      globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,ico,woff,woff2}'],
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/clementRbl\.github\.io\/mon-blog-ia\/.*/i,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'blog-pages',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 * 7 // 7 jours
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        },
+        {
+          urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'supabase-api',
+            expiration: {
+              maxEntries: 20,
+              maxAgeSeconds: 60 * 5 // 5 minutes
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        },
+        {
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images',
+            expiration: {
+              maxEntries: 60,
+              maxAgeSeconds: 60 * 60 * 24 * 30 // 30 jours
+            }
+          }
+        },
+        {
+          urlPattern: /\.(?:woff|woff2|ttf|eot)$/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'fonts',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365 // 1 an
+            }
+          }
+        }
+      ]
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
     }
   }
 })
