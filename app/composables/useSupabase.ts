@@ -115,6 +115,30 @@ export const useSupabase = () => {
           .contains('tags', [tag])
           .order('date', { ascending: false })
       }
+    },
+    
+    // Helper pour les citations
+    quotes: {
+      // Récupérer une citation aléatoire
+      getRandom: async () => {
+        const { data, error } = await supabase
+          .from('quotes')
+          .select('*')
+        
+        if (error || !data || data.length === 0) return null
+        
+        // Sélectionner une citation aléatoire
+        const randomIndex = Math.floor(Math.random() * data.length)
+        return data[randomIndex]
+      },
+      
+      // Récupérer toutes les citations
+      getAll: async () => {
+        return await supabase
+          .from('quotes')
+          .select('*')
+          .order('author', { ascending: true })
+      }
     }
   }
 }

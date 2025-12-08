@@ -3,10 +3,11 @@
     <!-- Section fixe (non-scrollable) -->
     <div class="flex-shrink-0">
       <h1 class="sr-only">Blog IA Engineering - Articles sur l'Intelligence Artificielle par Clément Reboul</h1>
-      <section class="mb-8 border-l-4 border-om-gold pl-6 py-2" aria-label="Citation d'introduction">
+      <section v-if="quote" class="mb-8 border-l-4 border-om-gold pl-6 py-2" aria-label="Citation d'introduction">
         <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark">
-          "L'IA n'est pas de la magie, c'est des mathématiques et du code."
+          « {{ quote.text }} »
         </blockquote>
+        <cite class="font-mono text-sm text-om-rust not-italic">— {{ quote.author }}</cite>
       </section>
 
       <!-- Navigation des catégories -->
@@ -77,7 +78,17 @@
 </template>
 
 <script setup lang="ts">
-const { articles: articlesAPI } = useSupabase()
+const { articles: articlesAPI, quotes: quotesAPI } = useSupabase()
+
+// Récupération d'une citation aléatoire
+const { data: quote } = await useAsyncData('random-quote', async () => {
+  try {
+    return await quotesAPI.getRandom()
+  } catch (e) {
+    console.warn('Erreur lors du chargement de la citation:', e)
+    return null
+  }
+})
 
 // Récupération des articles depuis Supabase
 const { data: articles } = await useAsyncData('blog', async () => {
