@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden">
-    <!-- Section fixe (non-scrollable) -->
-    <div class="flex-shrink-0">
+  <div class="md:h-screen flex flex-col md:overflow-hidden">
+    <!-- Section fixe (non-scrollable sur desktop uniquement) -->
+    <div class="md:flex-shrink-0">
       <h1 class="sr-only">Blog IA Engineering - Articles sur l'Intelligence Artificielle par Clément Reboul</h1>
       <section v-if="quote" class="mb-8 border-l-4 border-om-gold pl-6 py-2" aria-label="Citation d'introduction">
         <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark">
@@ -34,8 +34,8 @@
       </h2>
     </div>
 
-    <!-- Section scrollable (liste des articles) -->
-    <div class="flex-1 overflow-y-auto pr-2" role="feed" aria-label="Liste des derniers articles publiés">
+    <!-- Section scrollable (boîte avec scroll sur desktop, défilement normal sur mobile) -->
+    <div class="md:flex-1 md:overflow-y-auto md:pr-2" role="feed" aria-label="Liste des derniers articles publiés">
       <div v-if="articles && articles.length > 0" class="space-y-8">
         <article v-for="article in articles" :key="article.id" 
           class="group relative border-2 border-om-dark bg-om-paper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer"
@@ -65,6 +65,10 @@
           <p class="font-sans text-om-ink/80 leading-relaxed line-clamp-3">
             {{ article.description }}
           </p>
+          
+          <div class="mt-4 text-xs font-mono text-om-sepia group-hover:text-om-rust transition-colors md:hidden">
+            Lire la suite →
+          </div>
         </article>
       </div>
 
@@ -80,10 +84,31 @@
 <script setup lang="ts">
 const { articles: articlesAPI, quotes: quotesAPI } = useSupabase()
 
-// Récupération d'une citation aléatoire
+// Récupération d'une citation aléatoire (filtrée pour mobile)
 const { data: quote } = await useAsyncData('random-quote', async () => {
   try {
-    return await quotesAPI.getRandom()
+    // IDs des citations à afficher sur mobile : 2, 6, 8, 9
+    const mobileQuoteIds = [2, 6, 8, 9]
+    
+    // Détecter si on est sur mobile (pendant le SSR on prend toutes les citations)
+    const isMobile = process.client && window.innerWidth < 768
+    
+    if (isMobile) {
+      // Sur mobile : récupérer uniquement les citations sélectionnées
+      const { data, error } = await quotesAPI.getAll()
+      if (error || !data || data.length === 0) return null
+      
+      // Filtrer par IDs
+      const mobileQuotes = data.filter(q => mobileQuoteIds.includes(q.id))
+      if (mobileQuotes.length === 0) return null
+      
+      // Sélectionner une citation aléatoire parmi les 4
+      const randomIndex = Math.floor(Math.random() * mobileQuotes.length)
+      return mobileQuotes[randomIndex]
+    } else {
+      // Desktop : toutes les citations
+      return await quotesAPI.getRandom()
+    }
   } catch (e) {
     console.warn('Erreur lors du chargement de la citation:', e)
     return null
