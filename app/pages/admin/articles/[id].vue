@@ -359,17 +359,20 @@ const handleSubmit = async () => {
 // Envoyer une notification push aux abonnés
 const sendPushNotification = async (article: any) => {
   try {
-    await $fetch('/api/send-push', {
-      method: 'POST',
+    const { supabase } = useSupabase()
+    
+    // Appeler la Edge Function Supabase
+    const { data, error } = await supabase.functions.invoke('clever-handler', {
       body: {
         title: '📰 Nouvel article publié !',
         message: article.title,
         url: `/mon-blog-ia/blog/${article.slug}`
       }
     })
+    
+    if (error) throw error
   } catch (error) {
     // Erreur silencieuse, ne pas bloquer la publication
-    // Ne pas bloquer la publication si l'envoi échoue
   }
 }
 
