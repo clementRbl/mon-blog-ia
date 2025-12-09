@@ -194,8 +194,7 @@ useHead({
     { name: 'twitter:creator', content: '@clementRbl' },
   ],
   link: [
-    { rel: 'canonical', href: siteUrl },
-    { rel: 'alternate', type: 'application/rss+xml', title: 'Blog IA Engineering RSS Feed', href: `${siteUrl}/feed.xml` }
+    { rel: 'canonical', href: siteUrl }
   ]
 })
 
