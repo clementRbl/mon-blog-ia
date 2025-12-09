@@ -50,8 +50,10 @@
       </div>
     </footer>
 
-    <PwaPrompt />
-    <PushPrompt />
+    <ClientOnly>
+      <PwaPrompt />
+      <PushPrompt />
+    </ClientOnly>
   </div>
 </template>
 
