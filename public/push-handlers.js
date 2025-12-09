@@ -49,7 +49,15 @@ self.addEventListener('notificationclick', (event) => {
   
   // Si l'utilisateur clique sur "Lire maintenant" ou sur la notification elle-même
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (clientList) => {
+      // Invalider le cache pour avoir les données fraîches
+      const cacheNames = await caches.keys()
+      for (const name of cacheNames) {
+        if (name.includes('blog-home') || name.includes('blog-pages') || name.includes('supabase')) {
+          await caches.delete(name)
+        }
+      }
+      
       // Si une fenêtre du blog est déjà ouverte, la focus et naviguer
       for (const client of clientList) {
         if (client.url.includes('/mon-blog-ia') && 'focus' in client) {

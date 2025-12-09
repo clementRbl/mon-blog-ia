@@ -37,7 +37,7 @@
     <!-- Section scrollable (boîte avec scroll sur desktop, défilement normal sur mobile) -->
     <div class="md:flex-1 md:overflow-y-auto md:pr-2" role="feed" aria-label="Liste des derniers articles publiés">
       <div v-if="articles && articles.length > 0" class="space-y-8">
-        <article v-for="article in articles" :key="article.id" 
+        <article v-for="(article, index) in articles" :key="article.id" 
           class="group relative border-2 border-om-dark bg-om-paper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer"
           :aria-label="`Article: ${article.title}`">
           
@@ -47,7 +47,11 @@
             <div class="flex gap-2 flex-wrap relative z-20" role="list" aria-label="Tags de l'article">
               <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" size="sm" />
             </div>
-            <div class="text-right">
+            <div class="text-right relative z-20">
+              <!-- Badge NEW pour le premier article (desktop uniquement) -->
+              <div v-if="index === 0" class="hidden md:inline-block bg-om-rust text-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider mb-1">
+                New
+              </div>
               <time class="font-mono text-xs text-om-rust font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
                 {{ new Date(article.date).toLocaleDateString('fr-FR') }}
               </time>
@@ -56,6 +60,11 @@
                 {{ article.reading_time }} min
               </span>
             </div>
+          </div>
+
+          <!-- Badge NEW pour mobile (sous les tags, au-dessus du titre) -->
+          <div v-if="index === 0" class="md:hidden inline-block bg-om-rust text-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wider mb-3 relative z-20 shadow-sm">
+            New
           </div>
 
           <h3 class="font-serif text-xl md:text-2xl font-bold mb-3 text-om-dark group-hover:text-om-sepia transition-colors">

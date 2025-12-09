@@ -344,6 +344,17 @@ const handleSubmit = async () => {
       // Si l'article passe de non-publié à publié, envoyer la notification
       if (!wasPublished && willBePublished) {
         await sendPushNotification(articleData)
+        
+        // Invalider le cache de la page d'accueil pour forcer le rechargement
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              if (name.includes('blog-home') || name.includes('blog-pages')) {
+                caches.delete(name)
+              }
+            })
+          })
+        }
       }
     }
 
