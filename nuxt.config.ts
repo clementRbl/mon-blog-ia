@@ -39,7 +39,11 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    enabled: false // Désactivé car on a un sitemap custom dans server/routes/
+    enabled: true,
+    strictNuxtContentPaths: true,
+    sources: [
+      '/api/__sitemap__/urls' // On va créer un endpoint qui retourne les URLs
+    ]
   },
 
   robots: {
@@ -49,8 +53,7 @@ export default defineNuxtConfig({
   // Ignorer les erreurs de prerendering (Supabase non dispo en build)
   nitro: {
     prerender: {
-      failOnError: false,
-      routes: ['/sitemap.xml', '/feed.xml'] // Prégenérer sitemap et RSS
+      failOnError: false
     }
   },
 
