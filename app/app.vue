@@ -52,6 +52,21 @@
   </div>
 </template>
 
+<script setup>
+// Gestion globale des erreurs pour iOS
+if (process.client) {
+  window.addEventListener('error', (event) => {
+    console.error('Erreur globale capturée:', event.error)
+    event.preventDefault()
+  })
+  
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Promise rejetée:', event.reason)
+    event.preventDefault()
+  })
+}
+</script>
+
 <style>
 /* Force le fond couleur papier sur toute la page HTML pour éviter les bandes blanches */
 body {

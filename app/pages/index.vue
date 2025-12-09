@@ -87,28 +87,8 @@ const { articles: articlesAPI, quotes: quotesAPI } = useSupabase()
 // Récupération d'une citation aléatoire (filtrée pour mobile)
 const { data: quote } = await useAsyncData('random-quote', async () => {
   try {
-    // IDs des citations à afficher sur mobile : 2, 6, 8, 9
-    const mobileQuoteIds = [2, 6, 8, 9]
-    
-    // Détecter si on est sur mobile (pendant le SSR on prend toutes les citations)
-    const isMobile = process.client && window.innerWidth < 768
-    
-    if (isMobile) {
-      // Sur mobile : récupérer uniquement les citations sélectionnées
-      const { data, error } = await quotesAPI.getAll()
-      if (error || !data || data.length === 0) return null
-      
-      // Filtrer par IDs
-      const mobileQuotes = data.filter(q => mobileQuoteIds.includes(q.id))
-      if (mobileQuotes.length === 0) return null
-      
-      // Sélectionner une citation aléatoire parmi les 4
-      const randomIndex = Math.floor(Math.random() * mobileQuotes.length)
-      return mobileQuotes[randomIndex]
-    } else {
-      // Desktop : toutes les citations
-      return await quotesAPI.getRandom()
-    }
+    // Toujours utiliser getRandom() pour éviter les problèmes sur différents devices
+    return await quotesAPI.getRandom()
   } catch (e) {
     console.warn('Erreur lors du chargement de la citation:', e)
     return null

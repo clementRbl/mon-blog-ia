@@ -11,7 +11,7 @@ self.addEventListener('push', (event) => {
       data: {
         url: data.url || '/mon-blog-ia/'
       },
-      tag: 'blog-notification',
+      tag: `blog-${data.timestamp || Date.now()}`,
       requireInteraction: false,
       actions: [
         {

@@ -366,7 +366,7 @@ const sendPushNotification = async (article: any) => {
       body: {
         title: '📰 Nouvel article publié !',
         message: article.title,
-        url: `/mon-blog-ia/blog/${article.slug}`
+        url: `https://clementrbl.github.io/mon-blog-ia/blog/${article.slug}`
       }
     })
     
