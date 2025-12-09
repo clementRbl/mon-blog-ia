@@ -10,7 +10,7 @@ export const usePushNotifications = () => {
   // Vérifier l'état de la permission
   const permissionState = ref<NotificationPermission>('default')
   
-  if (process.client) {
+  if (process.client && typeof Notification !== 'undefined') {
     permissionState.value = Notification.permission
   }
   
@@ -31,7 +31,7 @@ export const usePushNotifications = () => {
   
   // S'abonner aux notifications push
   const subscribe = async () => {
-    if (!isSupported.value) {
+    if (!isSupported.value || typeof Notification === 'undefined') {
       throw new Error('Les notifications push ne sont pas supportées')
     }
     
