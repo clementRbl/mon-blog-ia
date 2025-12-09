@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     defaults: {
       component: 'OgImage',
       props: {
-        image: '/mon-blog-ia/images/og-image.jpg'
+        image: '/mon-blog-ia/images/og-image.png'
       }
     }
   },
