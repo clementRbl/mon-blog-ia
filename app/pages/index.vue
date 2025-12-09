@@ -122,18 +122,28 @@ const { data: articles, refresh: refreshArticles } = await useAsyncData('blog', 
 
 // Rafraîchir automatiquement quand la page redevient visible
 if (process.client) {
-  document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible') {
-      // Invalider le cache et recharger les articles
-      if ('caches' in window) {
-        const cacheNames = await caches.keys()
-        for (const name of cacheNames) {
-          if (name.includes('blog-home') || name.includes('supabase')) {
-            await caches.delete(name)
-          }
+  // Vider le cache au chargement de la page (pour les hard refresh)
+  const clearCacheAndRefresh = async () => {
+    if ('caches' in window) {
+      const cacheNames = await caches.keys()
+      for (const name of cacheNames) {
+        if (name.includes('blog-home') || name.includes('supabase')) {
+          await caches.delete(name)
         }
       }
-      refreshArticles()
+    }
+    refreshArticles()
+  }
+  
+  // Au chargement de la page
+  onMounted(() => {
+    clearCacheAndRefresh()
+  })
+  
+  // Au changement d'onglet
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible') {
+      clearCacheAndRefresh()
     }
   })
 }
