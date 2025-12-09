@@ -1,5 +1,10 @@
 <template>
   <div class="min-h-screen bg-om-paper text-om-dark font-sans selection:bg-om-gold selection:text-white flex flex-col">
+    <!-- Banner pour in-app browsers -->
+    <ClientOnly>
+      <InAppBrowserBanner />
+    </ClientOnly>
+    
     <header class="border-b-2 border-om-dark py-6 sticky top-0 bg-om-paper/95 backdrop-blur-sm z-50" role="banner">
       <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
         
