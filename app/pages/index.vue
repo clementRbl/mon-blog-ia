@@ -105,7 +105,7 @@ const { data: quote } = await useAsyncData('random-quote', async () => {
 })
 
 // Récupération des articles depuis Supabase
-const { data: articles } = await useAsyncData('blog', async () => {
+const { data: articles, refresh: refreshArticles } = await useAsyncData('blog', async () => {
   try {
     const { data, error } = await articlesAPI.getPublished()
     if (error) {
@@ -119,6 +119,24 @@ const { data: articles } = await useAsyncData('blog', async () => {
     return []
   }
 })
+
+// Rafraîchir automatiquement quand la page redevient visible
+if (process.client) {
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible') {
+      // Invalider le cache et recharger les articles
+      if ('caches' in window) {
+        const cacheNames = await caches.keys()
+        for (const name of cacheNames) {
+          if (name.includes('blog-home') || name.includes('supabase')) {
+            await caches.delete(name)
+          }
+        }
+      }
+      refreshArticles()
+    }
+  })
+}
 
 // Calculer les tags les plus populaires
 const popularTags = computed(() => {
