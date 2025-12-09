@@ -30,7 +30,10 @@
     </header>
 
     <main class="container mx-auto px-4 py-12 flex-grow max-w-4xl" role="main" id="main-content">
-      <NuxtPage />
+      <NuxtPage :transition="{
+        name: 'page-fade',
+        mode: 'out-in'
+      }" />
     </main>
 
     <footer class="border-t-2 border-om-dark py-8 text-center bg-om-paperDark" role="contentinfo">
@@ -71,5 +74,16 @@ if (process.client) {
 /* Force le fond couleur papier sur toute la page HTML pour éviter les bandes blanches */
 body {
   background-color: #Fdfbf7;
+}
+
+/* Transition simple en fade pour éviter le "pop" */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
 }
 </style>
