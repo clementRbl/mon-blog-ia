@@ -31,9 +31,22 @@
 <script setup lang="ts">
 const showPrompt = ref(false)
 const loading = ref(false)
+
+// Détecter les in-app browsers (WhatsApp, Messenger, etc.)
+const isInAppBrowser = () => {
+  if (!process.client) return false
+  const ua = navigator.userAgent || ''
+  return /FBAN|FBAV|Instagram|WhatsApp|Messenger/i.test(ua)
+}
+
 const { subscribe, isSupported, isSubscribed, permissionState } = usePushNotifications()
 
 onMounted(async () => {
+  // Ne pas afficher dans les in-app browsers
+  if (isInAppBrowser()) {
+    return
+  }
+  
   // Vérifier si on doit afficher le prompt
   const dismissed = localStorage.getItem('push-prompt-dismissed')
   const alreadySubscribed = await isSubscribed()
