@@ -3,15 +3,15 @@ self.addEventListener('push', (event) => {
   if (!event.data) return
 
   try {
-    const data = event.data.json()
+    const payload = event.data.json()
     
     const options = {
-      body: data.body || 'Un nouvel article vient d\'être publié !',
-      icon: '/mon-blog-ia/images/logo.png',
+      body: payload.body || 'Un nouvel article vient d\'être publié !',
+      icon: payload.icon || '/mon-blog-ia/images/logo.png',
       data: {
-        url: data.url || '/mon-blog-ia/'
+        url: payload.url || 'https://clementrbl.github.io/mon-blog-ia/'
       },
-      tag: `blog-${data.timestamp || Date.now()}`,
+      tag: `blog-${payload.timestamp || Date.now()}`,
       requireInteraction: false,
       actions: [
         {
@@ -26,7 +26,7 @@ self.addEventListener('push', (event) => {
     }
 
     event.waitUntil(
-      self.registration.showNotification(data.title || 'Nouvel article', options)
+      self.registration.showNotification(payload.title || 'Nouvel article', options)
     )
   } catch (error) {
     // Erreur silencieuse
@@ -36,7 +36,11 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
 
-  const url = event.notification.data?.url || '/mon-blog-ia/'
+  // Récupérer l'URL depuis les données de la notification
+  const notificationData = event.notification.data || {}
+  const targetUrl = notificationData.url || 'https://clementrbl.github.io/mon-blog-ia/'
+  
+  console.log('Notification clicked, URL:', targetUrl)
   
   // Si l'utilisateur clique sur "Plus tard", juste fermer la notification
   if (event.action === 'later') {
@@ -46,19 +50,15 @@ self.addEventListener('notificationclick', (event) => {
   // Si l'utilisateur clique sur "Lire maintenant" ou sur la notification elle-même
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Si une fenêtre du blog est déjà ouverte, l'utiliser
+      // Si une fenêtre du blog est déjà ouverte, la focus et naviguer
       for (const client of clientList) {
         if (client.url.includes('/mon-blog-ia') && 'focus' in client) {
-          return client.focus().then(() => {
-            if (client.navigate) {
-              return client.navigate(url)
-            }
-          })
+          return client.focus().then(() => client.navigate(targetUrl))
         }
       }
-      // Sinon, ouvrir une nouvelle fenêtre
+      // Sinon, ouvrir une nouvelle fenêtre avec l'URL
       if (clients.openWindow) {
-        return clients.openWindow(url)
+        return clients.openWindow(targetUrl)
       }
     })
   )

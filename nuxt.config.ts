@@ -185,6 +185,23 @@ export default defineNuxtConfig({
       importScripts: ['/mon-blog-ia/push-handlers.js'],
       runtimeCaching: [
         {
+          // Page d'accueil : toujours vérifier le réseau en premier
+          urlPattern: /^https:\/\/clementRbl\.github\.io\/mon-blog-ia\/?$/i,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'blog-home',
+            networkTimeoutSeconds: 3,
+            expiration: {
+              maxEntries: 1,
+              maxAgeSeconds: 60 * 5 // 5 minutes seulement
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        },
+        {
+          // Autres pages du blog
           urlPattern: /^https:\/\/clementRbl\.github\.io\/mon-blog-ia\/.*/i,
           handler: 'NetworkFirst',
           options: {
@@ -200,16 +217,9 @@ export default defineNuxtConfig({
         },
         {
           urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-          handler: 'NetworkFirst',
+          handler: 'NetworkOnly', // Toujours fetch le réseau pour les données fraîches
           options: {
-            cacheName: 'supabase-api',
-            expiration: {
-              maxEntries: 20,
-              maxAgeSeconds: 60 * 5 // 5 minutes
-            },
-            cacheableResponse: {
-              statuses: [0, 200]
-            }
+            cacheName: 'supabase-api'
           }
         },
         {
