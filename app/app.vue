@@ -6,6 +6,11 @@
     </ClientOnly>
     
     <header class="border-b-2 border-om-dark dark:border-om-darkGold py-6 sticky top-0 bg-om-paper/95 dark:bg-om-darkBg/95 backdrop-blur-sm z-50" role="banner">
+      <!-- Toggle en position fixe sur mobile uniquement -->
+      <div class="md:hidden fixed top-4 right-4 z-[60]">
+        <DarkModeToggle />
+      </div>
+      
       <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
         
         <div class="text-center md:text-left">
@@ -28,7 +33,10 @@
           <NuxtLink to="/admin" class="hover:text-om-rust dark:hover:text-om-darkGold flex items-center gap-2 transition-all text-om-gold dark:text-om-darkGold whitespace-nowrap" aria-label="Accéder à l'interface d'administration">
             <Icon name="mdi:shield-account" size="18" aria-hidden="true" /> Admin
           </NuxtLink>
-          <DarkModeToggle />
+          <!-- Toggle visible uniquement sur desktop -->
+          <div class="hidden md:block">
+            <DarkModeToggle />
+          </div>
         </nav>
       </div>
     </header>
