@@ -3,22 +3,22 @@
     <!-- Section fixe (non-scrollable sur desktop uniquement) -->
     <div class="md:flex-shrink-0">
       <h1 class="sr-only">Blog IA Engineering - Articles sur l'Intelligence Artificielle par Clément Reboul</h1>
-      <section v-if="quote" class="mb-8 border-l-4 border-om-gold pl-6 py-2" aria-label="Citation d'introduction">
-        <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark">
+      <section v-if="quote" class="mb-8 border-l-4 border-om-gold dark:border-om-darkGold pl-6 py-2" aria-label="Citation d'introduction">
+        <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark dark:text-om-darkText">
           « {{ quote.text }} »
         </blockquote>
-        <cite class="font-mono text-sm text-om-rust not-italic">— {{ quote.author }}</cite>
+        <cite class="font-mono text-sm text-om-rust dark:text-om-darkGold not-italic">— {{ quote.author }}</cite>
       </section>
 
       <!-- Navigation des catégories -->
-      <section v-if="popularTags && popularTags.length > 0" class="mb-8 p-6 bg-om-paperDark border-2 border-om-sepia/30" aria-label="Catégories populaires">
+      <section v-if="popularTags && popularTags.length > 0" class="mb-8 p-6 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-sepia/30 dark:border-om-darkGold/30" aria-label="Catégories populaires">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink flex items-center gap-2">
+          <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink dark:text-om-darkText flex items-center gap-2">
             <Icon name="mdi:tag-multiple" size="16" aria-hidden="true" />
             Catégories populaires
           </h2>
           <NuxtLink to="/tags" 
-            class="font-mono text-xs uppercase text-om-sepia hover:text-om-rust transition-colors flex items-center gap-1"
+            class="font-mono text-xs uppercase text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors flex items-center gap-1"
             aria-label="Voir toutes les catégories d'articles">
             Voir tout
             <Icon name="mdi:arrow-right" size="14" aria-hidden="true" />
@@ -29,7 +29,7 @@
         </nav>
       </section>
 
-      <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink border-b-2 border-om-sepia/30 pb-2 mb-6">
+      <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink dark:text-om-darkText border-b-2 border-om-sepia/30 dark:border-om-darkGold/30 pb-2 mb-6">
         Dernières publications
       </h2>
     </div>
@@ -38,7 +38,7 @@
     <div class="md:flex-1 md:overflow-y-auto md:pr-2" role="feed" aria-label="Liste des derniers articles publiés">
       <div v-if="articles && articles.length > 0" class="space-y-8">
         <article v-for="(article, index) in articles" :key="article.id" 
-          class="group relative border-2 border-om-dark bg-om-paper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer"
+          class="group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer"
           :aria-label="`Article: ${article.title}`">
           
           <NuxtLink :to="`/blog/${article.slug}`" class="absolute inset-0 z-10" :aria-label="`Lire l'article: ${article.title}`"></NuxtLink>
@@ -52,10 +52,10 @@
               <div v-if="index === 0" class="hidden md:inline-block bg-om-rust text-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider mb-1">
                 New
               </div>
-              <time class="font-mono text-xs text-om-rust font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
+              <time class="font-mono text-xs text-om-rust dark:text-om-darkGold font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
                 {{ new Date(article.date).toLocaleDateString('fr-FR') }}
               </time>
-              <span v-if="article.reading_time" class="font-mono text-xs text-om-ink/60 flex items-center justify-end gap-1 mt-1">
+              <span v-if="article.reading_time" class="font-mono text-xs text-om-ink/60 dark:text-om-darkText/60 flex items-center justify-end gap-1 mt-1">
                 <Icon name="mdi:clock-outline" size="14" aria-hidden="true" />
                 {{ article.reading_time }} min
               </span>
@@ -67,24 +67,24 @@
             New
           </div>
 
-          <h3 class="font-serif text-xl md:text-2xl font-bold mb-3 text-om-dark group-hover:text-om-sepia transition-colors">
+          <h3 class="font-serif text-xl md:text-2xl font-bold mb-3 text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors">
             {{ article.title }}
           </h3>
           
-          <p class="font-sans text-om-ink/80 leading-relaxed line-clamp-3">
+          <p class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
             {{ article.description }}
           </p>
           
-          <div class="mt-4 text-xs font-mono text-om-sepia group-hover:text-om-rust transition-colors md:hidden">
+          <div class="mt-4 text-xs font-mono text-om-sepia dark:text-om-darkSepia group-hover:text-om-rust dark:group-hover:text-om-darkGold transition-colors md:hidden">
             Lire la suite →
           </div>
         </article>
       </div>
 
-      <div v-else class="text-center py-12 border-2 border-dashed border-om-gold/50 rounded bg-om-paperDark">
-        <Icon name="mdi:text-box-edit-outline" size="48" class="text-om-gold mb-4" />
-        <p class="font-mono text-om-dark">Aucun article trouvé.</p>
-        <p class="text-sm mt-2 text-gray-500">Connectez-vous à /admin pour créer votre premier article</p>
+      <div v-else class="text-center py-12 border-2 border-dashed border-om-gold/50 dark:border-om-darkGold/50 rounded bg-om-paperDark dark:bg-om-darkPaper">
+        <Icon name="mdi:text-box-edit-outline" size="48" class="text-om-gold dark:text-om-darkGold mb-4" />
+        <p class="font-mono text-om-dark dark:text-om-darkText">Aucun article trouvé.</p>
+        <p class="text-sm mt-2 text-gray-500 dark:text-gray-400">Connectez-vous à /admin pour créer votre premier article</p>
       </div>
     </div>
   </div>

@@ -3,8 +3,8 @@
     :to="`/tags/${slugify(tag)}`"
     :class="[
       'inline-block px-3 py-1 text-xs font-mono uppercase tracking-wider transition-all',
-      'border border-om-sepia bg-om-paperDark text-om-ink',
-      'hover:bg-om-sepia hover:text-white hover:scale-105',
+      'border border-om-sepia dark:border-om-darkGold bg-om-paperDark dark:bg-om-darkPaper text-om-ink dark:text-om-darkText',
+      'hover:bg-om-sepia dark:hover:bg-om-darkGold hover:text-white hover:scale-105',
       'shadow-sm hover:shadow-retro',
       size === 'sm' ? 'text-[10px] px-2 py-0.5' : '',
       size === 'lg' ? 'text-sm px-4 py-2' : ''

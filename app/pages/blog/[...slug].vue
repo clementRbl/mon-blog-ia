@@ -4,7 +4,7 @@
       <!-- Bouton retour -->
       <nav class="mb-6" aria-label="Fil d'ariane">
         <NuxtLink to="/" 
-          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia hover:text-om-rust transition-colors group"
+          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group"
           aria-label="Retour à la liste des articles">
           <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
           Retour au journal
@@ -12,17 +12,17 @@
       </nav>
 
       <!-- En-tête de l'article -->
-      <header class="mb-12 pb-8 border-b-2 border-om-dark">
+      <header class="mb-12 pb-8 border-b-2 border-om-dark dark:border-om-darkGold">
         <div class="flex gap-2 mb-4 flex-wrap" role="list" aria-label="Catégories de l'article">
           <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" />
         </div>
         
-        <h1 class="font-serif text-3xl md:text-5xl font-black mb-4 leading-tight text-om-dark" itemprop="headline">
+        <h1 class="font-serif text-3xl md:text-5xl font-black mb-4 leading-tight text-om-dark dark:text-om-darkText" itemprop="headline">
           {{ article.title }}
         </h1>
         
-        <div class="flex items-center gap-4 text-sm text-om-ink/70">
-          <time class="font-mono text-om-rust font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
+        <div class="flex items-center gap-4 text-sm text-om-ink/70 dark:text-om-darkText/70">
+          <time class="font-mono text-om-rust dark:text-om-darkGold font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
             {{ new Date(article.date).toLocaleDateString('fr-FR', { 
               year: 'numeric', 
               month: 'long', 
@@ -39,16 +39,16 @@
 
       <!-- Contenu de l'article -->
       <div class="prose prose-lg max-w-none
-        prose-headings:font-serif prose-headings:font-bold prose-headings:text-om-dark
+        prose-headings:font-serif prose-headings:font-bold prose-headings:text-om-dark dark:prose-headings:text-om-darkText
         prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
-        prose-p:text-om-ink/90 prose-p:leading-relaxed prose-p:font-sans
-        prose-a:text-om-sepia prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 hover:prose-a:text-om-rust
-        prose-code:bg-om-paperDark prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-om-ink
-        prose-pre:bg-om-paperDark prose-pre:border-2 prose-pre:border-om-sepia prose-pre:shadow-paper
-        prose-blockquote:border-l-4 prose-blockquote:border-om-rust prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-om-ink/80
-        prose-img:border-2 prose-img:border-om-dark prose-img:shadow-paper
-        prose-strong:text-om-dark prose-strong:font-bold
-        prose-ul:text-om-ink/90 prose-ol:text-om-ink/90 prose-li:text-om-ink/90"
+        prose-p:text-om-ink/90 dark:prose-p:text-om-darkText/90 prose-p:leading-relaxed prose-p:font-sans
+        prose-a:text-om-sepia dark:prose-a:text-om-darkSepia prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 hover:prose-a:text-om-rust dark:hover:prose-a:text-om-darkGold
+        prose-code:bg-om-paperDark dark:prose-code:bg-om-darkPaper prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-om-ink dark:prose-code:text-om-darkText
+        prose-pre:bg-om-paperDark dark:prose-pre:bg-om-darkPaper prose-pre:border-2 prose-pre:border-om-sepia dark:prose-pre:border-om-darkGold prose-pre:shadow-paper
+        prose-blockquote:border-l-4 prose-blockquote:border-om-rust dark:prose-blockquote:border-om-darkGold prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-om-ink/80 dark:prose-blockquote:text-om-darkText/80
+        prose-img:border-2 prose-img:border-om-dark dark:prose-img:border-om-darkGold prose-img:shadow-paper
+        prose-strong:text-om-dark dark:prose-strong:text-om-darkText prose-strong:font-bold
+        prose-ul:text-om-ink/90 dark:prose-ul:text-om-darkText/90 prose-ol:text-om-ink/90 dark:prose-ol:text-om-darkText/90 prose-li:text-om-ink/90 dark:prose-li:text-om-darkText/90"
         v-html="htmlContent"
         itemprop="articleBody">
       </div>
@@ -56,11 +56,11 @@
 
     <!-- Erreur 404 -->
     <div v-else class="text-center py-20">
-      <Icon name="mdi:alert-circle-outline" size="64" class="text-om-rust mb-4" />
-      <h1 class="font-serif text-3xl font-bold mb-4 text-om-dark">Article introuvable</h1>
-      <p class="text-om-ink/70 mb-8">Cet article n'existe pas ou a été supprimé.</p>
+      <Icon name="mdi:alert-circle-outline" size="64" class="text-om-rust dark:text-om-darkGold mb-4" />
+      <h1 class="font-serif text-3xl font-bold mb-4 text-om-dark dark:text-om-darkText">Article introuvable</h1>
+      <p class="text-om-ink/70 dark:text-om-darkText/70 mb-8">Cet article n'existe pas ou a été supprimé.</p>
       <NuxtLink to="/" 
-        class="inline-block px-6 py-3 bg-om-gold text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia transition-colors shadow-retro hover:shadow-retro-hover">
+        class="inline-block px-6 py-3 bg-om-gold dark:bg-om-darkGold text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia dark:hover:bg-om-darkSepia transition-colors shadow-retro hover:shadow-retro-hover">
         Retour à l'accueil
       </NuxtLink>
     </div>

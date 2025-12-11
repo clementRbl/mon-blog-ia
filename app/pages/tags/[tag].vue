@@ -3,33 +3,33 @@
     <!-- Bouton retour -->
     <div class="mb-6">
       <NuxtLink to="/" 
-        class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia hover:text-om-rust transition-colors group">
+        class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group">
         <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" />
         Retour au journal
       </NuxtLink>
     </div>
 
     <!-- En-tête de la catégorie -->
-    <header class="mb-12 pb-8 border-b-2 border-om-sepia/30">
+    <header class="mb-12 pb-8 border-b-2 border-om-sepia/30 dark:border-om-darkGold/30">
       <div class="flex items-center gap-3 mb-4">
-        <Icon name="mdi:tag" size="32" class="text-om-rust" />
-        <h1 class="font-serif text-4xl md:text-5xl font-black text-om-dark capitalize">
+        <Icon name="mdi:tag" size="32" class="text-om-rust dark:text-om-darkGold" />
+        <h1 class="font-serif text-4xl md:text-5xl font-black text-om-dark dark:text-om-darkText capitalize">
           {{ normalizedTag }}
         </h1>
       </div>
       
-      <p class="text-om-ink/70 font-sans text-lg">
+      <p class="text-om-ink/70 dark:text-om-darkText/70 font-sans text-lg">
         {{ articlesCount }} {{ articlesCount > 1 ? 'articles' : 'article' }} dans cette catégorie
       </p>
       
       <!-- Fil d'Ariane (Breadcrumbs) pour le SEO -->
       <nav class="mt-4 text-sm font-mono">
-        <ol class="flex items-center gap-2 text-om-ink/60">
-          <li><NuxtLink to="/" class="hover:text-om-sepia">Accueil</NuxtLink></li>
+        <ol class="flex items-center gap-2 text-om-ink/60 dark:text-om-darkText/60">
+          <li><NuxtLink to="/" class="hover:text-om-sepia dark:hover:text-om-darkSepia">Accueil</NuxtLink></li>
           <li>/</li>
-          <li><NuxtLink to="/tags" class="hover:text-om-sepia">Tags</NuxtLink></li>
+          <li><NuxtLink to="/tags" class="hover:text-om-sepia dark:hover:text-om-darkSepia">Tags</NuxtLink></li>
           <li>/</li>
-          <li class="text-om-dark font-bold capitalize">{{ normalizedTag }}</li>
+          <li class="text-om-dark dark:text-om-darkText font-bold capitalize">{{ normalizedTag }}</li>
         </ol>
       </nav>
     </header>
@@ -37,7 +37,7 @@
     <!-- Liste des articles -->
     <div v-if="filteredArticles && filteredArticles.length > 0" class="space-y-8">
       <article v-for="article in filteredArticles" :key="article.id" 
-        class="group relative border-2 border-om-dark bg-om-paper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer">
+        class="group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer">
         
         <NuxtLink :to="`/blog/${article.slug}`" class="absolute inset-0 z-10" />
 
@@ -45,7 +45,7 @@
           <div class="flex gap-2 flex-wrap">
             <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" size="sm" />
           </div>
-          <time class="font-mono text-xs text-om-rust font-bold whitespace-nowrap">
+          <time class="font-mono text-xs text-om-rust dark:text-om-darkGold font-bold whitespace-nowrap">
             {{ new Date(article.date).toLocaleDateString('fr-FR', { 
               year: 'numeric', 
               month: 'short', 
@@ -54,32 +54,32 @@
           </time>
         </div>
 
-        <h2 class="font-serif text-2xl font-bold mb-3 text-om-dark group-hover:text-om-sepia transition-colors">
+        <h2 class="font-serif text-2xl font-bold mb-3 text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors">
           {{ article.title }}
         </h2>
         
-        <p class="font-sans text-om-ink/80 leading-relaxed line-clamp-3">
+        <p class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
           {{ article.description }}
         </p>
       </article>
     </div>
 
     <!-- Aucun article trouvé -->
-    <div v-else class="text-center py-20 border-2 border-dashed border-om-rust/30 bg-om-paperDark">
-      <Icon name="mdi:alert-circle-outline" size="64" class="text-om-rust mb-4" />
-      <h2 class="font-serif text-2xl font-bold mb-4 text-om-dark">Aucun article trouvé</h2>
-      <p class="text-om-ink/70 mb-8">
+    <div v-else class="text-center py-20 border-2 border-dashed border-om-rust/30 dark:border-om-darkGold/30 bg-om-paperDark dark:bg-om-darkPaper">
+      <Icon name="mdi:alert-circle-outline" size="64" class="text-om-rust dark:text-om-darkGold mb-4" />
+      <h2 class="font-serif text-2xl font-bold mb-4 text-om-dark dark:text-om-darkText">Aucun article trouvé</h2>
+      <p class="text-om-ink/70 dark:text-om-darkText/70 mb-8">
         Aucun article n'a été trouvé pour le tag "{{ normalizedTag }}"
       </p>
       <NuxtLink to="/tags" 
-        class="inline-block px-6 py-3 bg-om-gold text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia transition-colors shadow-retro hover:shadow-retro-hover">
+        class="inline-block px-6 py-3 bg-om-gold dark:bg-om-darkGold text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia dark:hover:bg-om-darkSepia transition-colors shadow-retro hover:shadow-retro-hover">
         Voir tous les tags
       </NuxtLink>
     </div>
 
     <!-- Navigation vers autres tags -->
-    <div v-if="otherTags.length > 0" class="mt-16 pt-8 border-t-2 border-om-sepia/30">
-      <h3 class="font-mono uppercase text-xs tracking-widest text-om-ink mb-4">
+    <div v-if="otherTags.length > 0" class="mt-16 pt-8 border-t-2 border-om-sepia/30 dark:border-om-darkGold/30">
+      <h3 class="font-mono uppercase text-xs tracking-widest text-om-ink dark:text-om-darkText mb-4">
         Autres catégories
       </h3>
       <div class="flex flex-wrap gap-3">

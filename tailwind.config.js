@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [], 
   theme: {
     extend: {
@@ -13,6 +14,12 @@ export default {
           paperDark: '#F2efe6', // Beige papier ancien
           rust: '#A0522D',      // Rouille pour les détails
           ink: '#3D3026',       // Encre brune
+          // Palette Mode Sombre
+          darkBg: '#1A1612',    // Fond sombre principal
+          darkPaper: '#252018', // Fond sombre papier
+          darkText: '#E5DFD4',  // Texte clair
+          darkGold: '#D4B574',  // Or lumineux pour le mode sombre
+          darkSepia: '#B89968', // Sépia clair
         }
       },
       fontFamily: {

@@ -3,22 +3,22 @@
     <!-- Bouton retour -->
     <div class="mb-6">
       <NuxtLink to="/" 
-        class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia hover:text-om-rust transition-colors group">
+        class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group">
         <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" />
         Retour au journal
       </NuxtLink>
     </div>
 
     <!-- En-tête -->
-    <header class="mb-12 pb-8 border-b-2 border-om-sepia/30">
+    <header class="mb-12 pb-8 border-b-2 border-om-sepia/30 dark:border-om-darkGold/30">
       <div class="flex items-center gap-3 mb-4">
-        <Icon name="mdi:tag-multiple" size="40" class="text-om-rust" />
-        <h1 class="font-serif text-4xl md:text-5xl font-black text-om-dark">
+        <Icon name="mdi:tag-multiple" size="40" class="text-om-rust dark:text-om-darkGold" />
+        <h1 class="font-serif text-4xl md:text-5xl font-black text-om-dark dark:text-om-darkText">
           Catégories
         </h1>
       </div>
       
-      <p class="text-om-ink/70 font-sans text-lg">
+      <p class="text-om-ink/70 dark:text-om-darkText/70 font-sans text-lg">
         Explorez {{ tagsWithCount.length }} catégories et {{ totalArticles }} articles
       </p>
     </header>
@@ -29,25 +29,25 @@
         v-for="{ tag, count, slug } in tagsWithCount" 
         :key="slug"
         :to="`/tags/${slug}`"
-        class="group relative border-2 border-om-dark bg-om-paper p-6 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro">
+        class="group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper p-6 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro">
         
         <div class="flex items-start justify-between mb-3">
-          <h2 class="font-serif text-2xl font-bold text-om-dark group-hover:text-om-sepia transition-colors capitalize">
+          <h2 class="font-serif text-2xl font-bold text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors capitalize">
             {{ tag }}
           </h2>
-          <Icon name="mdi:arrow-right" size="24" class="text-om-rust group-hover:translate-x-1 transition-transform" />
+          <Icon name="mdi:arrow-right" size="24" class="text-om-rust dark:text-om-darkGold group-hover:translate-x-1 transition-transform" />
         </div>
         
-        <p class="font-mono text-sm text-om-ink/70">
+        <p class="font-mono text-sm text-om-ink/70 dark:text-om-darkText/70">
           {{ count }} {{ count > 1 ? 'articles' : 'article' }}
         </p>
       </NuxtLink>
     </div>
 
     <!-- Aucun tag -->
-    <div v-else class="text-center py-20 border-2 border-dashed border-om-rust/30 bg-om-paperDark">
-      <Icon name="mdi:tag-off" size="64" class="text-om-rust mb-4" />
-      <p class="text-om-ink/70">Aucune catégorie disponible pour le moment.</p>
+    <div v-else class="text-center py-20 border-2 border-dashed border-om-rust/30 dark:border-om-darkGold/30 bg-om-paperDark dark:bg-om-darkPaper">
+      <Icon name="mdi:tag-off" size="64" class="text-om-rust dark:text-om-darkGold mb-4" />
+      <p class="text-om-ink/70 dark:text-om-darkText/70">Aucune catégorie disponible pour le moment.</p>
     </div>
   </div>
 </template>
