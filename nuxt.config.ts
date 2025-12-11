@@ -25,7 +25,8 @@ export default defineNuxtConfig({
     url: 'https://clementRbl.github.io',
     name: 'Blog IA Engineering - Clément Reboul',
     description: 'Blog personnel sur l\'intelligence artificielle et le machine learning',
-    defaultLocale: 'fr'
+    defaultLocale: 'fr',
+    trailingSlash: false
   },
 
   ogImage: {
@@ -41,9 +42,12 @@ export default defineNuxtConfig({
   sitemap: {
     enabled: true,
     strictNuxtContentPaths: true,
+    xsl: false,
+    credits: false,
     sources: [
-      '/api/__sitemap__/urls' // On va créer un endpoint qui retourne les URLs
-    ]
+      '/api/__sitemap__/urls'
+    ],
+    excludeAppSources: true // Exclure les routes automatiques de Nuxt
   },
 
   robots: {
