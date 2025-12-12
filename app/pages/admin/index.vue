@@ -97,6 +97,13 @@
 
             <!-- Actions -->
             <div class="flex sm:flex-col gap-2 w-full sm:w-auto">
+              <button
+                @click="previewArticle(article)"
+                class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-om-rust text-white font-mono text-xs sm:text-sm uppercase hover:bg-om-sepia transition-colors text-center whitespace-nowrap inline-flex items-center justify-center gap-1"
+              >
+                <Icon name="mdi:eye" size="16" />
+                Voir
+              </button>
               <NuxtLink
                 :to="`/admin/articles/${article.id}`"
                 class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-om-sepia text-white font-mono text-xs sm:text-sm uppercase hover:bg-om-rust transition-colors text-center whitespace-nowrap"
@@ -127,6 +134,13 @@
       </div>
     </div>
     </div>
+
+    <!-- Modal de prévisualisation -->
+    <ArticlePreviewModal
+      :is-open="showPreview"
+      :article="previewArticleData"
+      @close="closePreview"
+    />
   </div>
 </template>
 
@@ -143,6 +157,19 @@ const user = ref<any>(null)
 const articles = ref<any[]>([])
 const loading = ref(true)
 const initialLoading = ref(true)
+
+// Modal de prévisualisation
+const showPreview = ref(false)
+const previewArticleData = ref<any>(null)
+
+const previewArticle = (article: any) => {
+  previewArticleData.value = article
+  showPreview.value = true
+}
+
+const closePreview = () => {
+  showPreview.value = false
+}
 
 // Charger les données au montage
 onMounted(async () => {

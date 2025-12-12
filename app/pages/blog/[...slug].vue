@@ -3,6 +3,24 @@
     <!-- Boutons de scroll -->
     <ScrollButtons />
     
+    <!-- Bandeau de prévisualisation -->
+    <div v-if="isPreview" class="bg-om-rust dark:bg-om-darkGold text-white py-3 px-4 border-b-4 border-om-dark dark:border-om-darkText sticky top-0 z-50">
+      <div class="max-w-3xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <Icon name="mdi:eye" size="24" />
+          <span class="font-mono text-sm uppercase tracking-wider">
+            Mode prévisualisation{{ !article?.published ? ' - Article non publié' : '' }}
+          </span>
+        </div>
+        <button
+          @click="$router.back()"
+          class="px-4 py-2 bg-white text-om-dark font-mono text-xs uppercase tracking-wider hover:bg-om-paper transition-colors"
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
+    
     <article v-if="article" class="max-w-3xl mx-auto" itemscope itemtype="https://schema.org/BlogPosting">
       <!-- Bouton retour -->
       <nav class="mb-6" aria-label="Fil d'ariane">
@@ -85,12 +103,23 @@ const route = useRoute()
 const { articles: articlesAPI } = useSupabase()
 const slug = Array.isArray(route.params.slug) ? route.params.slug.join('/') : route.params.slug
 
+// Vérifier si on est en mode prévisualisation
+const isPreview = computed(() => route.query.preview === 'true')
+
 // Récupérer l'article depuis Supabase
 const article = ref(null)
 try {
-  const { data, error } = await articlesAPI.getBySlug(slug)
-  if (error) throw error
-  article.value = data
+  if (isPreview.value) {
+    // En mode preview, récupérer tous les articles (même non publiés)
+    const { data, error } = await articlesAPI.getAll()
+    if (error) throw error
+    article.value = data?.find(a => a.slug === slug)
+  } else {
+    // En mode normal, uniquement les articles publiés
+    const { data, error } = await articlesAPI.getBySlug(slug)
+    if (error) throw error
+    article.value = data
+  }
 } catch (error) {
   console.error('Erreur lors du chargement de l\'article:', error)
 }

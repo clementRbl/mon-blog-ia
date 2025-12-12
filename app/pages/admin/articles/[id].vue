@@ -188,6 +188,15 @@ Paragraphe avec **gras** et *italique*."
           >
             {{ loading ? 'Enregistrement...' : (isNew ? 'Créer l\'article' : 'Mettre à jour') }}
           </button>
+          <button
+            v-if="!isNew"
+            type="button"
+            @click="previewArticle"
+            class="px-6 py-3 bg-om-rust text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia transition-colors shadow-retro hover:shadow-retro-hover flex items-center justify-center gap-2"
+          >
+            <Icon name="mdi:eye" size="20" />
+            Prévisualiser
+          </button>
           <NuxtLink
             to="/admin"
             class="px-6 py-3 bg-gray-300 text-om-dark font-mono uppercase text-sm tracking-wider hover:bg-gray-400 transition-colors text-center flex items-center justify-center"
@@ -198,6 +207,13 @@ Paragraphe avec **gras** et *italique*."
       </form>
     </div>
     </div>
+
+    <!-- Modal de prévisualisation -->
+    <ArticlePreviewModal
+      :is-open="showPreview"
+      :article="previewData"
+      @close="closePreview"
+    />
   </div>
 </template>
 
@@ -378,6 +394,22 @@ const sendPushNotification = async (article: any) => {
 
 // Garder l'état initial de publication pour détecter les changements
 const originalPublishedState = ref(false)
+
+// Modal de prévisualisation
+const showPreview = ref(false)
+const previewData = computed(() => ({
+  ...form.value,
+  tags: selectedTags.value,
+  id: articleId.value
+}))
+
+const previewArticle = () => {
+  showPreview.value = true
+}
+
+const closePreview = () => {
+  showPreview.value = false
+}
 
 // Générer automatiquement le slug à partir du titre
 watch(() => form.value.title, (newTitle) => {
