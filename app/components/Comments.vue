@@ -1,5 +1,5 @@
 <template>
-  <section class="mt-16 pt-8 border-t-2 border-om-sepia/30 dark:border-om-darkGold/30">
+  <section class="mt-16 pt-8">
     <!-- En-tête -->
     <div class="flex items-center justify-between mb-8">
       <h2 class="font-serif text-2xl md:text-3xl font-bold text-om-dark dark:text-om-darkText flex items-center gap-3">

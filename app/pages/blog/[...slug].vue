@@ -56,6 +56,9 @@
         itemprop="articleBody">
       </div>
 
+      <!-- Boutons de partage -->
+      <ShareButtons :title="article.title" :url="articleUrl" class="my-8" />
+
       <!-- Section commentaires -->
       <ClientOnly>
         <Comments v-if="article" :article-id="article.id" />
