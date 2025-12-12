@@ -75,16 +75,14 @@ const { articles: articlesAPI } = useSupabase()
 const slug = Array.isArray(route.params.slug) ? route.params.slug.join('/') : route.params.slug
 
 // Récupérer l'article depuis Supabase
-const { data: article } = await useAsyncData(`blog-${slug}`, async () => {
-  try {
-    const { data, error } = await articlesAPI.getBySlug(slug)
-    if (error) throw error
-    return data
-  } catch (error) {
-    console.error('Erreur lors du chargement de l\'article:', error)
-    return null
-  }
-})
+const article = ref(null)
+try {
+  const { data, error } = await articlesAPI.getBySlug(slug)
+  if (error) throw error
+  article.value = data
+} catch (error) {
+  console.error('Erreur lors du chargement de l\'article:', error)
+}
 
 // Parser le Markdown en HTML
 const htmlContent = computed(() => {

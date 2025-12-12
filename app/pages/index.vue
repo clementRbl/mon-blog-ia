@@ -3,12 +3,14 @@
     <!-- Section fixe (non-scrollable sur desktop uniquement) -->
     <div class="md:flex-shrink-0">
       <h1 class="sr-only">Blog IA Engineering - Articles sur l'Intelligence Artificielle par Clément Reboul</h1>
-      <section v-if="quote" class="mb-8 border-l-4 border-om-gold dark:border-om-darkGold pl-6 py-2" aria-label="Citation d'introduction">
-        <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark dark:text-om-darkText">
-          « {{ quote.text }} »
-        </blockquote>
-        <cite class="font-mono text-sm text-om-rust dark:text-om-darkGold not-italic">— {{ quote.author }}</cite>
-      </section>
+      <ClientOnly>
+        <section v-if="quote" class="mb-8 border-l-4 border-om-gold dark:border-om-darkGold pl-6 py-2" aria-label="Citation d'introduction">
+          <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark dark:text-om-darkText">
+            « {{ quote.text }} »
+          </blockquote>
+          <cite class="font-mono text-sm text-om-rust dark:text-om-darkGold not-italic">— {{ quote.author }}</cite>
+        </section>
+      </ClientOnly>
 
       <!-- Navigation des catégories -->
       <section v-if="popularTags && popularTags.length > 0" class="mb-8 p-6 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-sepia/30 dark:border-om-darkGold/30" aria-label="Catégories populaires">
@@ -93,59 +95,27 @@
 <script setup lang="ts">
 const { articles: articlesAPI, quotes: quotesAPI } = useSupabase()
 
-// Récupération d'une citation aléatoire (filtrée pour mobile)
-const { data: quote } = await useAsyncData('random-quote', async () => {
+// Récupération d'une citation aléatoire (client-only pour éviter hydration mismatch)
+const quote = ref(null)
+if (process.client) {
   try {
-    // Toujours utiliser getRandom() pour éviter les problèmes sur différents devices
-    return await quotesAPI.getRandom()
+    quote.value = await quotesAPI.getRandom()
   } catch (e) {
     console.warn('Erreur lors du chargement de la citation:', e)
-    return null
   }
-})
+}
 
 // Récupération des articles depuis Supabase
-const { data: articles, refresh: refreshArticles } = await useAsyncData('blog', async () => {
-  try {
-    const { data, error } = await articlesAPI.getPublished()
-    if (error) {
-      console.error('Erreur lors du chargement des articles:', error)
-      return []
-    }
-    return data || []
-  } catch (e) {
-    // En cas d'erreur (ex: prerender sans Supabase), retourner tableau vide
-    console.warn('Supabase non disponible, mode dégradé:', e)
-    return []
+const articles = ref([])
+try {
+  const { data, error } = await articlesAPI.getPublished()
+  if (error) {
+    console.error('Erreur lors du chargement des articles:', error)
+  } else {
+    articles.value = data || []
   }
-})
-
-// Rafraîchir automatiquement quand la page redevient visible
-if (process.client) {
-  // Vider le cache au chargement de la page (pour les hard refresh)
-  const clearCacheAndRefresh = async () => {
-    if ('caches' in window) {
-      const cacheNames = await caches.keys()
-      for (const name of cacheNames) {
-        if (name.includes('blog-home') || name.includes('supabase')) {
-          await caches.delete(name)
-        }
-      }
-    }
-    refreshArticles()
-  }
-  
-  // Au chargement de la page
-  onMounted(() => {
-    clearCacheAndRefresh()
-  })
-  
-  // Au changement d'onglet
-  document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible') {
-      clearCacheAndRefresh()
-    }
-  })
+} catch (e) {
+  console.warn('Supabase non disponible, mode dégradé:', e)
 }
 
 // Calculer les tags les plus populaires

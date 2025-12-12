@@ -66,14 +66,17 @@ const slugify = (text: string) => {
 }
 
 // Récupérer tous les articles depuis Supabase
-const { data: allArticles } = await useAsyncData('all-blog-articles-tags', async () => {
+const allArticles = ref([])
+try {
   const { data, error } = await articlesAPI.getPublished()
   if (error) {
     console.error('Erreur lors du chargement des articles:', error)
-    return []
+  } else {
+    allArticles.value = data || []
   }
-  return data || []
-})
+} catch (e) {
+  console.error('Erreur lors du chargement des articles:', e)
+}
 
 // Calculer les tags avec leur nombre d'articles
 const tagsWithCount = computed(() => {

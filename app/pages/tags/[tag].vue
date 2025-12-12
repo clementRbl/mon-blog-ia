@@ -111,14 +111,17 @@ const slugify = (text: string) => {
 }
 
 // Récupérer tous les articles depuis Supabase
-const { data: allArticles } = await useAsyncData('all-blog-articles', async () => {
+const allArticles = ref([])
+try {
   const { data, error } = await articlesAPI.getPublished()
   if (error) {
     console.error('Erreur lors du chargement des articles:', error)
-    return []
+  } else {
+    allArticles.value = data || []
   }
-  return data || []
-})
+} catch (e) {
+  console.error('Erreur lors du chargement des articles:', e)
+}
 
 // Filtrer les articles par tag
 const filteredArticles = computed(() => {
