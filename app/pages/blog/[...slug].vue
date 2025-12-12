@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- Boutons de scroll -->
+    <ScrollButtons />
+    
     <article v-if="article" class="max-w-3xl mx-auto" itemscope itemtype="https://schema.org/BlogPosting">
       <!-- Bouton retour -->
       <nav class="mb-6" aria-label="Fil d'ariane">
