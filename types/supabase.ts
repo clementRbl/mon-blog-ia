@@ -47,6 +47,32 @@ export interface Database {
           updated_at?: string
         }
       }
+      comments: {
+        Row: {
+          id: string
+          article_id: string
+          author_name: string | null
+          content: string
+          approved: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          article_id: string
+          author_name?: string | null
+          content: string
+          approved?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          article_id?: string
+          author_name?: string | null
+          content?: string
+          approved?: boolean
+          created_at?: string
+        }
+      }
     }
   }
 }

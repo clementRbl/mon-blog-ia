@@ -52,6 +52,11 @@
         v-html="htmlContent"
         itemprop="articleBody">
       </div>
+
+      <!-- Section commentaires -->
+      <ClientOnly>
+        <Comments v-if="article" :article-id="article.id" />
+      </ClientOnly>
     </article>
 
     <!-- Erreur 404 -->

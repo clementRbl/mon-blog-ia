@@ -28,15 +28,24 @@
 
     <div class="max-w-7xl mx-auto px-4 py-8">
       <!-- Actions -->
-      <div class="mb-8 flex justify-between items-center">
+      <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 class="font-serif text-3xl font-bold text-om-dark">Mes articles</h2>
-        <NuxtLink
-          to="/admin/articles/new"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-om-gold text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia transition-colors shadow-retro hover:shadow-retro-hover"
-        >
-          <Icon name="mdi:plus" size="20" />
-          Nouvel article
-        </NuxtLink>
+        <div class="flex gap-3 flex-wrap">
+          <NuxtLink
+            to="/admin/comments"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-om-rust text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia transition-colors shadow-retro hover:shadow-retro-hover"
+          >
+            <Icon name="mdi:comment-text" size="20" />
+            Commentaires
+          </NuxtLink>
+          <NuxtLink
+            to="/admin/articles/new"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-om-gold text-white font-mono uppercase text-sm tracking-wider hover:bg-om-sepia transition-colors shadow-retro hover:shadow-retro-hover"
+          >
+            <Icon name="mdi:plus" size="20" />
+            Nouvel article
+          </NuxtLink>
+        </div>
       </div>
 
       <!-- Loading -->

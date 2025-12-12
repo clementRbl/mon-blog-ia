@@ -58,19 +58,24 @@ export const usePushNotifications = () => {
         applicationServerKey: urlBase64ToUint8Array(config.public.vapidPublicKey)
       })
       
-      // Sauvegarder la subscription dans Supabase
+      // Sauvegarder la subscription via l'endpoint sécurisé
+      // L'email sera automatiquement récupéré côté serveur depuis la session auth
       const subscriptionData = subscription.toJSON()
       
-      const { error } = await supabase
-        .from('push_subscriptions')
-        .insert({
+      const response = await $fetch('/api/push-subscribe', {
+        method: 'POST',
+        body: {
           endpoint: subscriptionData.endpoint,
           p256dh: subscriptionData.keys?.p256dh || '',
           auth: subscriptionData.keys?.auth || ''
-        })
+        },
+        headers: {
+          authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+        }
+      })
       
-      if (error && error.code !== '23505') { // Ignorer les doublons
-        throw error
+      if (!response.success) {
+        throw new Error('Erreur sauvegarde subscription')
       }
       
       return subscription

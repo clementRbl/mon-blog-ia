@@ -113,6 +113,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     vapidPrivateKey: '', // Clé privée VAPID (serveur uniquement)
     adminKey: '', // Clé secrète pour l'API d'envoi de notifications (serveur uniquement)
+    adminEmail: '', // Email admin pour les notifications (serveur uniquement)
+    supabaseServiceRoleKey: '', // Service role key Supabase (serveur uniquement)
     public: {
       siteUrl: 'https://clementRbl.github.io/mon-blog-ia',
       siteName: 'Clément Reboul',
