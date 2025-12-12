@@ -23,21 +23,26 @@
           </NuxtLink>
         </div>
 
-        <nav class="flex flex-wrap justify-center gap-4 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
-          <NuxtLink to="/" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Voir tous les articles du journal">
-            <Icon name="mdi:newspaper" size="18" aria-hidden="true" /> Journal
-          </NuxtLink>
-          <NuxtLink to="/tags" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Explorer les catégories d'articles">
-            <Icon name="mdi:tag-multiple" size="18" aria-hidden="true" /> Catégories
-          </NuxtLink>
-          <NuxtLink to="/admin" class="hover:text-om-rust dark:hover:text-om-darkGold flex items-center gap-2 transition-all text-om-gold dark:text-om-darkGold whitespace-nowrap" aria-label="Accéder à l'interface d'administration">
-            <Icon name="mdi:shield-account" size="18" aria-hidden="true" /> Admin
-          </NuxtLink>
-          <!-- Toggle visible uniquement sur desktop -->
-          <div class="hidden md:block">
-            <DarkModeToggle />
-          </div>
-        </nav>
+        <div class="flex items-center gap-4">
+          <nav class="flex flex-wrap justify-center gap-4 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
+            <NuxtLink to="/" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Voir tous les articles du journal">
+              <Icon name="mdi:newspaper" size="18" aria-hidden="true" /> Journal
+            </NuxtLink>
+            <NuxtLink to="/tags" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Explorer les catégories d'articles">
+              <Icon name="mdi:tag-multiple" size="18" aria-hidden="true" /> Catégories
+            </NuxtLink>
+            <NuxtLink to="/admin" class="hover:text-om-rust dark:hover:text-om-darkGold flex items-center gap-2 transition-all text-om-gold dark:text-om-darkGold whitespace-nowrap" aria-label="Accéder à l'interface d'administration">
+              <Icon name="mdi:shield-account" size="18" aria-hidden="true" /> Admin
+            </NuxtLink>
+            <!-- Toggle visible uniquement sur desktop -->
+            <div class="hidden md:block">
+              <DarkModeToggle />
+            </div>
+          </nav>
+          
+          <!-- Barre de recherche -->
+          <SearchBar :articles="allArticles" />
+        </div>
       </div>
     </header>
 
@@ -70,6 +75,19 @@
 </template>
 
 <script setup>
+const { articles: articlesAPI } = useSupabase()
+
+// Charger tous les articles pour la recherche
+const allArticles = ref([])
+if (process.client) {
+  try {
+    const { data } = await articlesAPI.getPublished()
+    allArticles.value = data || []
+  } catch (e) {
+    console.warn('Erreur chargement articles pour recherche:', e)
+  }
+}
+
 // Gestion globale des erreurs pour iOS
 if (process.client) {
   window.addEventListener('error', (event) => {
