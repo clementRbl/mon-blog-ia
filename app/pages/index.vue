@@ -130,7 +130,7 @@ const hasMoreArticles = ref(false)
 const isMobile = ref(false)
 const isHydrated = ref(false) // Flag pour éviter l'erreur d'hydratation
 
-const MOBILE_PAGE_SIZE = 5
+const MOBILE_PAGE_SIZE = 3
 
 try {
   const { data, error } = await articlesAPI.getPublished()
