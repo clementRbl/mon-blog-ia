@@ -81,6 +81,23 @@
             Lire la suite →
           </div>
         </article>
+
+        <!-- Trigger pour charger plus (mobile uniquement) -->
+        <ClientOnly>
+          <div v-if="hasMoreArticles && isHydrated" ref="loadMoreTrigger" class="md:hidden py-8 text-center">
+            <div v-if="isLoadingMore" class="flex flex-col items-center gap-3">
+              <Icon name="mdi:loading" size="32" class="text-om-rust dark:text-om-darkGold animate-spin" />
+              <p class="font-mono text-xs text-om-ink/60 dark:text-om-darkText/60">Chargement...</p>
+            </div>
+          </div>
+
+          <!-- Indicateur fin de liste (mobile uniquement) -->
+          <div v-if="!hasMoreArticles && isMobile && isHydrated && allArticles.length > MOBILE_PAGE_SIZE" class="md:hidden py-8 text-center border-t-2 border-om-sepia/20 dark:border-om-darkGold/20">
+            <p class="font-mono text-xs text-om-ink/60 dark:text-om-darkText/60">
+              ✨ Vous avez tout lu !
+            </p>
+          </div>
+        </ClientOnly>
       </div>
 
       <div v-else class="text-center py-12 border-2 border-dashed border-om-gold/50 dark:border-om-darkGold/50 rounded bg-om-paperDark dark:bg-om-darkPaper">
@@ -105,26 +122,115 @@ if (process.client) {
   }
 }
 
-// Récupération des articles depuis Supabase
-const articles = ref([])
+// Récupération des articles depuis Supabase avec pagination pour mobile
+const allArticles = ref([]) // Tous les articles
+const displayedArticles = ref([]) // Articles affichés (pagination mobile)
+const isLoadingMore = ref(false)
+const hasMoreArticles = ref(false)
+const isMobile = ref(false)
+const isHydrated = ref(false) // Flag pour éviter l'erreur d'hydratation
+
+const MOBILE_PAGE_SIZE = 5
+
 try {
   const { data, error } = await articlesAPI.getPublished()
   if (error) {
     console.error('Erreur lors du chargement des articles:', error)
   } else {
-    articles.value = data || []
+    allArticles.value = data || []
+    // Au chargement initial (SSR + première hydratation) : afficher TOUS les articles
+    displayedArticles.value = allArticles.value
   }
 } catch (e) {
   console.warn('Supabase non disponible, mode dégradé:', e)
 }
 
-// Calculer les tags les plus populaires
+// Fonction pour charger plus d'articles (mobile uniquement)
+const loadMoreArticles = () => {
+  if (!isMobile.value || isLoadingMore.value || !hasMoreArticles.value) return
+  
+  isLoadingMore.value = true
+  
+  // Délai pour UX fluide et visible
+  setTimeout(() => {
+    const currentLength = displayedArticles.value.length
+    const nextBatch = allArticles.value.slice(currentLength, currentLength + MOBILE_PAGE_SIZE)
+    
+    displayedArticles.value = [...displayedArticles.value, ...nextBatch]
+    hasMoreArticles.value = displayedArticles.value.length < allArticles.value.length
+    isLoadingMore.value = false
+  }, 600)
+}
+
+// Observer pour détecter le scroll en bas (mobile uniquement)
+const loadMoreTrigger = ref<HTMLElement | null>(null)
+
+// Configuration après hydratation pour éviter mismatch
+onMounted(() => {
+  if (!process.client) return
+  
+  isHydrated.value = true
+  isMobile.value = window.innerWidth < 768
+  
+  // Si mobile, réduire à MOBILE_PAGE_SIZE articles
+  if (isMobile.value && allArticles.value.length > MOBILE_PAGE_SIZE) {
+    displayedArticles.value = allArticles.value.slice(0, MOBILE_PAGE_SIZE)
+    hasMoreArticles.value = true
+  }
+  
+  // Listener pour resize
+  const handleResize = () => {
+    const wasMobile = isMobile.value
+    isMobile.value = window.innerWidth < 768
+    
+    // Si on passe de desktop à mobile, réinitialiser la pagination
+    if (!wasMobile && isMobile.value && allArticles.value.length > MOBILE_PAGE_SIZE) {
+      displayedArticles.value = allArticles.value.slice(0, MOBILE_PAGE_SIZE)
+      hasMoreArticles.value = true
+    }
+    // Si on passe de mobile à desktop, afficher tous les articles
+    else if (wasMobile && !isMobile.value) {
+      displayedArticles.value = allArticles.value
+      hasMoreArticles.value = false
+    }
+  }
+  
+  window.addEventListener('resize', handleResize)
+  
+  // Setup IntersectionObserver
+  if (isMobile.value && hasMoreArticles.value) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoadingMore.value && hasMoreArticles.value) {
+          loadMoreArticles()
+        }
+      },
+      { threshold: 0.1 }
+    )
+    
+    nextTick(() => {
+      if (loadMoreTrigger.value) {
+        observer.observe(loadMoreTrigger.value)
+      }
+    })
+    
+    onBeforeUnmount(() => {
+      observer.disconnect()
+      window.removeEventListener('resize', handleResize)
+    })
+  }
+})
+
+// Utiliser displayedArticles au lieu de articles pour l'affichage
+const articles = computed(() => displayedArticles.value)
+
+// Calculer les tags les plus populaires (basé sur TOUS les articles)
 const popularTags = computed(() => {
-  if (!articles.value || articles.value.length === 0) return []
+  if (!allArticles.value || allArticles.value.length === 0) return []
   
   const tagMap = new Map<string, number>()
   
-  articles.value.forEach(article => {
+  allArticles.value.forEach(article => {
     if (article.tags && Array.isArray(article.tags)) {
       article.tags.forEach((tag: string) => {
         tagMap.set(tag, (tagMap.get(tag) || 0) + 1)
@@ -138,9 +244,9 @@ const popularTags = computed(() => {
     .map(([tag]) => tag)
 })
 
-// SEO pour la page d'accueil
+// SEO pour la page d'accueil (basé sur TOUS les articles)
 const siteUrl = 'https://clementRbl.github.io/mon-blog-ia'
-const articlesCount = computed(() => articles.value?.length || 0)
+const articlesCount = computed(() => allArticles.value?.length || 0)
 
 useHead({
   title: 'Blog IA Engineering - Clément Reboul | Articles & Ressources sur l\'Intelligence Artificielle',
@@ -184,7 +290,7 @@ useSchemaOrg([
     },
     inLanguage: 'fr-FR',
     keywords: 'IA, Intelligence Artificielle, Machine Learning, Deep Learning, Blog Tech',
-    blogPost: articles.value?.slice(0, 5).map(article => ({
+    blogPost: allArticles.value?.slice(0, 5).map(article => ({
       '@type': 'BlogPosting',
       headline: article.title,
       description: article.description,
