@@ -66,7 +66,7 @@ const {
   onRegisteredSW(swUrl, registration) {
     console.log('✅ Service Worker enregistré:', swUrl)
     
-    // Vérifier les mises à jour toutes les heures
+    // Vérifier les mises à jour toutes les 6 heures
     // Compatible iOS, Android et Desktop
     if (registration) {
       setInterval(() => {
@@ -74,7 +74,7 @@ const {
         registration.update().catch(err => {
           console.warn('Erreur vérification mise à jour:', err)
         })
-      }, 60 * 60 * 1000) // 1 heure
+      }, 6 * 60 * 60 * 1000) // 6 heures
     }
   },
   onRegisterError(error) {
