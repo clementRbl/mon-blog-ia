@@ -376,13 +376,14 @@ const handleSubmit = async () => {
 const sendPushNotification = async (article: any) => {
   try {
     const { supabase } = useSupabase()
+    const config = useRuntimeConfig()
     
     // Appeler la Edge Function Supabase
     const { data, error } = await supabase.functions.invoke('clever-handler', {
       body: {
         title: '📰 Nouvel article publié !',
         message: article.title,
-        url: `https://clementrbl.github.io/mon-blog-ia/blog/${article.slug}`
+        url: `${config.public.siteUrl}/blog/${article.slug}`
       }
     })
     
