@@ -46,14 +46,27 @@ onMounted(() => {
     e.preventDefault()
     deferredPrompt = e
     
-    // Vérifier si l'utilisateur n'a pas déjà refusé
-    const dismissed = localStorage.getItem('pwa-prompt-dismissed')
-    if (!dismissed) {
-      // Attendre 3 secondes avant d'afficher le prompt
-      setTimeout(() => {
-        showPrompt.value = true
-      }, 3000)
+    // Vérifier le cooldown localStorage
+    const dismissedTimestamp = localStorage.getItem('pwa-prompt-dismissed')
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000
+    
+    if (dismissedTimestamp) {
+      const dismissedTime = parseInt(dismissedTimestamp)
+      const now = Date.now()
+      
+      // Si moins de 7 jours, ne pas afficher
+      if (now - dismissedTime < sevenDaysMs) {
+        return
+      } else {
+        // Nettoyage automatique si expiré
+        localStorage.removeItem('pwa-prompt-dismissed')
+      }
     }
+    
+    // Attendre 3 secondes avant d'afficher le prompt
+    setTimeout(() => {
+      showPrompt.value = true
+    }, 3000)
   })
 
   // Écouter l'installation réussie
@@ -75,22 +88,12 @@ const install = async () => {
   
   deferredPrompt = null
   showPrompt.value = false
-  
-  // Autoriser l'affichage du PushPrompt après installation
-  localStorage.setItem('pwa-prompt-closed', 'true')
 }
 
 const dismiss = () => {
   showPrompt.value = false
+  // Stocker le timestamp pour vérification au prochain chargement
   localStorage.setItem('pwa-prompt-dismissed', Date.now().toString())
-  
-  // Réafficher dans 7 jours
-  setTimeout(() => {
-    localStorage.removeItem('pwa-prompt-dismissed')
-  }, 7 * 24 * 60 * 60 * 1000)
-  
-  // Autoriser l'affichage du PushPrompt après fermeture
-  localStorage.setItem('pwa-prompt-closed', 'true')
 }
 </script>
 

@@ -57,31 +57,47 @@ onMounted(async () => {
     return
   }
   
+  // Vérifier si déjà abonné immédiatement
+  const alreadySubscribed = await isSubscribed()
+  if (alreadySubscribed) {
+    return // Ne rien faire si déjà abonné
+  }
+  
   // Surveiller la visibilité de PwaPrompt en continu
   checkPwaVisibility = setInterval(() => {
     isPwaPromptVisible.value = !!document.querySelector('[data-pwa-prompt]')
   }, 500)
   
-  // Vérifier si on doit afficher le prompt
-  const dismissed = localStorage.getItem('push-prompt-dismissed')
-  const alreadySubscribed = await isSubscribed()
+  // Vérifier le cooldown localStorage
+  const dismissedTimestamp = localStorage.getItem('push-prompt-dismissed')
+  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000
+  
+  if (dismissedTimestamp) {
+    const dismissedTime = parseInt(dismissedTimestamp)
+    const now = Date.now()
+    
+    // Si moins de 7 jours, ne pas afficher
+    if (now - dismissedTime < sevenDaysMs) {
+      return
+    } else {
+      // Nettoyage automatique si expiré
+      localStorage.removeItem('push-prompt-dismissed')
+    }
+  }
   
   // Afficher uniquement si :
   // - Les notifications sont supportées
   // - L'utilisateur n'a pas déjà accepté/refusé
-  // - L'utilisateur n'a pas cliqué sur "Plus tard" récemment
   // - L'utilisateur n'est pas déjà abonné
   if (
     isSupported.value && 
-    permissionState.value === 'default' && 
-    !dismissed && 
-    !alreadySubscribed
+    permissionState.value === 'default'
   ) {
-    // Attendre 10 secondes avant d'afficher
+    // Attendre 15 secondes pour laisser le temps aux PWA prompts de disparaître
     // Le v-if gère automatiquement la visibilité par rapport à PwaPrompt
     setTimeout(() => {
       showPrompt.value = true
-    }, 10000)
+    }, 15000)
   }
 })
 
@@ -103,12 +119,8 @@ const acceptNotifications = async () => {
 
 const dismiss = () => {
   showPrompt.value = false
+  // Stocker le timestamp pour vérification au prochain chargement
   localStorage.setItem('push-prompt-dismissed', Date.now().toString())
-  
-  // Réafficher dans 7 jours
-  setTimeout(() => {
-    localStorage.removeItem('push-prompt-dismissed')
-  }, 7 * 24 * 60 * 60 * 1000)
 }
 </script>
 

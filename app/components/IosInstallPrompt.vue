@@ -39,28 +39,38 @@ const isInStandaloneMode = () => {
 }
 
 onMounted(() => {
-  // Afficher uniquement sur iOS, si pas déjà en mode standalone et pas déjà refusé
-  const dismissed = localStorage.getItem('ios-install-prompt-dismissed')
-  
-  if (isIOS() && !isInStandaloneMode() && !dismissed) {
-    // Attendre 3 secondes avant d'afficher
-    setTimeout(() => {
-      showPrompt.value = true
-    }, 3000)
+  // Afficher uniquement sur iOS, si pas déjà en mode standalone
+  if (!isIOS() || isInStandaloneMode()) {
+    return
   }
+  
+  // Vérifier le cooldown localStorage
+  const dismissedTimestamp = localStorage.getItem('ios-install-prompt-dismissed')
+  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000
+  
+  if (dismissedTimestamp) {
+    const dismissedTime = parseInt(dismissedTimestamp)
+    const now = Date.now()
+    
+    // Si moins de 7 jours, ne pas afficher
+    if (now - dismissedTime < sevenDaysMs) {
+      return
+    } else {
+      // Nettoyage automatique si expiré
+      localStorage.removeItem('ios-install-prompt-dismissed')
+    }
+  }
+  
+  // Attendre 3 secondes avant d'afficher
+  setTimeout(() => {
+    showPrompt.value = true
+  }, 3000)
 })
 
 const dismiss = () => {
   showPrompt.value = false
+  // Stocker le timestamp pour vérification au prochain chargement
   localStorage.setItem('ios-install-prompt-dismissed', Date.now().toString())
-  
-  // Réafficher dans 7 jours
-  setTimeout(() => {
-    localStorage.removeItem('ios-install-prompt-dismissed')
-  }, 7 * 24 * 60 * 60 * 1000)
-  
-  // Autoriser l'affichage du PushPrompt après fermeture
-  localStorage.setItem('pwa-prompt-closed', 'true')
 }
 </script>
 
