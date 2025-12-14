@@ -5,7 +5,7 @@
     
     <!-- Bandeau de prévisualisation -->
     <div v-if="isPreview" class="bg-om-rust dark:bg-om-darkGold text-white py-3 px-4 border-b-4 border-om-dark dark:border-om-darkText sticky top-0 z-50">
-      <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-3">
           <Icon name="mdi:eye" size="24" />
           <span class="font-mono text-sm uppercase tracking-wider">
@@ -21,44 +21,52 @@
       </div>
     </div>
     
-    <article v-if="article" class="max-w-3xl mx-auto" itemscope itemtype="https://schema.org/BlogPosting">
-      <!-- Bouton retour -->
-      <nav class="mb-6" aria-label="Fil d'ariane">
-        <NuxtLink to="/" 
-          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group"
-          aria-label="Retour à la liste des articles">
-          <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
-          Retour au journal
-        </NuxtLink>
-      </nav>
+    <!-- Layout avec TOC -->
+    <div v-if="article" class="lg:flex lg:gap-8 max-w-[1600px] mx-auto">
+      <!-- Article principal -->
+      <article class="flex-1 lg:max-w-5xl" itemscope itemtype="https://schema.org/BlogPosting">
+        <!-- Bouton retour -->
+        <nav class="mb-6" aria-label="Fil d'ariane">
+          <NuxtLink to="/" 
+            class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group"
+            aria-label="Retour à la liste des articles">
+            <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
+            Retour au journal
+          </NuxtLink>
+        </nav>
 
-      <!-- En-tête de l'article -->
-      <header class="mb-12 pb-8 border-b-2 border-om-dark dark:border-om-darkGold">
-        <div class="flex gap-2 mb-4 flex-wrap" role="list" aria-label="Catégories de l'article">
-          <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" />
-        </div>
-        
-        <h1 class="font-serif text-3xl md:text-5xl font-black mb-4 leading-tight text-om-dark dark:text-om-darkText" itemprop="headline">
-          {{ article.title }}
-        </h1>
-        
-        <div class="flex items-center gap-4 text-sm text-om-ink/70 dark:text-om-darkText/70">
-          <time class="font-mono text-om-rust dark:text-om-darkGold font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
-            {{ new Date(article.date).toLocaleDateString('fr-FR', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }) }}
-          </time>
-          <span v-if="article.reading_time" class="flex items-center gap-1 font-mono">
-            <Icon name="mdi:clock-outline" size="16" aria-hidden="true" />
-            {{ article.reading_time }} min de lecture
-          </span>
-          <meta itemprop="author" content="Clément Reboul" />
-        </div>
-      </header>
+        <!-- En-tête de l'article -->
+        <header class="mb-12 pb-8 border-b-2 border-om-dark dark:border-om-darkGold">
+          <div class="flex gap-2 mb-4 flex-wrap" role="list" aria-label="Catégories de l'article">
+            <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" />
+          </div>
+          
+          <h1 class="font-serif text-3xl md:text-5xl font-black mb-4 leading-tight text-om-dark dark:text-om-darkText" itemprop="headline">
+            {{ article.title }}
+          </h1>
+          
+          <div class="flex items-center gap-4 text-sm text-om-ink/70 dark:text-om-darkText/70">
+            <time class="font-mono text-om-rust dark:text-om-darkGold font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
+              {{ new Date(article.date).toLocaleDateString('fr-FR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) }}
+            </time>
+            <span v-if="article.reading_time" class="flex items-center gap-1 font-mono">
+              <Icon name="mdi:clock-outline" size="16" aria-hidden="true" />
+              {{ article.reading_time }} min de lecture
+            </span>
+            <meta itemprop="author" content="Clément Reboul" />
+          </div>
+        </header>
 
-      <!-- Contenu de l'article -->
+        <!-- Table des matières mobile uniquement -->
+        <div class="lg:hidden mb-8">
+          <TableOfContents :content="htmlContent" />
+        </div>
+
+        <!-- Contenu de l'article -->
       <div class="prose prose-lg max-w-none
         prose-headings:font-serif prose-headings:font-bold prose-headings:text-om-dark dark:prose-headings:text-om-darkText
         prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
@@ -74,14 +82,18 @@
         itemprop="articleBody">
       </div>
 
-      <!-- Boutons de partage -->
-      <ShareButtons :title="article.title" :url="articleUrl" class="my-8" />
+        <!-- Boutons de partage -->
+        <ShareButtons :title="article.title" :url="articleUrl" class="my-8" />
 
-      <!-- Section commentaires -->
-      <ClientOnly>
-        <Comments v-if="article" :article-id="article.id" />
-      </ClientOnly>
-    </article>
+        <!-- Section commentaires -->
+        <ClientOnly>
+          <Comments v-if="article" :article-id="article.id" />
+        </ClientOnly>
+      </article>
+
+      <!-- Table des matières (responsive: mobile accordéon + desktop sidebar) -->
+      <TableOfContents :content="htmlContent" />
+    </div>
 
     <!-- Erreur 404 -->
     <div v-else class="text-center py-20">
