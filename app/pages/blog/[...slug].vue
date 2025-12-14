@@ -192,11 +192,8 @@ const isPreview = computed(() => route.query.preview === 'true')
 // Web Share API pour mobile
 const canUseWebShare = ref(false)
 
-onMounted(() => {
-  if (process.client) {
-    canUseWebShare.value = 'share' in navigator
-  }
-})
+// Boutons de copie pour les blocs de code
+const { addCopyButtons } = useCodeCopyButtons()
 
 const nativeShare = async () => {
   if (!article.value) return
@@ -238,6 +235,24 @@ try {
 } catch (error) {
   console.error('Erreur lors du chargement de l\'article:', error)
 }
+
+// Ajouter les boutons de copie après le chargement
+onMounted(() => {
+  if (process.client) {
+    canUseWebShare.value = 'share' in navigator
+    // Ajouter les boutons de copie après le rendu
+    nextTick(() => {
+      addCopyButtons()
+    })
+  }
+})
+
+// Re-ajouter les boutons si le contenu change
+watch(() => article.value?.content, () => {
+  nextTick(() => {
+    addCopyButtons()
+  })
+})
 
 // Trouver les articles similaires basés sur les tags communs
 const similarArticles = computed(() => {

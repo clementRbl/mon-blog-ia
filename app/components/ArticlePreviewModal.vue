@@ -120,14 +120,30 @@ const htmlContent = computed(() => {
   }
 })
 
+// Boutons de copie pour les blocs de code
+const { addCopyButtons } = useCodeCopyButtons()
+
 // Empêcher le scroll du body quand la modal est ouverte
 watch(() => props.isOpen, (isOpen) => {
   if (process.client) {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      // Ajouter les boutons de copie quand la modal s'ouvre
+      nextTick(() => {
+        addCopyButtons()
+      })
     } else {
       document.body.style.overflow = ''
     }
+  }
+})
+
+// Re-ajouter les boutons si le contenu change
+watch(() => props.article?.content, () => {
+  if (props.isOpen) {
+    nextTick(() => {
+      addCopyButtons()
+    })
   }
 })
 
