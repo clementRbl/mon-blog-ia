@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showPrompt" class="fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-om-paper border-2 border-om-gold p-4 shadow-retro-hover z-50 animate-slide-up">
+  <div v-if="showPrompt && !isPwaPromptVisible" class="fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-om-paper border-2 border-om-gold p-4 shadow-retro-hover z-50 animate-slide-up">
     <div class="flex items-start gap-3">
       <Icon name="mdi:bell-ring" size="24" class="text-om-gold flex-shrink-0 mt-1" />
       <div class="flex-1">
@@ -31,6 +31,7 @@
 <script setup lang="ts">
 const showPrompt = ref(false)
 const loading = ref(false)
+const isPwaPromptVisible = ref(false)
 
 // Détecter les in-app browsers (WhatsApp, Messenger, etc.)
 const isInAppBrowser = () => {
@@ -41,11 +42,25 @@ const isInAppBrowser = () => {
 
 const { subscribe, isSupported, isSubscribed, permissionState } = usePushNotifications()
 
+let checkPwaVisibility: NodeJS.Timeout | null = null
+
+// Enregistrer le hook AVANT tout await
+onBeforeUnmount(() => {
+  if (checkPwaVisibility) {
+    clearInterval(checkPwaVisibility)
+  }
+})
+
 onMounted(async () => {
   // Ne pas afficher dans les in-app browsers
   if (isInAppBrowser()) {
     return
   }
+  
+  // Surveiller la visibilité de PwaPrompt en continu
+  checkPwaVisibility = setInterval(() => {
+    isPwaPromptVisible.value = !!document.querySelector('[data-pwa-prompt]')
+  }, 500)
   
   // Vérifier si on doit afficher le prompt
   const dismissed = localStorage.getItem('push-prompt-dismissed')
@@ -62,7 +77,8 @@ onMounted(async () => {
     !dismissed && 
     !alreadySubscribed
   ) {
-    // Attendre 10 secondes avant d'afficher le prompt
+    // Attendre 10 secondes avant d'afficher
+    // Le v-if gère automatiquement la visibilité par rapport à PwaPrompt
     setTimeout(() => {
       showPrompt.value = true
     }, 10000)

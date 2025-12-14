@@ -69,6 +69,10 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#Fdfbf7' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'googlebot', content: 'index, follow' },
+        // iOS PWA Support
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Blog IA' },
         // Open Graph
         { property: 'og:image', content: 'https://clementRbl.github.io/mon-blog-ia/images/og-image.png' },
         { property: 'og:image:width', content: '1024' },
@@ -82,7 +86,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/mon-blog-ia/favicon.svg' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/mon-blog-ia/favicon.svg' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/mon-blog-ia/images/logo.png' },
         { rel: 'manifest', href: '/mon-blog-ia/manifest.webmanifest' },
       ],
       script: [
