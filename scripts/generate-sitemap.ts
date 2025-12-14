@@ -29,7 +29,7 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 const supabase = createClient<Database>(supabaseUrl, supabaseKey)
-const baseUrl = 'https://clementRbl.github.io/mon-blog-ia'
+const baseUrl = 'https://clementrbl.github.io/mon-blog-ia'
 
 // Fonction slugify
 const slugify = (text: string) => {
