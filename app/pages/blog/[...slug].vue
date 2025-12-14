@@ -25,14 +25,17 @@
     <div v-if="article" class="lg:flex lg:gap-8 max-w-[1600px] mx-auto">
       <!-- Article principal -->
       <article class="flex-1 lg:max-w-5xl" itemscope itemtype="https://schema.org/BlogPosting">
-        <!-- Bouton retour -->
-        <nav class="mb-6" aria-label="Fil d'ariane">
-          <NuxtLink to="/" 
-            class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group"
-            aria-label="Retour à la liste des articles">
-            <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
-            Retour au journal
+        <!-- Fil d'ariane -->
+        <nav class="mb-6 flex items-center gap-2 text-sm font-mono" aria-label="Fil d'ariane">
+          <NuxtLink to="/" class="text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors">
+            Accueil
           </NuxtLink>
+          <Icon name="mdi:chevron-right" size="16" class="text-om-ink/40 dark:text-om-darkText/40" />
+          <NuxtLink to="/" class="text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors">
+            Blog
+          </NuxtLink>
+          <Icon name="mdi:chevron-right" size="16" class="text-om-ink/40 dark:text-om-darkText/40" />
+          <span class="text-om-ink/60 dark:text-om-darkText/60 truncate max-w-[200px] md:max-w-none">{{ article.title }}</span>
         </nav>
 
         <!-- En-tête de l'article -->

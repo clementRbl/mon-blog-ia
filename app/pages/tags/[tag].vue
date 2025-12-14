@@ -1,13 +1,17 @@
 <template>
   <div>
-    <!-- Bouton retour -->
-    <div class="mb-6">
-      <NuxtLink to="/" 
-        class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors group">
-        <Icon name="mdi:arrow-left" size="20" class="group-hover:-translate-x-1 transition-transform" />
-        Retour au journal
+    <!-- Fil d'ariane -->
+    <nav class="mb-6 flex items-center gap-2 text-sm font-mono" aria-label="Fil d'ariane">
+      <NuxtLink to="/" class="text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors">
+        Accueil
       </NuxtLink>
-    </div>
+      <Icon name="mdi:chevron-right" size="16" class="text-om-ink/40 dark:text-om-darkText/40" />
+      <NuxtLink to="/tags" class="text-om-sepia dark:text-om-darkSepia hover:text-om-rust dark:hover:text-om-darkGold transition-colors">
+        Catégories
+      </NuxtLink>
+      <Icon name="mdi:chevron-right" size="16" class="text-om-ink/40 dark:text-om-darkText/40" />
+      <span class="text-om-ink/60 dark:text-om-darkText/60 capitalize">{{ normalizedTag }}</span>
+    </nav>
 
     <!-- En-tête de la catégorie -->
     <header class="mb-12 pb-8 border-b-2 border-om-sepia/30 dark:border-om-darkGold/30">
@@ -21,17 +25,6 @@
       <p class="text-om-ink/70 dark:text-om-darkText/70 font-sans text-lg">
         {{ articlesCount }} {{ articlesCount > 1 ? 'articles' : 'article' }} dans cette catégorie
       </p>
-      
-      <!-- Fil d'Ariane (Breadcrumbs) pour le SEO -->
-      <nav class="mt-4 text-sm font-mono">
-        <ol class="flex items-center gap-2 text-om-ink/60 dark:text-om-darkText/60">
-          <li><NuxtLink to="/" class="hover:text-om-sepia dark:hover:text-om-darkSepia">Accueil</NuxtLink></li>
-          <li>/</li>
-          <li><NuxtLink to="/tags" class="hover:text-om-sepia dark:hover:text-om-darkSepia">Tags</NuxtLink></li>
-          <li>/</li>
-          <li class="text-om-dark dark:text-om-darkText font-bold capitalize">{{ normalizedTag }}</li>
-        </ol>
-      </nav>
     </header>
 
     <!-- Liste des articles -->
