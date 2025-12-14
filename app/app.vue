@@ -281,7 +281,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Texture papier animée */
+/* Texture papier animée avec fleurs de lys en arrière-plan */
 body::before {
   content: '';
   position: fixed;
@@ -292,6 +292,9 @@ body::before {
   pointer-events: none;
   z-index: 1;
   background-image: 
+    /* Motif fleurs de lys */
+    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='40' text-anchor='middle' dominant-baseline='middle' opacity='0.08' fill='%238B7355'%3E⚜%3C/text%3E%3C/svg%3E"),
+    /* Grain de papier */
     repeating-linear-gradient(
       0deg,
       transparent,
@@ -307,6 +310,27 @@ body::before {
       rgba(139, 115, 85, 0.03) 4px
     );
   animation: paper-grain 8s ease-in-out infinite;
+}
+
+.dark body::before {
+  background-image: 
+    /* Motif fleurs de lys pour dark mode */
+    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='40' text-anchor='middle' dominant-baseline='middle' opacity='0.02' fill='%23D4B574'%3E⚜%3C/text%3E%3C/svg%3E"),
+    /* Grain de papier */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 115, 85, 0.03) 2px,
+      rgba(139, 115, 85, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 115, 85, 0.03) 2px,
+      rgba(139, 115, 85, 0.03) 4px
+    );
 }
 
 @keyframes paper-grain {
