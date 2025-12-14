@@ -39,15 +39,50 @@
       </nav>
     </section>
 
-    <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink dark:text-om-darkText border-b-2 border-om-sepia/30 dark:border-om-darkGold/30 pb-2 mb-6">
-      Dernières publications
-    </h2>
+    <div class="flex items-center justify-between border-b-2 border-om-sepia/30 dark:border-om-darkGold/30 pb-2 mb-6">
+      <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink dark:text-om-darkText">
+        Dernières publications
+      </h2>
+      
+      <!-- Toggle vue grille/liste (desktop uniquement) -->
+      <div class="hidden md:flex items-center gap-2 bg-om-paperDark dark:bg-om-darkPaper border border-om-dark/20 dark:border-om-darkGold/20 rounded">
+        <button
+          @click="viewMode = 'list'"
+          :class="[
+            'p-2 transition-colors',
+            viewMode === 'list' 
+              ? 'bg-om-gold dark:bg-om-darkGold text-white' 
+              : 'text-om-ink/60 dark:text-om-darkText/60 hover:text-om-rust dark:hover:text-om-darkGold'
+          ]"
+          aria-label="Vue liste"
+          title="Vue liste"
+        >
+          <Icon name="mdi:view-list" size="18" />
+        </button>
+        <button
+          @click="viewMode = 'grid'"
+          :class="[
+            'p-2 transition-colors',
+            viewMode === 'grid' 
+              ? 'bg-om-gold dark:bg-om-darkGold text-white' 
+              : 'text-om-ink/60 dark:text-om-darkText/60 hover:text-om-rust dark:hover:text-om-darkGold'
+          ]"
+          aria-label="Vue grille"
+          title="Vue grille"
+        >
+          <Icon name="mdi:view-grid" size="18" />
+        </button>
+      </div>
+    </div>
 
     <!-- Liste des articles (scroll naturel) -->
     <div role="feed" aria-label="Liste des derniers articles publiés">
-      <div v-if="articles && articles.length > 0" class="space-y-8">
+      <div v-if="articles && articles.length > 0" :class="viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-8'">
         <article v-for="(article, index) in articles" :key="article.id" 
-          class="group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper p-8 transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer"
+          :class="[
+            'group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer',
+            viewMode === 'grid' ? 'p-4' : 'p-8'
+          ]"
           :aria-label="`Article: ${article.title}`">
           
           <NuxtLink :to="`/blog/${article.slug}`" class="absolute inset-0 z-10" :aria-label="`Lire l'article: ${article.title}`"></NuxtLink>
@@ -76,11 +111,14 @@
             New
           </div>
 
-          <h3 class="font-serif text-xl md:text-2xl font-bold mb-3 text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors">
+          <h3 :class="[
+            'font-serif font-bold text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors',
+            viewMode === 'grid' ? 'text-lg mb-2 line-clamp-2' : 'text-xl md:text-2xl mb-3'
+          ]">
             {{ article.title }}
           </h3>
           
-          <p class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
+          <p v-if="viewMode === 'list'" class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
             {{ article.description }}
           </p>
           
@@ -118,6 +156,24 @@
 
 <script setup lang="ts">
 const { articles: articlesAPI, quotes: quotesAPI } = useSupabase()
+
+// Gestion du mode d'affichage (grille/liste)
+const viewMode = ref<'list' | 'grid'>('list')
+
+// Charger la préférence depuis localStorage
+onMounted(() => {
+  const saved = localStorage.getItem('articles-view-mode')
+  if (saved === 'grid' || saved === 'list') {
+    viewMode.value = saved
+  }
+})
+
+// Sauvegarder la préférence
+watch(viewMode, (newMode) => {
+  if (process.client) {
+    localStorage.setItem('articles-view-mode', newMode)
+  }
+})
 
 // Récupération d'une citation aléatoire (client-only pour éviter hydration mismatch)
 const quote = ref(null)

@@ -1,5 +1,10 @@
 <template>
   <div>
+    <!-- Barre de progression de lecture -->
+    <ClientOnly>
+      <ReadingProgress />
+    </ClientOnly>
+    
     <!-- Boutons de scroll -->
     <ScrollButtons />
     
@@ -136,6 +141,13 @@
           <Comments v-if="article" :article-id="article.id" />
         </ClientOnly>
       </article>
+
+      <!-- Table des matières desktop (sidebar) -->
+      <aside class="hidden lg:block lg:w-80 flex-shrink-0">
+        <div class="sticky top-24">
+          <TableOfContents :content="htmlContent" />
+        </div>
+      </aside>
     </div>
 
     <!-- Erreur 404 -->
