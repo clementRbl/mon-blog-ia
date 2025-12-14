@@ -3,6 +3,7 @@
     <!-- Banner pour in-app browsers -->
     <ClientOnly>
       <InAppBrowserBanner />
+      <VintageToast />
     </ClientOnly>
     
     <header class="border-b-2 border-om-dark dark:border-om-darkGold py-6 sticky top-0 bg-om-paper/95 dark:bg-om-darkBg/95 backdrop-blur-sm z-50" role="banner">
@@ -241,5 +242,104 @@ h1, h2, h3, h4, h5, h6 {
   font-variant: small-caps;
   font-feature-settings: "smcp" 1, "c2sc" 1;
   letter-spacing: 0.05em;
+}
+
+/* Signature manuscrite avec effet encre */
+.signature-ink {
+  display: inline-block;
+  animation: signature-draw 1.5s ease-out forwards;
+  transform-origin: left center;
+}
+
+@keyframes signature-draw {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) scaleX(0.8);
+  }
+  60% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+  }
+}
+
+.signature-flourish {
+  animation: flourish-appear 0.8s ease-out 1.2s forwards;
+  opacity: 0;
+}
+
+@keyframes flourish-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-20deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Texture papier animée */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 115, 85, 0.03) 2px,
+      rgba(139, 115, 85, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 115, 85, 0.03) 2px,
+      rgba(139, 115, 85, 0.03) 4px
+    );
+  animation: paper-grain 8s ease-in-out infinite;
+}
+
+@keyframes paper-grain {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(1px, 1px);
+  }
+}
+
+/* Vignette photographique vintage */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: 
+    inset 0 0 100px rgba(61, 43, 31, 0.3),
+    inset 0 0 200px rgba(61, 43, 31, 0.15),
+    inset 0 0 300px rgba(61, 43, 31, 0.05);
+}
+
+.dark body::after {
+  box-shadow: 
+    inset 0 0 100px rgba(0, 0, 0, 0.4),
+    inset 0 0 200px rgba(0, 0, 0, 0.2),
+    inset 0 0 300px rgba(0, 0, 0, 0.1);
 }
 </style>

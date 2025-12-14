@@ -109,6 +109,15 @@
         itemprop="articleBody">
       </div>
 
+        <!-- Signature manuscrite vintage -->
+        <div class="my-12 flex flex-col items-end gap-4 relative">
+          <div class="signature-line w-32 h-0.5 bg-gradient-to-l from-om-rust/30 to-transparent dark:from-om-darkGold/30"></div>
+          <div class="signature-text font-serif italic text-2xl text-om-rust dark:text-om-darkGold relative">
+            <span class="signature-ink">Clément R</span>
+            <div class="signature-flourish absolute -bottom-2 right-0 text-om-rust/40 dark:text-om-darkGold/40 text-sm">~</div>
+          </div>
+        </div>
+
         <!-- Boutons de partage -->
         <ShareButtons :title="article.title" :url="articleUrl" class="my-8 scroll-animate" />
 
