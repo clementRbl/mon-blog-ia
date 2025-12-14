@@ -47,7 +47,7 @@
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-12 flex-grow max-w-4xl" role="main" id="main-content">
+    <main class="container mx-auto px-4 py-12 flex-grow max-w-6xl" role="main" id="main-content">
       <NuxtPage :transition="{
         name: 'page-fade',
         mode: 'out-in'
