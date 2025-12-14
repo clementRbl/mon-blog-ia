@@ -53,19 +53,35 @@
             {{ article.title }}
           </h1>
           
-          <div class="flex items-center gap-4 text-sm text-om-ink/70 dark:text-om-darkText/70">
-            <time class="font-mono text-om-rust dark:text-om-darkGold font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
-              {{ new Date(article.date).toLocaleDateString('fr-FR', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }) }}
-            </time>
-            <span v-if="article.reading_time" class="flex items-center gap-1 font-mono">
-              <Icon name="mdi:clock-outline" size="16" aria-hidden="true" />
-              {{ article.reading_time }} min de lecture
-            </span>
-            <meta itemprop="author" content="Clément Reboul" />
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-4 text-sm text-om-ink/70 dark:text-om-darkText/70">
+              <time class="font-mono text-om-rust dark:text-om-darkGold font-bold" :datetime="new Date(article.date).toISOString()" itemprop="datePublished">
+                {{ new Date(article.date).toLocaleDateString('fr-FR', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                }) }}
+              </time>
+              <span v-if="article.reading_time" class="flex items-center gap-1 font-mono">
+                <Icon name="mdi:clock-outline" size="16" aria-hidden="true" />
+                {{ article.reading_time }} min de lecture
+              </span>
+              <meta itemprop="author" content="Clément Reboul" />
+            </div>
+            
+            <!-- Bouton partage natif mobile -->
+            <ClientOnly>
+              <button
+                v-if="canUseWebShare"
+                @click="nativeShare"
+                class="md:hidden flex items-center gap-2 px-3 py-1.5 bg-om-rust dark:bg-om-darkGold hover:bg-om-gold dark:hover:bg-om-darkSepia text-white font-mono text-xs uppercase tracking-wider border border-om-dark dark:border-om-darkText shadow-sm hover:shadow-md active:scale-95 transition-all"
+                aria-label="Partager l'article"
+                title="Partager"
+              >
+                <Icon name="mdi:share-variant" size="16" />
+                <span>Partager</span>
+              </button>
+            </ClientOnly>
           </div>
         </header>
 
@@ -172,6 +188,31 @@ const slug = Array.isArray(route.params.slug) ? route.params.slug.join('/') : ro
 
 // Vérifier si on est en mode prévisualisation
 const isPreview = computed(() => route.query.preview === 'true')
+
+// Web Share API pour mobile
+const canUseWebShare = ref(false)
+
+onMounted(() => {
+  if (process.client) {
+    canUseWebShare.value = 'share' in navigator
+  }
+})
+
+const nativeShare = async () => {
+  if (!article.value) return
+  
+  try {
+    await navigator.share({
+      title: article.value.title,
+      text: article.value.description,
+      url: window.location.href
+    })
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error('Erreur partage natif:', error)
+    }
+  }
+}
 
 // Récupérer l'article depuis Supabase
 const article = ref(null)
