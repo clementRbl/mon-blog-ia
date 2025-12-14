@@ -22,7 +22,7 @@ export default defineNuxtConfig({
 
   // Configuration du module SEO
   site: {
-    url: 'https://clementRbl.github.io',
+    url: 'https://clementrbl.github.io',
     name: 'Blog IA Engineering - Clément Reboul',
     description: 'Blog personnel sur l\'intelligence artificielle et le machine learning',
     defaultLocale: 'fr',
