@@ -28,10 +28,25 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'], 
       },
       boxShadow: {
-        // Ombre style papier ancien
-        'retro': '4px 4px 0px 0px rgba(139, 115, 85, 0.2)', 
-        'retro-hover': '6px 6px 0px 0px rgba(139, 115, 85, 0.4)', 
-        'paper': '2px 2px 8px rgba(44, 36, 22, 0.1)',
+        // Ombres vintage prononcées et colorées
+        'retro': '5px 5px 0px 0px rgba(160, 82, 45, 0.25), 10px 10px 20px -5px rgba(139, 115, 85, 0.15)', 
+        'retro-hover': '8px 8px 0px 0px rgba(160, 82, 45, 0.35), 15px 15px 30px -5px rgba(139, 115, 85, 0.25)', 
+        'paper': '3px 3px 12px rgba(44, 36, 22, 0.15), 1px 1px 3px rgba(160, 82, 45, 0.1)',
+      },
+      keyframes: {
+        'fade-in-up': {
+          '0%': { 
+            opacity: '0', 
+            transform: 'translateY(20px)' 
+          },
+          '100%': { 
+            opacity: '1', 
+            transform: 'translateY(0)' 
+          },
+        },
+      },
+      animation: {
+        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
       }
     },
   },

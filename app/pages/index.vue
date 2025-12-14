@@ -12,7 +12,7 @@
         >
           <section v-if="quote" class="border-l-4 border-om-gold dark:border-om-darkGold pl-6 py-2" aria-label="Citation d'introduction">
             <blockquote class="font-serif text-2xl md:text-4xl italic leading-tight mb-4 text-om-dark dark:text-om-darkText">
-              « {{ quote.text }} »
+              « <span ref="typewriterText" class="typewriter-text"></span><span class="typewriter-cursor">|</span> »
             </blockquote>
             <cite class="font-mono text-sm text-om-rust dark:text-om-darkGold not-italic">— {{ quote.author }}</cite>
           </section>
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Navigation des catégories -->
-    <section v-if="popularTags && popularTags.length > 0" class="mb-8 p-6 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-sepia/30 dark:border-om-darkGold/30" aria-label="Catégories populaires">
+    <section v-if="popularTags && popularTags.length > 0" class="mb-8 p-6 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-sepia/30 dark:border-om-darkGold/30 scroll-animate" aria-label="Catégories populaires">
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-mono uppercase text-xs tracking-widest text-om-ink dark:text-om-darkText flex items-center gap-2">
           <Icon name="mdi:tag-multiple" size="16" aria-hidden="true" />
@@ -77,55 +77,64 @@
 
     <!-- Liste des articles (scroll naturel) -->
     <div role="feed" aria-label="Liste des derniers articles publiés">
-      <div v-if="articles && articles.length > 0" :class="viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-8'">
-        <article v-for="(article, index) in articles" :key="article.id" 
-          :class="[
-            'group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper transition-all hover:-translate-y-1 hover:shadow-retro-hover shadow-retro cursor-pointer',
-            viewMode === 'grid' ? 'p-4' : 'p-8'
-          ]"
-          :aria-label="`Article: ${article.title}`">
-          
-          <NuxtLink :to="`/blog/${article.slug}`" class="absolute inset-0 z-10" :aria-label="`Lire l'article: ${article.title}`"></NuxtLink>
+      <template v-if="articles && articles.length > 0">
+        <div :class="viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-8'">
+          <article v-for="(article, index) in articles" :key="article.id" 
+            :class="[
+              'group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper cursor-pointer overflow-hidden',
+              'animate-fade-in-up animated-gradient-card',
+              'transition-all duration-300 ease-out',
+              'hover:-translate-y-2 hover:shadow-retro-hover hover:border-om-rust dark:hover:border-om-darkGold',
+              'shadow-retro',
+              viewMode === 'grid' ? 'p-4' : 'p-8'
+            ]"
+            :style="{ animationDelay: `${index * 100}ms` }"
+            :aria-label="`Article: ${article.title}`">
+            
+            <NuxtLink :to="`/blog/${article.slug}`" class="absolute inset-0 z-10" :aria-label="`Lire l'article: ${article.title}`"></NuxtLink>
 
-          <div class="flex justify-between items-start mb-4 gap-4">
-            <div class="flex gap-2 flex-wrap relative z-20" role="list" aria-label="Tags de l'article">
-              <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" size="sm" />
-            </div>
-            <div class="text-right relative z-20">
-              <!-- Badge NEW pour le premier article (desktop uniquement) -->
-              <div v-if="index === 0" class="hidden md:inline-block bg-om-rust text-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider mb-1">
-                New
+            <div class="flex justify-between items-start mb-4 gap-4">
+              <div class="flex gap-2 flex-wrap relative z-20" role="list" aria-label="Tags de l'article">
+                <TagBadge v-for="tag in article.tags" :key="tag" :tag="tag" size="sm" />
               </div>
-              <time class="font-mono text-xs text-om-rust dark:text-om-darkGold font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
-                {{ new Date(article.date).toLocaleDateString('fr-FR') }}
-              </time>
-              <span v-if="article.reading_time" class="font-mono text-xs text-om-ink/60 dark:text-om-darkText/60 flex items-center justify-end gap-1 mt-1">
-                <Icon name="mdi:clock-outline" size="14" aria-hidden="true" />
-                {{ article.reading_time }} min
-              </span>
+              <div class="text-right relative z-20">
+                <!-- Badge NEW pour le premier article (desktop uniquement) -->
+                <div v-if="index === 0" class="hidden md:inline-block bg-om-rust text-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider mb-1">
+                  New
+                </div>
+                <time class="font-mono text-xs text-om-rust dark:text-om-darkGold font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
+                  {{ new Date(article.date).toLocaleDateString('fr-FR') }}
+                </time>
+                <span v-if="article.reading_time" class="font-mono text-xs text-om-ink/60 dark:text-om-darkText/60 flex items-center justify-end gap-1 mt-1">
+                  <Icon name="mdi:clock-outline" size="14" aria-hidden="true" />
+                  {{ article.reading_time }} min
+                </span>
+              </div>
             </div>
-          </div>
 
-          <!-- Badge NEW pour mobile (sous les tags, au-dessus du titre) -->
-          <div v-if="index === 0" class="md:hidden inline-block bg-om-rust text-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wider mb-3 relative z-20 shadow-sm">
-            New
-          </div>
+            <!-- Badge NEW pour mobile (sous les tags, au-dessus du titre) -->
+            <div v-if="index === 0" class="md:hidden inline-block bg-om-rust text-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wider mb-3 relative z-20 shadow-sm">
+              New
+            </div>
 
-          <h3 :class="[
-            'font-serif font-bold text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors',
-            viewMode === 'grid' ? 'text-lg mb-2 line-clamp-2' : 'text-xl md:text-2xl mb-3'
-          ]">
-            {{ article.title }}
-          </h3>
-          
-          <p v-if="viewMode === 'list'" class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
-            {{ article.description }}
-          </p>
-          
-          <div class="mt-4 text-xs font-mono text-om-sepia dark:text-om-darkSepia group-hover:text-om-rust dark:group-hover:text-om-darkGold transition-colors md:hidden">
-            Lire la suite →
-          </div>
-        </article>
+            <h3 :class="[
+              'font-serif font-bold text-om-dark dark:text-om-darkText transition-all duration-300',
+              'group-hover:text-om-rust dark:group-hover:text-om-darkGold group-hover:translate-x-1',
+              viewMode === 'grid' ? 'text-lg mb-2 line-clamp-2' : 'text-xl md:text-2xl mb-3'
+            ]">
+              {{ article.title }}
+            </h3>
+            
+            <p v-if="viewMode === 'list'" class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
+              {{ article.description }}
+            </p>
+            
+            <div class="mt-4 text-xs font-mono text-om-sepia dark:text-om-darkSepia group-hover:text-om-rust dark:group-hover:text-om-darkGold transition-all duration-300 md:hidden flex items-center gap-1">
+              <span class="group-hover:translate-x-1 transition-transform">Lire la suite</span>
+              <span class="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </article>
+        </div>
 
         <!-- Trigger pour charger plus (mobile uniquement) -->
         <ClientOnly>
@@ -143,7 +152,7 @@
             </p>
           </div>
         </ClientOnly>
-      </div>
+      </template>
 
       <div v-else class="text-center py-12 border-2 border-dashed border-om-gold/50 dark:border-om-darkGold/50 rounded bg-om-paperDark dark:bg-om-darkPaper">
         <Icon name="mdi:text-box-edit-outline" size="48" class="text-om-gold dark:text-om-darkGold mb-4" />
@@ -177,12 +186,65 @@ watch(viewMode, (newMode) => {
 
 // Récupération d'une citation aléatoire (client-only pour éviter hydration mismatch)
 const quote = ref(null)
+const typewriterText = ref(null)
+
 if (process.client) {
   try {
     quote.value = await quotesAPI.getRandom()
   } catch (e) {
     console.warn('Erreur lors du chargement de la citation:', e)
   }
+}
+
+// Effet machine à écrire réaliste
+const typeWriter = (text: string, element: HTMLElement) => {
+  let i = 0
+  element.textContent = ''
+  
+  const getTypingDelay = (char: string, nextChar: string) => {
+    // Délai de base entre 40 et 90ms
+    let delay = Math.random() * 50 + 40
+    
+    // Pause plus longue après ponctuation
+    if (char === '.' || char === '!' || char === '?') {
+      delay = Math.random() * 200 + 300 // 300-500ms
+    } else if (char === ',' || char === ';') {
+      delay = Math.random() * 100 + 150 // 150-250ms
+    } else if (char === ' ') {
+      delay = Math.random() * 30 + 60 // 60-90ms
+    }
+    
+    // Accélération sur les voyelles successives
+    const voyelles = 'aeiouyéèêëàâäôöûüïî'
+    if (voyelles.includes(char.toLowerCase()) && voyelles.includes(nextChar?.toLowerCase())) {
+      delay *= 0.7
+    }
+    
+    // Parfois une petite hésitation (5% de chance)
+    if (Math.random() < 0.05) {
+      delay += Math.random() * 150 + 100
+    }
+    
+    return delay
+  }
+  
+  const type = () => {
+    if (i < text.length) {
+      element.textContent += text.charAt(i)
+      const nextChar = text.charAt(i + 1)
+      const delay = getTypingDelay(text.charAt(i), nextChar)
+      i++
+      setTimeout(type, delay)
+    } else {
+      // Masquer le curseur après la fin avec un petit délai
+      setTimeout(() => {
+        const cursor = document.querySelector('.typewriter-cursor')
+        if (cursor) cursor.classList.add('fade-out')
+      }, 500)
+    }
+  }
+  
+  type()
 }
 
 // Récupération des articles depuis Supabase avec pagination pour mobile
@@ -229,6 +291,8 @@ const loadMoreArticles = () => {
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 
 // Configuration après hydratation pour éviter mismatch
+const { observe } = useScrollAnimation()
+
 onMounted(() => {
   if (!process.client) return
   
@@ -240,6 +304,19 @@ onMounted(() => {
     displayedArticles.value = allArticles.value.slice(0, MOBILE_PAGE_SIZE)
     hasMoreArticles.value = true
   }
+  
+  // Activer les animations au scroll
+  nextTick(() => {
+    const animatedElements = document.querySelectorAll('.scroll-animate')
+    observe(animatedElements)
+    
+    // Lancer l'effet machine à écrire sur la citation
+    if (quote.value && typewriterText.value) {
+      setTimeout(() => {
+        typeWriter(quote.value.text, typewriterText.value)
+      }, 500) // Délai pour laisser l'animation de slide se terminer
+    }
+  })
   
   // Listener pour resize
   const handleResize = () => {

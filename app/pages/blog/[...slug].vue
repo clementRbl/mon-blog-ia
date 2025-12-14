@@ -91,7 +91,7 @@
         </div>
 
         <!-- Contenu de l'article -->
-      <div class="prose md:prose-lg max-w-none
+      <div class="article-content prose md:prose-lg max-w-none
         prose-headings:font-serif prose-headings:font-bold prose-headings:text-om-dark dark:prose-headings:text-om-darkText
         prose-h1:text-2xl prose-h1:md:text-4xl prose-h2:text-xl prose-h2:md:text-3xl prose-h3:text-lg prose-h3:md:text-2xl
         prose-p:text-om-ink/90 dark:prose-p:text-om-darkText/90 prose-p:leading-relaxed prose-p:font-sans
@@ -110,11 +110,11 @@
       </div>
 
         <!-- Boutons de partage -->
-        <ShareButtons :title="article.title" :url="articleUrl" class="my-8" />
+        <ShareButtons :title="article.title" :url="articleUrl" class="my-8 scroll-animate" />
 
         <!-- Articles similaires -->
         <ClientOnly>
-          <section v-if="similarArticles.length > 0" class="my-12 p-6 md:p-8 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-gold/30 dark:border-om-darkGold/30">
+          <section v-if="similarArticles.length > 0" class="my-12 p-6 md:p-8 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-gold/30 dark:border-om-darkGold/30 scroll-animate">
             <h2 class="font-serif text-2xl md:text-3xl font-bold mb-6 text-om-dark dark:text-om-darkText flex items-center gap-3">
               <Icon name="mdi:book-open-variant" size="28" class="text-om-gold dark:text-om-darkGold" />
               Articles similaires
@@ -237,12 +237,18 @@ try {
 }
 
 // Ajouter les boutons de copie après le chargement
+const { observe } = useScrollAnimation()
+
 onMounted(() => {
   if (process.client) {
     canUseWebShare.value = 'share' in navigator
     // Ajouter les boutons de copie après le rendu
     nextTick(() => {
       addCopyButtons()
+      
+      // Activer les animations au scroll
+      const animatedElements = document.querySelectorAll('.scroll-animate')
+      observe(animatedElements)
     })
   }
 })
@@ -369,3 +375,46 @@ if (article.value) {
   })
 }
 </script>
+
+<style scoped>
+/* Lettrine élégante avec fleur de lys */
+.article-content :deep(> p:first-of-type::first-letter) {
+  float: left;
+  font-family: 'Playfair Display', serif;
+  font-size: 5.5rem;
+  line-height: 0.85;
+  font-weight: 900;
+  margin: 0.1em 0.15em 0 0;
+  color: theme('colors.om.rust');
+  text-shadow: 2px 2px 0 rgba(139, 115, 85, 0.2);
+}
+
+.dark .article-content :deep(> p:first-of-type::first-letter) {
+  color: theme('colors.om.darkGold');
+  text-shadow: 2px 2px 0 rgba(212, 181, 116, 0.3);
+}
+
+/* Fleur de lys décorative avant le premier paragraphe */
+.article-content :deep(> p:first-of-type::before) {
+  content: '⚜';
+  position: absolute;
+  left: -2rem;
+  font-size: 1.5rem;
+  color: theme('colors.om.gold');
+  opacity: 0.4;
+  animation: fadeIn 1s ease-out;
+}
+
+.dark .article-content :deep(> p:first-of-type::before) {
+  color: theme('colors.om.darkGold');
+}
+
+.article-content :deep(> p:first-of-type) {
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 0.4; transform: scale(1); }
+}
+</style>

@@ -2,15 +2,16 @@
   <NuxtLink 
     :to="`/tags/${slugify(tag)}`"
     :class="[
-      'inline-block px-3 py-1 text-xs font-mono uppercase tracking-wider transition-all',
+      'group inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono uppercase tracking-wider transition-all duration-300',
       'border border-om-sepia dark:border-om-darkGold bg-om-paperDark dark:bg-om-darkPaper text-om-ink dark:text-om-darkText',
-      'hover:bg-om-sepia dark:hover:bg-om-darkGold hover:text-white hover:scale-105',
+      'hover:bg-om-sepia dark:hover:bg-om-darkGold hover:text-white hover:scale-105 hover:-rotate-1',
       'shadow-sm hover:shadow-retro',
       size === 'sm' ? 'text-[10px] px-2 py-0.5' : '',
       size === 'lg' ? 'text-sm px-4 py-2' : ''
     ]"
   >
-    {{ tag }}
+    <span class="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110">⚜</span>
+    <span>{{ tag }}</span>
   </NuxtLink>
 </template>
 

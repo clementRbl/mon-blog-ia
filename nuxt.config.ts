@@ -52,7 +52,7 @@ export default defineNuxtConfig({
     prerender: {
       failOnError: false,
       crawlLinks: false,
-      routes: []
+      routes: ['/404.html']
     }
   },
   
