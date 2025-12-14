@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-om-paper dark:bg-om-darkBg text-om-dark dark:text-om-darkText font-sans selection:bg-om-gold selection:text-white flex flex-col transition-colors">
+  <div class="bg-om-paper dark:bg-om-darkBg text-om-dark dark:text-om-darkText font-sans selection:bg-om-gold selection:text-white transition-colors">
     <!-- Banner pour in-app browsers -->
     <ClientOnly>
       <InAppBrowserBanner />
@@ -46,22 +46,22 @@
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-12 flex-grow max-w-6xl" role="main" id="main-content">
+    <main class="container mx-auto px-4 py-12 min-h-[calc(100vh-200px)] max-w-6xl" role="main" id="main-content">
       <NuxtPage :transition="{
         name: 'page-fade',
         mode: 'out-in'
       }" />
     </main>
 
-    <footer class="border-t-2 border-om-dark dark:border-om-darkGold py-8 text-center bg-om-paperDark dark:bg-om-darkPaper" role="contentinfo">
+    <footer class="md:sticky md:bottom-0 border-t-2 border-om-dark dark:border-om-darkGold py-4 text-center bg-om-paperDark md:bg-om-paperDark/95 dark:bg-om-darkPaper md:dark:bg-om-darkPaper/95 md:backdrop-blur-sm md:z-40" role="contentinfo">
       <div class="container mx-auto font-mono text-xs text-om-dark/60 dark:text-om-darkText/60">
-        <p class="mb-3">© 2025 Clément Reboul • France</p>
+        <p class="opacity-60 text-[10px] uppercase mb-2">© 2025 Clément Reboul</p>
         <nav class="flex justify-center gap-4 text-[10px] uppercase" aria-label="Navigation secondaire">
           <a href="https://www.linkedin.com/in/clement-reboul" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia dark:hover:text-om-darkSepia transition-colors flex items-center gap-1" aria-label="Profil LinkedIn de Clément Reboul">
             <Icon name="mdi:linkedin" size="14" aria-hidden="true" /> LinkedIn
           </a>
           <a href="https://github.com/clementRbl/mon-blog-ia" target="_blank" rel="noopener noreferrer" class="hover:text-om-sepia dark:hover:text-om-darkSepia transition-colors flex items-center gap-1" aria-label="Voir le code source du blog sur GitHub">
-            <Icon name="mdi:github" size="14" aria-hidden="true" /> Code Source
+            <Icon name="mdi:github" size="14" aria-hidden="true" /> GitHub
           </a>
         </nav>
       </div>
