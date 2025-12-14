@@ -85,6 +85,44 @@
         <!-- Boutons de partage -->
         <ShareButtons :title="article.title" :url="articleUrl" class="my-8" />
 
+        <!-- Articles similaires -->
+        <section v-if="similarArticles.length > 0" class="my-12 p-6 md:p-8 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-gold/30 dark:border-om-darkGold/30">
+          <h2 class="font-serif text-2xl md:text-3xl font-bold mb-6 text-om-dark dark:text-om-darkText flex items-center gap-3">
+            <Icon name="mdi:book-open-variant" size="28" class="text-om-gold dark:text-om-darkGold" />
+            Articles similaires
+          </h2>
+          
+          <div class="grid gap-4 md:grid-cols-3">
+            <NuxtLink 
+              v-for="similarArticle in similarArticles" 
+              :key="similarArticle.id"
+              :to="`/blog/${similarArticle.slug}`"
+              class="group p-4 bg-om-paper dark:bg-om-darkBg border-2 border-om-dark dark:border-om-darkGold hover:shadow-retro-hover hover:-translate-y-1 transition-all"
+            >
+              <div class="flex gap-2 flex-wrap mb-3">
+                <TagBadge v-for="tag in similarArticle.tags.slice(0, 2)" :key="tag" :tag="tag" size="sm" />
+              </div>
+              
+              <h3 class="font-serif text-lg font-bold mb-2 text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors line-clamp-2">
+                {{ similarArticle.title }}
+              </h3>
+              
+              <p class="text-sm text-om-ink/70 dark:text-om-darkText/70 line-clamp-2 mb-3">
+                {{ similarArticle.description }}
+              </p>
+              
+              <div class="flex items-center justify-between text-xs">
+                <time class="font-mono text-om-rust dark:text-om-darkGold font-bold">
+                  {{ new Date(similarArticle.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) }}
+                </time>
+                <span v-if="similarArticle.reading_time" class="font-mono text-om-ink/60 dark:text-om-darkText/60">
+                  {{ similarArticle.reading_time }} min
+                </span>
+              </div>
+            </NuxtLink>
+          </div>
+        </section>
+
         <!-- Section commentaires -->
         <ClientOnly>
           <Comments v-if="article" :article-id="article.id" />
@@ -120,21 +158,56 @@ const isPreview = computed(() => route.query.preview === 'true')
 
 // Récupérer l'article depuis Supabase
 const article = ref(null)
+const allArticles = ref([])
+
 try {
   if (isPreview.value) {
     // En mode preview, récupérer tous les articles (même non publiés)
     const { data, error } = await articlesAPI.getAll()
     if (error) throw error
+    allArticles.value = data || []
     article.value = data?.find(a => a.slug === slug)
   } else {
     // En mode normal, uniquement les articles publiés
     const { data, error } = await articlesAPI.getBySlug(slug)
     if (error) throw error
     article.value = data
+    
+    // Récupérer aussi tous les articles pour les suggestions
+    const { data: allData } = await articlesAPI.getPublished()
+    allArticles.value = allData || []
   }
 } catch (error) {
   console.error('Erreur lors du chargement de l\'article:', error)
 }
+
+// Trouver les articles similaires basés sur les tags communs
+const similarArticles = computed(() => {
+  if (!article.value || !allArticles.value.length) return []
+  
+  const currentTags = article.value.tags || []
+  const currentId = article.value.id
+  
+  // Calculer le score de similarité pour chaque article
+  const articlesWithScore = allArticles.value
+    .filter(a => a.id !== currentId && a.published) // Exclure l'article actuel
+    .map(a => {
+      const commonTags = (a.tags || []).filter(tag => currentTags.includes(tag))
+      return {
+        ...a,
+        score: commonTags.length // Nombre de tags en commun
+      }
+    })
+    .filter(a => a.score > 0) // Garder seulement ceux avec au moins 1 tag commun
+    .sort((a, b) => {
+      // Trier par score puis par date
+      if (b.score !== a.score) return b.score - a.score
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
+    .slice(0, 3) // Prendre les 3 meilleurs
+  
+  return articlesWithScore
+})
 
 // Parser le Markdown en HTML
 const htmlContent = computed(() => {
