@@ -4,29 +4,44 @@
       Partager :
     </span>
     
-    <!-- Twitter/X -->
+    <!-- Partage natif mobile (Web Share API) -->
     <button
-      @click="shareOnTwitter"
-      class="group flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-mono text-sm uppercase tracking-wider border-2 border-om-dark dark:border-om-darkText shadow-retro hover:shadow-retro-hover active:scale-95 transition-all"
-      aria-label="Partager sur Twitter"
-      title="Partager sur Twitter"
+      v-if="canUseWebShare"
+      @click="nativeShare"
+      class="md:hidden group flex items-center gap-2 px-4 py-2 bg-om-rust dark:bg-om-darkGold hover:bg-om-gold dark:hover:bg-om-darkSepia text-white font-mono text-sm uppercase tracking-wider border-2 border-om-dark dark:border-om-darkText shadow-retro hover:shadow-retro-hover active:scale-95 transition-all"
+      aria-label="Partager"
+      title="Partager"
     >
-      <Icon name="mdi:twitter" size="20" />
-      <span class="hidden sm:inline">Twitter</span>
+      <Icon name="mdi:share-variant" size="20" />
+      <span>Partager</span>
     </button>
 
-    <!-- LinkedIn -->
-    <button
-      @click="shareOnLinkedIn"
-      class="group flex items-center gap-2 px-4 py-2 bg-[#0A66C2] hover:bg-[#004182] text-white font-mono text-sm uppercase tracking-wider border-2 border-om-dark dark:border-om-darkText shadow-retro hover:shadow-retro-hover active:scale-95 transition-all"
-      aria-label="Partager sur LinkedIn"
-      title="Partager sur LinkedIn"
-    >
-      <Icon name="mdi:linkedin" size="20" />
-      <span class="hidden sm:inline">LinkedIn</span>
-    </button>
+    <!-- Boutons réseaux sociaux (desktop ou fallback mobile) -->
+    <template v-if="!canUseWebShare || !isMobile">
+      <!-- Twitter/X -->
+      <button
+        @click="shareOnTwitter"
+        class="group flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-mono text-sm uppercase tracking-wider border-2 border-om-dark dark:border-om-darkText shadow-retro hover:shadow-retro-hover active:scale-95 transition-all"
+        aria-label="Partager sur Twitter"
+        title="Partager sur Twitter"
+      >
+        <Icon name="mdi:twitter" size="20" />
+        <span class="hidden sm:inline">Twitter</span>
+      </button>
 
-    <!-- Copier le lien -->
+      <!-- LinkedIn -->
+      <button
+        @click="shareOnLinkedIn"
+        class="group flex items-center gap-2 px-4 py-2 bg-[#0A66C2] hover:bg-[#004182] text-white font-mono text-sm uppercase tracking-wider border-2 border-om-dark dark:border-om-darkText shadow-retro hover:shadow-retro-hover active:scale-95 transition-all"
+        aria-label="Partager sur LinkedIn"
+        title="Partager sur LinkedIn"
+      >
+        <Icon name="mdi:linkedin" size="20" />
+        <span class="hidden sm:inline">LinkedIn</span>
+      </button>
+    </template>
+
+    <!-- Copier le lien (toujours visible) -->
     <button
       @click="copyLink"
       class="group flex items-center gap-2 px-4 py-2 bg-om-gold dark:bg-om-darkGold hover:bg-om-sepia dark:hover:bg-om-darkSepia text-white font-mono text-sm uppercase tracking-wider border-2 border-om-dark dark:border-om-darkText shadow-retro hover:shadow-retro-hover active:scale-95 transition-all"
@@ -47,6 +62,8 @@ const props = defineProps<{
 }>()
 
 const copied = ref(false)
+const canUseWebShare = ref(false)
+const isMobile = ref(false)
 
 const getFullUrl = () => {
   if (props.url) return props.url
@@ -54,6 +71,31 @@ const getFullUrl = () => {
     return window.location.href
   }
   return ''
+}
+
+// Détecter si Web Share API est disponible
+onMounted(() => {
+  if (process.client) {
+    canUseWebShare.value = 'share' in navigator
+    isMobile.value = window.innerWidth < 768
+  }
+})
+
+// Partage natif mobile
+const nativeShare = async () => {
+  const url = getFullUrl()
+  
+  try {
+    await navigator.share({
+      title: props.title,
+      url: url
+    })
+  } catch (error) {
+    // Utilisateur a annulé ou erreur
+    if (error.name !== 'AbortError') {
+      console.error('Erreur partage natif:', error)
+    }
+  }
 }
 
 const shareOnTwitter = () => {
