@@ -50,7 +50,24 @@ export default defineNuxtConfig({
   // Ignorer les erreurs de prerendering (Supabase non dispo en build)
   nitro: {
     prerender: {
-      failOnError: false
+      failOnError: false,
+      crawlLinks: false,
+      routes: []
+    }
+  },
+  
+  hooks: {
+    async 'nitro:config'(nitroConfig) {
+      // Récupère les routes depuis Supabase pour le SSG
+      if (nitroConfig.prerender?.routes) {
+        try {
+          const { getPrerenderRoutes } = await import('./scripts/prerender-routes')
+          const routes = await getPrerenderRoutes()
+          nitroConfig.prerender.routes.push(...routes)
+        } catch (error) {
+          console.warn('⚠️ Impossible de charger les routes de prerender:', error)
+        }
+      }
     }
   },
 
