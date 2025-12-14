@@ -67,9 +67,9 @@
         </div>
 
         <!-- Contenu de l'article -->
-      <div class="prose prose-lg max-w-none
+      <div class="prose md:prose-lg max-w-none
         prose-headings:font-serif prose-headings:font-bold prose-headings:text-om-dark dark:prose-headings:text-om-darkText
-        prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
+        prose-h1:text-2xl prose-h1:md:text-4xl prose-h2:text-xl prose-h2:md:text-3xl prose-h3:text-lg prose-h3:md:text-2xl
         prose-p:text-om-ink/90 dark:prose-p:text-om-darkText/90 prose-p:leading-relaxed prose-p:font-sans
         prose-a:text-om-sepia dark:prose-a:text-om-darkSepia prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 hover:prose-a:text-om-rust dark:hover:prose-a:text-om-darkGold
         prose-code:bg-om-paperDark dark:prose-code:bg-om-darkPaper prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-om-ink dark:prose-code:text-om-darkText
@@ -77,7 +77,10 @@
         prose-blockquote:border-l-4 prose-blockquote:border-om-rust dark:prose-blockquote:border-om-darkGold prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-om-ink/80 dark:prose-blockquote:text-om-darkText/80
         prose-img:border-2 prose-img:border-om-dark dark:prose-img:border-om-darkGold prose-img:shadow-paper
         prose-strong:text-om-dark dark:prose-strong:text-om-darkText prose-strong:font-bold
-        prose-ul:text-om-ink/90 dark:prose-ul:text-om-darkText/90 prose-ol:text-om-ink/90 dark:prose-ol:text-om-darkText/90 prose-li:text-om-ink/90 dark:prose-li:text-om-darkText/90"
+        prose-ul:text-om-ink/90 dark:prose-ul:text-om-darkText/90 prose-ol:text-om-ink/90 dark:prose-ol:text-om-darkText/90 prose-li:text-om-ink/90 dark:prose-li:text-om-darkText/90
+        [&_table]:text-xs [&_table]:md:text-base
+        [&_th]:px-2 [&_th]:py-1 [&_th]:md:px-4 [&_th]:md:py-2 [&_th]:border [&_th]:border-om-dark dark:[&_th]:border-om-darkGold [&_th]:bg-om-paperDark dark:[&_th]:bg-om-darkPaper
+        [&_td]:px-2 [&_td]:py-1 [&_td]:md:px-4 [&_td]:md:py-2 [&_td]:border [&_td]:border-om-dark/30 dark:[&_td]:border-om-darkGold/30"
         v-html="htmlContent"
         itemprop="articleBody">
       </div>
@@ -86,51 +89,50 @@
         <ShareButtons :title="article.title" :url="articleUrl" class="my-8" />
 
         <!-- Articles similaires -->
-        <section v-if="similarArticles.length > 0" class="my-12 p-6 md:p-8 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-gold/30 dark:border-om-darkGold/30">
-          <h2 class="font-serif text-2xl md:text-3xl font-bold mb-6 text-om-dark dark:text-om-darkText flex items-center gap-3">
-            <Icon name="mdi:book-open-variant" size="28" class="text-om-gold dark:text-om-darkGold" />
-            Articles similaires
-          </h2>
-          
-          <div class="grid gap-4 md:grid-cols-3">
-            <NuxtLink 
-              v-for="similarArticle in similarArticles" 
-              :key="similarArticle.id"
-              :to="`/blog/${similarArticle.slug}`"
-              class="group p-4 bg-om-paper dark:bg-om-darkBg border-2 border-om-dark dark:border-om-darkGold hover:shadow-retro-hover hover:-translate-y-1 transition-all"
-            >
-              <div class="flex gap-2 flex-wrap mb-3">
-                <TagBadge v-for="tag in similarArticle.tags.slice(0, 2)" :key="tag" :tag="tag" size="sm" />
-              </div>
-              
-              <h3 class="font-serif text-lg font-bold mb-2 text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors line-clamp-2">
-                {{ similarArticle.title }}
-              </h3>
-              
-              <p class="text-sm text-om-ink/70 dark:text-om-darkText/70 line-clamp-2 mb-3">
-                {{ similarArticle.description }}
-              </p>
-              
-              <div class="flex items-center justify-between text-xs">
-                <time class="font-mono text-om-rust dark:text-om-darkGold font-bold">
-                  {{ new Date(similarArticle.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) }}
-                </time>
-                <span v-if="similarArticle.reading_time" class="font-mono text-om-ink/60 dark:text-om-darkText/60">
-                  {{ similarArticle.reading_time }} min
-                </span>
-              </div>
-            </NuxtLink>
-          </div>
-        </section>
+        <ClientOnly>
+          <section v-if="similarArticles.length > 0" class="my-12 p-6 md:p-8 bg-om-paperDark dark:bg-om-darkPaper border-2 border-om-gold/30 dark:border-om-darkGold/30">
+            <h2 class="font-serif text-2xl md:text-3xl font-bold mb-6 text-om-dark dark:text-om-darkText flex items-center gap-3">
+              <Icon name="mdi:book-open-variant" size="28" class="text-om-gold dark:text-om-darkGold" />
+              Articles similaires
+            </h2>
+            
+            <div class="grid gap-4 md:grid-cols-3">
+              <NuxtLink 
+                v-for="similarArticle in similarArticles" 
+                :key="similarArticle.id"
+                :to="`/blog/${similarArticle.slug}`"
+                class="group p-4 bg-om-paper dark:bg-om-darkBg border-2 border-om-dark dark:border-om-darkGold hover:shadow-retro-hover hover:-translate-y-1 transition-all"
+              >
+                <div class="flex gap-2 flex-wrap mb-3">
+                  <TagBadge v-for="tag in similarArticle.tags.slice(0, 2)" :key="tag" :tag="tag" size="sm" />
+                </div>
+                
+                <h3 class="font-serif text-lg font-bold mb-2 text-om-dark dark:text-om-darkText group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors line-clamp-2">
+                  {{ similarArticle.title }}
+                </h3>
+                
+                <p class="text-sm text-om-ink/70 dark:text-om-darkText/70 line-clamp-2 mb-3">
+                  {{ similarArticle.description }}
+                </p>
+                
+                <div class="flex items-center justify-between text-xs">
+                  <time class="font-mono text-om-rust dark:text-om-darkGold font-bold">
+                    {{ new Date(similarArticle.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) }}
+                  </time>
+                  <span v-if="similarArticle.reading_time" class="font-mono text-om-ink/60 dark:text-om-darkText/60">
+                    {{ similarArticle.reading_time }} min
+                  </span>
+                </div>
+              </NuxtLink>
+            </div>
+          </section>
+        </ClientOnly>
 
         <!-- Section commentaires -->
         <ClientOnly>
           <Comments v-if="article" :article-id="article.id" />
         </ClientOnly>
       </article>
-
-      <!-- Table des matières (responsive: mobile accordéon + desktop sidebar) -->
-      <TableOfContents :content="htmlContent" />
     </div>
 
     <!-- Erreur 404 -->
