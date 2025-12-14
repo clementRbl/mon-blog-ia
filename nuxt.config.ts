@@ -145,7 +145,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    registerType: 'prompt',
+    registerType: 'prompt', // Force rebuild for testing prompt mode
     base: '/mon-blog-ia/',
     scope: '/mon-blog-ia/',
     manifest: {
