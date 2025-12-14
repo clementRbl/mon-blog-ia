@@ -3,7 +3,6 @@
     <!-- Banner pour in-app browsers -->
     <ClientOnly>
       <InAppBrowserBanner />
-      <UpdatePrompt />
     </ClientOnly>
     
     <header class="border-b-2 border-om-dark dark:border-om-darkGold py-6 sticky top-0 bg-om-paper/95 dark:bg-om-darkBg/95 backdrop-blur-sm z-50" role="banner">
