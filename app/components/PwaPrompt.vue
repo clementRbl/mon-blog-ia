@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showPrompt" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-om-dark text-om-paper p-4 shadow-retro-hover border-2 border-om-gold z-50 animate-slide-up">
+  <div v-if="showPrompt" data-pwa-prompt class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-om-dark text-om-paper p-4 shadow-retro-hover border-2 border-om-gold z-[60] animate-slide-up">
     <div class="flex items-start gap-3">
       <Icon name="mdi:download" size="24" class="text-om-gold flex-shrink-0 mt-1" />
       <div class="flex-1">
@@ -31,7 +31,16 @@
 const showPrompt = ref(false)
 let deferredPrompt: any = null
 
+const isIOS = () => {
+  if (!process.client) return false
+  const ua = navigator.userAgent || ''
+  return /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream
+}
+
 onMounted(() => {
+  // Ne pas afficher sur iOS (géré par IosInstallPrompt)
+  if (isIOS()) return
+  
   // Écouter l'événement beforeinstallprompt
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
@@ -66,6 +75,9 @@ const install = async () => {
   
   deferredPrompt = null
   showPrompt.value = false
+  
+  // Autoriser l'affichage du PushPrompt après installation
+  localStorage.setItem('pwa-prompt-closed', 'true')
 }
 
 const dismiss = () => {
@@ -76,6 +88,9 @@ const dismiss = () => {
   setTimeout(() => {
     localStorage.removeItem('pwa-prompt-dismissed')
   }, 7 * 24 * 60 * 60 * 1000)
+  
+  // Autoriser l'affichage du PushPrompt après fermeture
+  localStorage.setItem('pwa-prompt-closed', 'true')
 }
 </script>
 

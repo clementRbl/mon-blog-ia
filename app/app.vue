@@ -70,6 +70,7 @@
 
     <ClientOnly>
       <PwaPrompt />
+      <IosInstallPrompt />
       <PushPrompt />
     </ClientOnly>
   </div>
