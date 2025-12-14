@@ -112,7 +112,17 @@ const extractHeadings = () => {
 const scrollToHeading = (id: string) => {
   const element = document.getElementById(id)
   if (element) {
-    const headerHeight = 120 // Header + padding
+    const isMobile = window.innerWidth < 768
+    let headerHeight = isMobile ? 100 : 120 // Base header height
+    
+    // Sur mobile, ajouter la hauteur de l'accordéon TOC s'il est ouvert
+    if (isMobile && isOpen.value) {
+      const tocElement = document.querySelector('.lg\\:hidden.mb-8')
+      if (tocElement) {
+        headerHeight += tocElement.getBoundingClientRect().height + 32 // +32 pour margin
+      }
+    }
+    
     const elementPosition = element.getBoundingClientRect().top + window.scrollY
     const offsetPosition = elementPosition - headerHeight
 
