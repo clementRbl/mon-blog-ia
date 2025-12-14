@@ -145,7 +145,7 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     base: '/mon-blog-ia/',
     scope: '/mon-blog-ia/',
     manifest: {
