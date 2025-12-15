@@ -93,6 +93,10 @@ export default defineNuxtConfig({
         { name: 'referrer', content: 'strict-origin-when-cross-origin' },
       ],
       link: [
+        // Preconnect aux fonts Google pour réduire la latence
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+        // Favicons
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
