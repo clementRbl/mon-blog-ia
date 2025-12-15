@@ -54,11 +54,11 @@ export const useSupabase = () => {
     
     // Helper pour les articles
     articles: {
-      // Récupérer tous les articles publiés
+      // Récupérer tous les articles publiés (optimisé: seulement les champs nécessaires)
       getPublished: async () => {
         return await supabase
           .from('articles')
-          .select('*')
+          .select('id, title, slug, description, date, tags, reading_time, published')
           .eq('published', true)
           .order('date', { ascending: false })
       },
