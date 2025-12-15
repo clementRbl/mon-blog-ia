@@ -102,8 +102,8 @@
                 <div v-if="index === 0" class="hidden md:inline-block bg-om-rust text-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider mb-1">
                   New
                 </div>
-                <time class="font-mono text-xs text-om-rust dark:text-om-darkGold font-bold whitespace-nowrap block" :datetime="new Date(article.date).toISOString()">
-                  {{ new Date(article.date).toLocaleDateString('fr-FR') }}
+                <time class="font-mono text-xs text-om-rust dark:text-om-darkGold font-bold whitespace-nowrap block" :datetime="article.date">
+                  {{ formatDate(article.date) }}
                 </time>
                 <span v-if="article.reading_time" class="font-mono text-xs text-om-ink/60 dark:text-om-darkText/60 flex items-center justify-end gap-1 mt-1">
                   <Icon name="mdi:clock-outline" size="14" aria-hidden="true" />
@@ -166,6 +166,17 @@
 <script setup lang="ts">
 const { articles: articlesAPI, quotes: quotesAPI } = useSupabase()
 
+// Helper pour formater les dates de manière cohérente SSR/client
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('fr-FR', { 
+    day: '2-digit', 
+    month: '2-digit', 
+    year: 'numeric',
+    timeZone: 'Europe/Paris'
+  })
+}
+
 // Gestion du mode d'affichage (grille/liste)
 const viewMode = ref<'list' | 'grid'>('list')
 
@@ -197,21 +208,30 @@ if (process.client) {
 }
 
 // Effet machine à écrire réaliste
+// Fonction de génération de nombres pseudo-aléatoires avec seed (pour hydration)
+const seededRandom = (() => {
+  let seed = 12345 // Seed fixe pour cohérence SSR/client
+  return () => {
+    const x = Math.sin(seed++) * 10000
+    return x - Math.floor(x)
+  }
+})()
+
 const typeWriter = (text: string, element: HTMLElement) => {
   let i = 0
   element.textContent = ''
   
   const getTypingDelay = (char: string, nextChar: string) => {
     // Délai de base entre 40 et 90ms
-    let delay = Math.random() * 50 + 40
+    let delay = seededRandom() * 50 + 40
     
     // Pause plus longue après ponctuation
     if (char === '.' || char === '!' || char === '?') {
-      delay = Math.random() * 200 + 300 // 300-500ms
+      delay = seededRandom() * 200 + 300 // 300-500ms
     } else if (char === ',' || char === ';') {
-      delay = Math.random() * 100 + 150 // 150-250ms
+      delay = seededRandom() * 100 + 150 // 150-250ms
     } else if (char === ' ') {
-      delay = Math.random() * 30 + 60 // 60-90ms
+      delay = seededRandom() * 30 + 60 // 60-90ms
     }
     
     // Accélération sur les voyelles successives
@@ -221,8 +241,8 @@ const typeWriter = (text: string, element: HTMLElement) => {
     }
     
     // Parfois une petite hésitation (5% de chance)
-    if (Math.random() < 0.05) {
-      delay += Math.random() * 150 + 100
+    if (seededRandom() < 0.05) {
+      delay += seededRandom() * 150 + 100
     }
     
     return delay
