@@ -5,7 +5,7 @@ Disallow: /admin/
 Disallow: /_nuxt/
 
 # Sitemaps (IMPORTANT pour indexation Google)
-Sitemap: https://clementRbl.github.io/mon-blog-ia/sitemap.xml
+Sitemap: https://clementreboul.netlify.app/sitemap.xml
 
 # Moteurs de recherche majeurs - Crawl rapide autorisé
 User-agent: Googlebot

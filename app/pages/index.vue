@@ -387,7 +387,7 @@ const popularTags = computed(() => {
 })
 
 // SEO pour la page d'accueil (basé sur TOUS les articles)
-const siteUrl = 'https://clementRbl.github.io/mon-blog-ia'
+const siteUrl = 'https://clementreboul.netlify.app'
 const articlesCount = computed(() => allArticles.value?.length || 0)
 
 useHead({

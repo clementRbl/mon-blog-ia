@@ -141,7 +141,7 @@ const otherTags = computed(() => {
 })
 
 // SEO optimization
-const siteUrl = 'https://clementRbl.github.io/mon-blog-ia'
+const siteUrl = 'https://clementreboul.netlify.app'
 const pageUrl = `${siteUrl}/tags/${tagSlug}`
 
 useHead({

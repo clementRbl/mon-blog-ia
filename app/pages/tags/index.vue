@@ -102,7 +102,7 @@ const tagsWithCount = computed(() => {
 const totalArticles = computed(() => allArticles.value?.length || 0)
 
 // SEO optimization
-const siteUrl = 'https://clementRbl.github.io/mon-blog-ia'
+const siteUrl = 'https://clementreboul.netlify.app'
 const pageUrl = `${siteUrl}/tags`
 
 useHead({

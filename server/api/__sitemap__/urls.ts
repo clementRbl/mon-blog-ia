@@ -10,7 +10,7 @@ export default defineEventHandler(async () => {
     config.public.supabaseAnonKey
   )
   
-  const baseUrl = 'https://clementRbl.github.io/mon-blog-ia'
+  const baseUrl = 'https://clementreboul.netlify.app'
   
   // Récupérer tous les articles publiés
   const { data: articles } = await supabase

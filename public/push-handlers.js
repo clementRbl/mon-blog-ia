@@ -9,7 +9,7 @@ self.addEventListener('push', (event) => {
       body: payload.body || 'Un nouvel article vient d\'être publié !',
       icon: payload.icon || '/mon-blog-ia/images/logo.png',
       data: {
-        url: payload.url || 'https://clementrbl.github.io/mon-blog-ia/'
+        url: payload.url || 'https://clementreboul.netlify.app/'
       },
       tag: `blog-${payload.timestamp || Date.now()}`,
       requireInteraction: false,
@@ -38,7 +38,7 @@ self.addEventListener('notificationclick', (event) => {
 
   // Récupérer l'URL depuis les données de la notification
   const notificationData = event.notification.data || {}
-  const targetUrl = notificationData.url || 'https://clementrbl.github.io/mon-blog-ia/'
+  const targetUrl = notificationData.url || 'https://clementreboul.netlify.app/'
   
   console.log('Notification clicked, URL:', targetUrl)
   

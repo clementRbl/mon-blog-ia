@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     config.public.supabaseAnonKey
   )
   
-  const baseUrl = 'https://clementRbl.github.io/mon-blog-ia'
+  const baseUrl = 'https://clementreboul.netlify.app'
   const currentDate = new Date().toUTCString()
   
   // Récupérer tous les articles publiés

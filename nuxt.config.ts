@@ -28,7 +28,7 @@ export default defineNuxtConfig({
 
   // Configuration du module SEO
   site: {
-    url: 'https://mon-blog-ia.netlify.app', // URL Netlify (à ajuster selon ton domaine)
+    url: 'https://clementreboul.netlify.app', // URL Netlify
     name: 'Blog IA Engineering - Clément Reboul',
     description: 'Blog personnel sur l\'intelligence artificielle et le machine learning',
     defaultLocale: 'fr',
@@ -79,12 +79,12 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'Blog IA' },
         // Open Graph
-        { property: 'og:image', content: 'https://mon-blog-ia.netlify.app/images/og-image.png' },
+        { property: 'og:image', content: 'https://clementreboul.netlify.app/images/og-image.png' },
         { property: 'og:image:width', content: '1024' },
         { property: 'og:image:height', content: '1024' },
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:image', content: 'https://mon-blog-ia.netlify.app/images/og-image.png' },
+        { name: 'twitter:image', content: 'https://clementreboul.netlify.app/images/og-image.png' },
         // Confidentialité et sécurité
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
         { name: 'referrer', content: 'strict-origin-when-cross-origin' },
@@ -118,7 +118,7 @@ export default defineNuxtConfig({
     adminEmail: '', // Email admin pour les notifications (serveur uniquement)
     supabaseServiceRoleKey: '', // Service role key Supabase (serveur uniquement)
     public: {
-      siteUrl: 'https://mon-blog-ia.netlify.app',
+      siteUrl: 'https://clementreboul.netlify.app',
       siteName: 'Clément Reboul',
       siteDescription: 'Blog personnel IA Engineering.',
       language: 'fr',

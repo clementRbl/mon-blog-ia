@@ -29,3 +29,7 @@ logs
 
 # Content (articles)
 content/
+
+# Deployment documentation
+DEPLOYMENT.md
+DEPLOYMENT_NETLIFY.md

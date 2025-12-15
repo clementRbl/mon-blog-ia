@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     const { articleTitle, commentAuthor, commentContent } = body
 
     // Récupérer l'URL de base
-    const baseUrl = config.public.siteUrl || 'https://clementrbl.github.io/mon-blog-ia'
+    const baseUrl = config.public.siteUrl || 'https://clementreboul.netlify.app'
 
     // Payload pour la notification push
     const payload = {

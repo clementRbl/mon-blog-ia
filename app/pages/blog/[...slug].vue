@@ -309,7 +309,7 @@ const htmlContent = computed(() => {
 })
 
 // SEO complet pour les articles
-const siteUrl = 'https://clementRbl.github.io/mon-blog-ia'
+const siteUrl = 'https://clementreboul.netlify.app'
 const articleUrl = computed(() => article.value ? `${siteUrl}/blog/${article.value.slug}` : '')
 
 if (article.value) {

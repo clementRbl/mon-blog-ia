@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   
   // Autoriser uniquement les requêtes locales (dev) ou depuis ton domaine (prod)
   const isLocalhost = host?.includes('localhost') || host?.includes('127.0.0.1')
-  const isYourDomain = origin?.includes('clementRbl.github.io')
+  const isYourDomain = origin?.includes('clementreboul.netlify.app')
   
   if (!isLocalhost && !isYourDomain) {
     throw createError({
