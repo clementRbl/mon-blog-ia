@@ -9,6 +9,11 @@
       <VintageToast />
     </ClientOnly>
     
+    <!-- Loader vintage pour navigation SPA uniquement -->
+    <ClientOnly>
+      <VintageLoader v-if="isNavigating" />
+    </ClientOnly>
+    
     <header class="border-b-2 border-om-dark dark:border-om-darkGold py-6 sticky top-0 bg-om-paper/95 dark:bg-om-darkBg/95 backdrop-blur-sm z-50" role="banner">
       <!-- Toggle en position fixe sur mobile uniquement -->
       <div class="md:hidden fixed top-4 right-4 z-[60]">
@@ -81,6 +86,25 @@
 
 <script setup>
 const { articles: articlesAPI } = useSupabase()
+
+// État de navigation pour le loader vintage
+const isNavigating = ref(false)
+
+// Détecter la navigation pour afficher le loader
+if (process.client) {
+  const nuxtApp = useNuxtApp()
+  
+  nuxtApp.hook('page:start', () => {
+    isNavigating.value = true
+  })
+  
+  nuxtApp.hook('page:finish', () => {
+    // Petit délai pour transition fluide
+    setTimeout(() => {
+      isNavigating.value = false
+    }, 300)
+  })
+}
 
 // Charger tous les articles pour la recherche
 const allArticles = ref([])
