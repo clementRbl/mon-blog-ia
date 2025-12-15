@@ -179,7 +179,7 @@ export default defineNuxtConfig({
       display: 'standalone',
       orientation: 'portrait',
       scope: '/',
-      start_url: '/',
+      start_url: '/?standalone=true',
       lang: 'fr',
       icons: [
         {
@@ -205,6 +205,13 @@ export default defineNuxtConfig({
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable'
+        }
+      ],
+      screenshots: [
+        {
+          src: '/images/og-image-social.png',
+          sizes: '1200x630',
+          type: 'image/png'
         }
       ]
     },

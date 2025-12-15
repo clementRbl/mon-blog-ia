@@ -25,7 +25,7 @@
 
       <!-- Citation ou tagline -->
       <p class="font-mono text-xs md:text-sm text-om-ink/60 dark:text-om-darkText/60 animate-fade-in animation-delay-500 text-center max-w-xs md:max-w-md">
-        Préparation du blog vintage pour une expérience inoubliable...
+        Préparation pour une expérience inoubliable...
       </p>
     </div>
   </div>

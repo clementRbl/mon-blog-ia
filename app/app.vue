@@ -94,6 +94,19 @@ const isNavigating = ref(false)
 if (process.client) {
   const nuxtApp = useNuxtApp()
   
+  // Afficher le loader au démarrage de l'app PWA
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                       window.navigator.standalone === true ||
+                       document.referrer.includes('android-app://')
+  
+  if (isStandalone) {
+    // Loader au premier chargement de la PWA
+    isNavigating.value = true
+    setTimeout(() => {
+      isNavigating.value = false
+    }, 800) // 0.8s : assez pour voir l'animation, assez court pour ne pas ralentir
+  }
+  
   nuxtApp.hook('page:start', () => {
     isNavigating.value = true
   })
