@@ -290,5 +290,9 @@ export default defineNuxtConfig({
         }
       }
     }
+  },
+
+  experimental: {
+    inlineSSRStyles: true
   }
 })
