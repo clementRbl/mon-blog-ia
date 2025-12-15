@@ -126,7 +126,8 @@
               {{ article.title }}
             </h3>
             
-            <p v-if="viewMode === 'list'" class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
+            <!-- Toujours afficher la description en SSR (viewMode=list par défaut), masquer uniquement après hydration si grid -->
+            <p v-if="!isViewModeLoaded || viewMode === 'list'" class="font-sans text-om-ink/80 dark:text-om-darkText/80 leading-relaxed line-clamp-3">
               {{ article.description }}
             </p>
             
