@@ -57,7 +57,7 @@
       }" />
     </main>
 
-    <footer class="md:sticky md:bottom-0 border-t-2 border-om-dark dark:border-om-darkGold py-4 text-center bg-om-paperDark md:bg-om-paperDark/95 dark:bg-om-darkPaper md:dark:bg-om-darkPaper/95 md:backdrop-blur-sm md:z-40" role="contentinfo">
+    <footer class="md:sticky md:bottom-0 border-t-2 border-om-dark dark:border-om-darkGold py-4 text-center bg-om-paperDark md:bg-om-paperDark/95 dark:bg-om-darkPaper md:dark:bg-om-darkPaper/95 md:backdrop-blur-sm md:z-40 will-change-transform" role="contentinfo">
       <div class="container mx-auto font-mono text-xs text-om-dark/60 dark:text-om-darkText/60">
         <p class="opacity-60 text-[10px] uppercase mb-2">© 2025 Clément Reboul</p>
         <nav class="flex justify-center gap-4 text-[10px] uppercase" aria-label="Navigation secondaire">

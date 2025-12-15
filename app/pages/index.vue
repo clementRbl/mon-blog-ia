@@ -3,7 +3,7 @@
     <h1 class="sr-only">Blog IA Engineering - Articles sur l'Intelligence Artificielle par Clément Reboul</h1>
     
     <!-- Citation avec espace réservé et animation -->
-    <div class="mb-8 min-h-[120px] md:min-h-[160px]">
+    <div class="mb-8 h-[120px] md:h-[160px]">
       <ClientOnly>
         <Transition
           enter-active-class="transition-all duration-1000 ease-out"

@@ -140,7 +140,15 @@ export default defineNuxtConfig({
       { name: 'Playfair Display', provider: 'google', weights: [400, 700, 900] },
       { name: 'Lora', provider: 'google', weights: [400, 600] },
       { name: 'JetBrains Mono', provider: 'google', weights: [400] }
-    ]
+    ],
+    defaults: {
+      preload: true,
+      fallbacks: {
+        'serif': ['Georgia', 'Times New Roman'],
+        'sans-serif': ['Arial', 'Helvetica'],
+        'monospace': ['Courier New', 'monospace']
+      }
+    }
   },
 
   content: {
@@ -267,6 +275,20 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: true,
       type: 'module'
+    }
+  },
+
+  // Optimisation Vite pour réduire le JS/CSS non utilisé
+  vite: {
+    build: {
+      cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'icons': ['@iconify/vue'],
+          }
+        }
+      }
     }
   }
 })
