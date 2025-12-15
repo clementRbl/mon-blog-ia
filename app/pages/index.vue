@@ -78,7 +78,8 @@
     <!-- Liste des articles (scroll naturel) -->
     <div role="feed" aria-label="Liste des derniers articles publiés">
       <template v-if="articles && articles.length > 0">
-        <div :class="viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-8'">
+        <!-- Toujours liste par défaut en SSR, puis appliquer viewMode après hydration -->
+        <div :class="isViewModeLoaded && viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-8'">
           <article v-for="(article, index) in articles" :key="article.id" 
             :class="[
               'group relative border-2 border-om-dark dark:border-om-darkGold bg-om-paper dark:bg-om-darkPaper cursor-pointer overflow-hidden',
@@ -178,14 +179,18 @@ const formatDate = (dateString: string) => {
 }
 
 // Gestion du mode d'affichage (grille/liste)
+// Utiliser 'list' par défaut pour SSR et client initial (évite hydration mismatch)
 const viewMode = ref<'list' | 'grid'>('list')
+const isViewModeLoaded = ref(false)
 
-// Charger la préférence depuis localStorage
+// Charger la préférence depuis localStorage après hydration
 onMounted(() => {
   const saved = localStorage.getItem('articles-view-mode')
   if (saved === 'grid' || saved === 'list') {
     viewMode.value = saved
   }
+  // Marquer comme chargé après avoir lu localStorage
+  isViewModeLoaded.value = true
 })
 
 // Sauvegarder la préférence
