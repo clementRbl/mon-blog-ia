@@ -16,7 +16,8 @@ export const useSupabase = () => {
       supabaseKey,
       {
         auth: {
-          persistSession: true,
+          // En SSR, pas de persistSession (localStorage indisponible)
+          persistSession: process.client,
           storageKey: 'sb-auth-token'
         }
       }

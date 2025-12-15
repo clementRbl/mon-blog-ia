@@ -7,8 +7,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  // Active le SSR (Server-Side Rendering)
+  ssr: true,
+
+  // Compatibility date pour Netlify Functions 2.0 (streaming, blobs, etc.)
+  compatibilityDate: '2024-05-07',
+
   experimental: {
-    payloadExtraction: false // Désactiver le preload de payload
+    payloadExtraction: false
   },
 
   modules: [
@@ -22,7 +28,7 @@ export default defineNuxtConfig({
 
   // Configuration du module SEO
   site: {
-    url: 'https://clementrbl.github.io',
+    url: 'https://mon-blog-ia.netlify.app', // URL Netlify (à ajuster selon ton domaine)
     name: 'Blog IA Engineering - Clément Reboul',
     description: 'Blog personnel sur l\'intelligence artificielle et le machine learning',
     defaultLocale: 'fr',
@@ -47,33 +53,15 @@ export default defineNuxtConfig({
     robotsTxt: false // Désactiver la génération automatique car on a déjà robots.txt
   },
 
-  // Ignorer les erreurs de prerendering (Supabase non dispo en build)
+  // Configuration Nitro pour Netlify (auto-détection)
   nitro: {
-    prerender: {
-      failOnError: false,
-      crawlLinks: false,
-      routes: ['/404.html']
-    }
-  },
-  
-  hooks: {
-    async 'nitro:config'(nitroConfig) {
-      // Récupère les routes depuis Supabase pour le SSG
-      if (nitroConfig.prerender?.routes) {
-        try {
-          const { getPrerenderRoutes } = await import('./scripts/prerender-routes')
-          const routes = await getPrerenderRoutes()
-          nitroConfig.prerender.routes.push(...routes)
-        } catch (error) {
-          console.warn('⚠️ Impossible de charger les routes de prerender:', error)
-        }
-      }
-    }
+    // Pas de preset nécessaire, Nitro détecte automatiquement Netlify
+    compatibilityDate: '2024-05-07',
   },
 
-  // --- Configuration GitHub Pages ---
+  // --- Configuration pour Netlify (pas de baseURL) ---
   app: {
-    baseURL: '/mon-blog-ia/', 
+    baseURL: '/', 
     head: {
       htmlAttrs: {
         lang: 'fr'
@@ -91,20 +79,20 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'Blog IA' },
         // Open Graph
-        { property: 'og:image', content: 'https://clementRbl.github.io/mon-blog-ia/images/og-image.png' },
+        { property: 'og:image', content: 'https://mon-blog-ia.netlify.app/images/og-image.png' },
         { property: 'og:image:width', content: '1024' },
         { property: 'og:image:height', content: '1024' },
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:image', content: 'https://clementRbl.github.io/mon-blog-ia/images/og-image.png' },
+        { name: 'twitter:image', content: 'https://mon-blog-ia.netlify.app/images/og-image.png' },
         // Confidentialité et sécurité
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
         { name: 'referrer', content: 'strict-origin-when-cross-origin' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/mon-blog-ia/favicon.svg' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/mon-blog-ia/images/logo.png' },
-        { rel: 'manifest', href: '/mon-blog-ia/manifest.webmanifest' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/images/logo.png' },
+        { rel: 'manifest', href: '/manifest.webmanifest' },
       ],
       script: [
         {
@@ -130,7 +118,7 @@ export default defineNuxtConfig({
     adminEmail: '', // Email admin pour les notifications (serveur uniquement)
     supabaseServiceRoleKey: '', // Service role key Supabase (serveur uniquement)
     public: {
-      siteUrl: 'https://clementRbl.github.io/mon-blog-ia',
+      siteUrl: 'https://mon-blog-ia.netlify.app',
       siteName: 'Clément Reboul',
       siteDescription: 'Blog personnel IA Engineering.',
       language: 'fr',
@@ -163,8 +151,8 @@ export default defineNuxtConfig({
 
   pwa: {
     registerType: 'autoUpdate',
-    base: '/mon-blog-ia/',
-    scope: '/mon-blog-ia/',
+    base: '/',
+    scope: '/',
     manifest: {
       name: 'Blog IA Engineering - Clément Reboul',
       short_name: 'Blog IA',
@@ -173,43 +161,43 @@ export default defineNuxtConfig({
       background_color: '#Fdfbf7',
       display: 'standalone',
       orientation: 'portrait',
-      scope: '/mon-blog-ia/',
-      start_url: '/mon-blog-ia/',
+      scope: '/',
+      start_url: '/',
       lang: 'fr',
       icons: [
         {
-          src: '/mon-blog-ia/images/logo.png',
+          src: '/images/logo.png',
           sizes: '1024x1024',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/mon-blog-ia/images/logo.png',
+          src: '/images/logo.png',
           sizes: '1024x1024',
           type: 'image/png',
           purpose: 'maskable'
         },
         {
-          src: '/mon-blog-ia/images/logo.png',
+          src: '/images/logo.png',
           sizes: '512x512',
           type: 'image/png'
         },
         {
-          src: '/mon-blog-ia/images/logo.png',
+          src: '/images/logo.png',
           sizes: '192x192',
           type: 'image/png'
         }
       ]
     },
     workbox: {
-      navigateFallback: '/mon-blog-ia/',
+      navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,ico,woff,woff2}'],
       // Importer le script de gestion des push
-      importScripts: ['/mon-blog-ia/push-handlers.js'],
+      importScripts: ['/push-handlers.js'],
       runtimeCaching: [
         {
           // Page d'accueil : toujours vérifier le réseau en premier
-          urlPattern: /^https:\/\/clementRbl\.github\.io\/mon-blog-ia\/?$/i,
+          urlPattern: ({ url }) => url.pathname === '/',
           handler: 'NetworkFirst',
           options: {
             cacheName: 'blog-home',
@@ -224,8 +212,8 @@ export default defineNuxtConfig({
           }
         },
         {
-          // Autres pages du blog
-          urlPattern: /^https:\/\/clementRbl\.github\.io\/mon-blog-ia\/.*/i,
+          // Autres pages du blog (SSR)
+          urlPattern: ({ url, request }) => request.mode === 'navigate',
           handler: 'NetworkFirst',
           options: {
             cacheName: 'blog-pages',

@@ -56,6 +56,8 @@ const isBannerDismissed = () => {
 }
 
 const openInBrowser = () => {
+  if (!process.client) return
+  
   // Copier l'URL dans le presse-papier
   const url = window.location.href
   
@@ -76,10 +78,14 @@ const openInBrowser = () => {
 
 const closeBanner = () => {
   showBanner.value = false
-  localStorage.setItem('inAppBrowserBannerDismissed', 'true')
+  if (process.client) {
+    localStorage.setItem('inAppBrowserBannerDismissed', 'true')
+  }
 }
 
 onMounted(() => {
+  if (!process.client) return
+  
   // Afficher le banner uniquement si :
   // 1. On est dans un in-app browser
   // 2. La PWA n'est pas installée

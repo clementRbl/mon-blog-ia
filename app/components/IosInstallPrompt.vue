@@ -39,6 +39,8 @@ const isInStandaloneMode = () => {
 }
 
 onMounted(() => {
+  if (!process.client) return
+  
   // Afficher uniquement sur iOS, si pas déjà en mode standalone
   if (!isIOS() || isInStandaloneMode()) {
     return
@@ -69,8 +71,10 @@ onMounted(() => {
 
 const dismiss = () => {
   showPrompt.value = false
-  // Stocker le timestamp pour vérification au prochain chargement
-  localStorage.setItem('ios-install-prompt-dismissed', Date.now().toString())
+  if (process.client) {
+    // Stocker le timestamp pour vérification au prochain chargement
+    localStorage.setItem('ios-install-prompt-dismissed', Date.now().toString())
+  }
 }
 </script>
 

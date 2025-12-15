@@ -38,6 +38,8 @@ const isIOS = () => {
 }
 
 onMounted(() => {
+  if (!process.client) return
+  
   // Ne pas afficher sur iOS (géré par IosInstallPrompt)
   if (isIOS()) return
   
@@ -92,8 +94,10 @@ const install = async () => {
 
 const dismiss = () => {
   showPrompt.value = false
-  // Stocker le timestamp pour vérification au prochain chargement
-  localStorage.setItem('pwa-prompt-dismissed', Date.now().toString())
+  if (process.client) {
+    // Stocker le timestamp pour vérification au prochain chargement
+    localStorage.setItem('pwa-prompt-dismissed', Date.now().toString())
+  }
 }
 </script>
 

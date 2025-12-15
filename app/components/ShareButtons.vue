@@ -83,6 +83,7 @@ onMounted(() => {
 
 // Partage natif mobile
 const nativeShare = async () => {
+  if (!process.client) return
   const url = getFullUrl()
   
   try {
@@ -99,6 +100,7 @@ const nativeShare = async () => {
 }
 
 const shareOnTwitter = () => {
+  if (!process.client) return
   const url = getFullUrl()
   const text = encodeURIComponent(props.title)
   const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`
@@ -106,12 +108,14 @@ const shareOnTwitter = () => {
 }
 
 const shareOnLinkedIn = () => {
+  if (!process.client) return
   const url = getFullUrl()
   const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
   window.open(linkedInUrl, '_blank')
 }
 
 const copyLink = async () => {
+  if (!process.client) return
   const url = getFullUrl()
   
   try {

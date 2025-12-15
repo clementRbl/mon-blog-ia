@@ -205,7 +205,7 @@ const canUseWebShare = ref(false)
 const { addCopyButtons } = useCodeCopyButtons()
 
 const nativeShare = async () => {
-  if (!article.value) return
+  if (!article.value || !process.client) return
   
   try {
     await navigator.share({

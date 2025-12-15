@@ -335,29 +335,31 @@ onMounted(() => {
     }
   }
   
-  window.addEventListener('resize', handleResize)
-  
-  // Setup IntersectionObserver
-  if (isMobile.value && hasMoreArticles.value) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore.value && hasMoreArticles.value) {
-          loadMoreArticles()
+  if (process.client) {
+    window.addEventListener('resize', handleResize)
+    
+    // Setup IntersectionObserver
+    if (isMobile.value && hasMoreArticles.value) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !isLoadingMore.value && hasMoreArticles.value) {
+            loadMoreArticles()
+          }
+        },
+        { threshold: 0.1 }
+      )
+      
+      nextTick(() => {
+        if (loadMoreTrigger.value) {
+          observer.observe(loadMoreTrigger.value)
         }
-      },
-      { threshold: 0.1 }
-    )
-    
-    nextTick(() => {
-      if (loadMoreTrigger.value) {
-        observer.observe(loadMoreTrigger.value)
-      }
-    })
-    
-    onBeforeUnmount(() => {
-      observer.disconnect()
-      window.removeEventListener('resize', handleResize)
-    })
+      })
+      
+      onBeforeUnmount(() => {
+        observer.disconnect()
+        window.removeEventListener('resize', handleResize)
+      })
+    }
   }
 })
 

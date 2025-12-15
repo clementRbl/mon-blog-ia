@@ -137,7 +137,7 @@ const scrollToHeading = (id: string) => {
 let observer: IntersectionObserver | null = null
 
 const observeHeadings = () => {
-  if (typeof window === 'undefined') return
+  if (!process.client) return
 
   // Disconnect l'ancien observer s'il existe
   if (observer) {
