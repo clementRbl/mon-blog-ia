@@ -40,7 +40,7 @@ export default defineNuxtConfig({
     defaults: {
       component: 'OgImage',
       props: {
-        image: '/mon-blog-ia/images/og-image.png'
+        image: '/images/og-image-social.png'
       }
     }
   },
@@ -82,19 +82,21 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'Blog IA' },
         // Open Graph
-        { property: 'og:image', content: 'https://clementreboul.netlify.app/images/og-image.png' },
-        { property: 'og:image:width', content: '1024' },
-        { property: 'og:image:height', content: '1024' },
+        { property: 'og:image', content: 'https://clementreboul.netlify.app/images/og-image-social.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:image', content: 'https://clementreboul.netlify.app/images/og-image.png' },
+        { name: 'twitter:image', content: 'https://clementreboul.netlify.app/images/og-image-social.png' },
         // Confidentialité et sécurité
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
         { name: 'referrer', content: 'strict-origin-when-cross-origin' },
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/images/logo.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'manifest', href: '/manifest.webmanifest' },
       ],
       script: [
@@ -169,26 +171,28 @@ export default defineNuxtConfig({
       lang: 'fr',
       icons: [
         {
-          src: '/images/logo.png',
-          sizes: '1024x1024',
+          src: '/images/icon-192x192.png',
+          sizes: '192x192',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/images/logo.png',
-          sizes: '1024x1024',
+          src: '/images/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/images/icon-maskable-192x192.png',
+          sizes: '192x192',
           type: 'image/png',
           purpose: 'maskable'
         },
         {
-          src: '/images/logo.png',
+          src: '/images/icon-maskable-512x512.png',
           sizes: '512x512',
-          type: 'image/png'
-        },
-        {
-          src: '/images/logo.png',
-          sizes: '192x192',
-          type: 'image/png'
+          type: 'image/png',
+          purpose: 'maskable'
         }
       ]
     },

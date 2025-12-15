@@ -1,5 +1,8 @@
 <template>
   <div class="bg-om-paper dark:bg-om-darkBg text-om-dark dark:text-om-darkText font-sans selection:bg-om-gold selection:text-white transition-colors">
+    <!-- Structured Data pour Google (logo dans search results) -->
+    <SchemaOrg />
+    
     <!-- Banner pour in-app browsers -->
     <ClientOnly>
       <InAppBrowserBanner />
