@@ -46,7 +46,10 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    enabled: true // Génération automatique du sitemap via l'API
+    enabled: true,
+    sources: [
+      '/api/__sitemap__/urls'
+    ]
   },
 
   robots: {

@@ -13,17 +13,26 @@ export default defineEventHandler(async () => {
   const baseUrl = 'https://clementreboul.netlify.app'
   
   // Récupérer tous les articles publiés
-  const { data: articles } = await supabase
+  const { data: articles, error: articlesError } = await supabase
     .from('articles')
     .select('slug, date, updated_at')
     .eq('published', true)
     .order('date', { ascending: false })
   
+  if (articlesError) {
+    console.error('Erreur Supabase articles:', articlesError)
+  }
+  console.log('Articles trouvés:', articles?.length || 0)
+  
   // Récupérer tous les tags uniques
-  const { data: allArticles } = await supabase
+  const { data: allArticles, error: tagsError } = await supabase
     .from('articles')
     .select('tags')
     .eq('published', true)
+  
+  if (tagsError) {
+    console.error('Erreur Supabase tags:', tagsError)
+  }
   
   const uniqueTags = new Set<string>()
   allArticles?.forEach(article => {
