@@ -46,7 +46,7 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    enabled: false // Désactivé - on utilise le sitemap statique généré par le script
+    enabled: true // Génération automatique du sitemap via l'API
   },
 
   robots: {
