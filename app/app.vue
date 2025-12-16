@@ -15,47 +15,66 @@
     </ClientOnly>
     
     <header class="border-b-2 border-om-dark dark:border-om-darkGold py-6 sticky top-0 bg-om-paper/95 dark:bg-om-darkBg/95 backdrop-blur-sm z-50" role="banner">
-      <!-- Toggle en position fixe sur mobile uniquement -->
-      <div class="md:hidden fixed top-4 right-4 z-[60]">
-        <DarkModeToggle />
-      </div>
-      
-      <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-        
-        <div class="text-center md:text-left">
-          <p class="font-mono text-xs text-om-rust dark:text-om-darkGold uppercase tracking-widest mb-1">Since 2025 • AI Engineering</p>
-          <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul">
-            <h1 class="font-serif text-3xl md:text-4xl font-black tracking-tighter uppercase select-none">
-              Clément <span class="text-om-gold dark:text-om-darkGold group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors">Reboul</span>
-              <span class="text-om-rust dark:text-om-darkGold text-base md:text-lg align-top ml-1">⚜</span>
-            </h1>
-          </NuxtLink>
-        </div>
-
-        <div class="flex items-center gap-4">
-          <nav class="flex flex-wrap justify-center gap-4 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
-            <NuxtLink to="/" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Voir tous les articles du journal">
-              <Icon name="mdi:newspaper" size="18" aria-hidden="true" /> Journal
-            </NuxtLink>
-            <NuxtLink to="/tags" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Explorer les catégories d'articles">
-              <Icon name="mdi:tag-multiple" size="18" aria-hidden="true" /> Catégories
-            </NuxtLink>
-            <NuxtLink to="/admin" class="hover:text-om-rust dark:hover:text-om-darkGold flex items-center gap-2 transition-all text-om-gold dark:text-om-darkGold whitespace-nowrap" aria-label="Accéder à l'interface d'administration">
-              <Icon name="mdi:shield-account" size="18" aria-hidden="true" /> Admin
-            </NuxtLink>
-            <!-- Toggle visible uniquement sur desktop -->
-            <div class="hidden md:block">
+      <div class="container mx-auto px-4">
+        <div class="md:hidden">
+          <ClientOnly>
+            <div class="fixed top-4 right-4 z-[60]">
               <DarkModeToggle />
             </div>
-          </nav>
+            <template #fallback>
+              <div class="fixed top-4 right-4 z-[60]" style="width: 40px; height: 40px;"></div>
+            </template>
+          </ClientOnly>
           
-          <!-- Barre de recherche -->
-          <SearchBar :articles="allArticles" />
+          <div class="text-center">
+            <p class="font-mono text-xs text-om-rust dark:text-om-darkGold uppercase tracking-widest mb-1">Since 2025 • AI Engineering</p>
+            <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul">
+              <h1 class="font-serif text-3xl font-black tracking-tighter uppercase select-none">
+                Clément <span class="text-om-gold dark:text-om-darkGold group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors">Reboul</span>
+                <span class="text-om-rust dark:text-om-darkGold text-base align-top ml-1">⚜</span>
+              </h1>
+            </NuxtLink>
+          </div>
+        </div>
+
+        <div class="hidden md:flex justify-between items-center">
+          <div class="text-left">
+            <p class="font-mono text-xs text-om-rust dark:text-om-darkGold uppercase tracking-widest mb-1">Since 2025 • AI Engineering</p>
+            <NuxtLink to="/" class="group" aria-label="Retour à l'accueil du blog de Clément Reboul">
+              <h1 class="font-serif text-4xl font-black tracking-tighter uppercase select-none">
+                Clément <span class="text-om-gold dark:text-om-darkGold group-hover:text-om-sepia dark:group-hover:text-om-darkSepia transition-colors">Reboul</span>
+                <span class="text-om-rust dark:text-om-darkGold text-lg align-top ml-1">⚜</span>
+              </h1>
+            </NuxtLink>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <nav class="flex flex-wrap justify-center gap-4 font-mono text-sm uppercase font-bold tracking-tight" role="navigation" aria-label="Navigation principale">
+              <NuxtLink to="/" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Voir tous les articles du journal">
+                <Icon name="mdi:newspaper" size="18" aria-hidden="true" /> Journal
+              </NuxtLink>
+              <NuxtLink to="/tags" class="hover:text-om-sepia dark:hover:text-om-darkSepia hover:underline decoration-2 underline-offset-4 transition-all flex items-center gap-1 whitespace-nowrap" aria-label="Explorer les catégories d'articles">
+                <Icon name="mdi:tag-multiple" size="18" aria-hidden="true" /> Catégories
+              </NuxtLink>
+              <DarkModeToggle />
+            </nav>
+            
+            <!-- Auth Button -->
+            <ClientOnly>
+              <AuthButton />
+              <template #fallback>
+                <div class="auth-menu-container relative" style="width: 120px; height: 40px;"></div>
+              </template>
+            </ClientOnly>
+            
+            <!-- Barre de recherche -->
+            <SearchBar :articles="allArticles" />
+          </div>
         </div>
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-12 min-h-[calc(100vh-200px)] max-w-6xl" role="main" id="main-content">
+    <main class="container mx-auto px-4 py-12 min-h-[calc(100vh-200px)] max-w-6xl main-content-padding" role="main" id="main-content">
       <NuxtPage :transition="{
         name: 'page-fade',
         mode: 'out-in'
@@ -80,6 +99,14 @@
       <PwaPrompt />
       <IosInstallPrompt />
       <PushPrompt />
+    </ClientOnly>
+    
+    <!-- Navigation mobile fixe en bas -->
+    <ClientOnly>
+      <MobileNav />
+      <template #fallback>
+        <div class="md:hidden fixed bottom-0 left-0 right-0 h-16"></div>
+      </template>
     </ClientOnly>
   </div>
 </template>
@@ -405,5 +432,16 @@ body::after {
     inset 0 0 100px rgba(0, 0, 0, 0.4),
     inset 0 0 200px rgba(0, 0, 0, 0.2),
     inset 0 0 300px rgba(0, 0, 0, 0.1);
+}
+
+/* Padding pour compenser la navigation mobile */
+.main-content-padding {
+  padding-bottom: 6rem;
+}
+
+@media (min-width: 768px) {
+  .main-content-padding {
+    padding-bottom: 3rem;
+  }
 }
 </style>

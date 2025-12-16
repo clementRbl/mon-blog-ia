@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-6 right-4 md:right-6 z-50 flex flex-col gap-3">
+  <div class="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 flex flex-col gap-3">
     <!-- Bouton Scroll to Bottom (visible en haut) -->
     <Transition
       enter-active-class="transition-all duration-300 ease-out"

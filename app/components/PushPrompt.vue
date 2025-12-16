@@ -32,6 +32,7 @@
 const showPrompt = ref(false)
 const loading = ref(false)
 const isPwaPromptVisible = ref(false)
+const user = useSupabaseUser()
 
 // Détecter les in-app browsers (WhatsApp, Messenger, etc.)
 const isInAppBrowser = () => {
@@ -52,6 +53,11 @@ onBeforeUnmount(() => {
 })
 
 onMounted(async () => {
+  // Ne pas afficher si l'utilisateur n'est pas connecté
+  if (!user.value) {
+    return
+  }
+  
   // Ne pas afficher dans les in-app browsers
   if (isInAppBrowser()) {
     return
@@ -93,11 +99,11 @@ onMounted(async () => {
     isSupported.value && 
     permissionState.value === 'default'
   ) {
-    // Attendre 15 secondes pour laisser le temps aux PWA prompts de disparaître
-    // Le v-if gère automatiquement la visibilité par rapport à PwaPrompt
+    // Attendre 3 secondes en dev, 15 en prod
+    const delay = process.dev ? 3000 : 15000
     setTimeout(() => {
       showPrompt.value = true
-    }, 15000)
+    }, delay)
   }
 })
 

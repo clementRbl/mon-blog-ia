@@ -17,25 +17,23 @@
         Laisser un commentaire
       </h3>
       
-      <form @submit.prevent="handleSubmit">
-        <!-- Nom (optionnel) -->
-        <div class="mb-4">
-          <label for="author-name" class="block font-mono text-xs uppercase text-om-ink/70 dark:text-om-darkText/70 mb-2">
-            Nom (optionnel)
-          </label>
-          <input
-            id="author-name"
-            v-model="authorName"
-            type="text"
-            maxlength="50"
-            placeholder="Anonyme"
-            class="w-full px-4 py-2 border-2 border-om-sepia/30 dark:border-om-darkGold/30 bg-om-paper dark:bg-om-darkBg text-om-dark dark:text-om-darkText placeholder-om-ink/40 dark:placeholder-om-darkText/40 font-sans focus:outline-none focus:ring-2 focus:ring-om-rust dark:focus:ring-om-darkGold transition-all"
-          />
-          <p class="text-xs text-om-ink/60 dark:text-om-darkText/60 font-mono mt-2">
-            {{ authorName.length }}/50 caractères
-          </p>
-        </div>
+      <!-- Message de connexion requise -->
+      <div v-if="!user" class="text-center py-8">
+        <Icon name="mdi:account-lock" size="48" class="text-om-rust dark:text-om-darkGold mb-4" />
+        <p class="text-om-ink dark:text-om-darkText mb-4 font-serif text-lg">
+          Vous devez être connecté pour commenter
+        </p>
+        <button
+          @click="showAuthModal = true"
+          class="px-6 py-3 bg-om-rust dark:bg-om-darkGold text-white dark:text-om-darkBg font-mono uppercase text-sm tracking-wider border-2 border-om-rust dark:border-om-darkGold hover:bg-om-sepia dark:hover:bg-om-darkSepia hover:border-om-sepia dark:hover:border-om-darkSepia transition-all shadow-retro hover:shadow-retro-hover"
+        >
+          <Icon name="mdi:login" size="16" class="inline mr-2" />
+          Se connecter
+        </button>
+      </div>
 
+      <!-- Formulaire (visible seulement si connecté) -->
+      <form v-else @submit.prevent="handleSubmit">
         <!-- Contenu -->
         <div class="mb-4">
           <label for="comment-content" class="block font-mono text-xs uppercase text-om-ink/70 dark:text-om-darkText/70 mb-2">
@@ -58,7 +56,7 @@
         <!-- Message de succès -->
         <div v-if="showSuccessMessage" class="mb-4 p-3 bg-om-gold/10 dark:bg-om-darkGold/10 border-2 border-om-gold dark:border-om-darkGold text-om-dark dark:text-om-darkText text-sm">
           <Icon name="mdi:check-circle" size="16" class="inline mr-2 text-om-gold dark:text-om-darkGold" />
-          Commentaire envoyé ! Il sera visible après modération.
+          Commentaire envoyé !
         </div>
 
         <!-- Message d'erreur -->
@@ -78,6 +76,9 @@
         </button>
       </form>
     </div>
+    
+    <!-- Auth Modal -->
+    <AuthModal v-model:is-open="showAuthModal" />
 
     <!-- Liste des commentaires -->
     <div v-if="isLoading" class="text-center py-12">
@@ -132,12 +133,13 @@ const props = defineProps<{
 }>()
 
 const { comments, isLoading, loadComments, subscribeToComments, unsubscribe, addComment } = useComments(props.articleId)
+const user = useSupabaseUser()
 
-const authorName = ref('')
 const content = ref('')
 const isSubmitting = ref(false)
 const showSuccessMessage = ref(false)
 const errorMessage = ref('')
+const showAuthModal = ref(false)
 
 // Charger les commentaires au montage
 onMounted(async () => {
@@ -159,9 +161,9 @@ const canSubmitComment = () => {
   
   const now = Date.now()
   const timeSinceLastComment = now - parseInt(lastCommentTime)
-  const ONE_MINUTE = 60 * 1000
+  const TWENTY_SECONDS = 20 * 1000
   
-  return timeSinceLastComment > ONE_MINUTE
+  return timeSinceLastComment > TWENTY_SECONDS
 }
 
 const getTimeUntilNextComment = () => {
@@ -172,9 +174,9 @@ const getTimeUntilNextComment = () => {
   
   const now = Date.now()
   const timeSinceLastComment = now - parseInt(lastCommentTime)
-  const ONE_MINUTE = 60 * 1000
+  const TWENTY_SECONDS = 20 * 1000
   
-  const remaining = ONE_MINUTE - timeSinceLastComment
+  const remaining = TWENTY_SECONDS - timeSinceLastComment
   return Math.ceil(remaining / 1000) // en secondes
 }
 
@@ -193,7 +195,7 @@ const handleSubmit = async () => {
   errorMessage.value = ''
   showSuccessMessage.value = false
 
-  const result = await addComment(content.value, authorName.value)
+  const result = await addComment(content.value)
 
   if (result.success) {
     // Enregistrer le timestamp
@@ -203,7 +205,6 @@ const handleSubmit = async () => {
     
     // Réinitialiser le formulaire
     content.value = ''
-    authorName.value = ''
     showSuccessMessage.value = true
 
     // Masquer le message après 5 secondes

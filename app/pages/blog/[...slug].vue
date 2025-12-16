@@ -6,7 +6,12 @@
     </ClientOnly>
     
     <!-- Boutons de scroll -->
-    <ScrollButtons />
+    <ClientOnly>
+      <ScrollButtons />
+      <template #fallback>
+        <div style="height: 0;"></div>
+      </template>
+    </ClientOnly>
     
     <!-- Bandeau de prévisualisation -->
     <div v-if="isPreview" class="bg-om-rust dark:bg-om-darkGold text-white py-3 px-4 border-b-4 border-om-dark dark:border-om-darkText sticky top-0 z-50">

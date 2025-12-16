@@ -1,10 +1,8 @@
 // Endpoint sécurisé pour sauvegarder une subscription push
 // L'email est automatiquement récupéré depuis la session auth
-// Impossible pour un client de falsifier son email
+// Authentification obligatoire
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  
   try {
     const body = await readBody(event)
     const { endpoint, p256dh, auth } = body
@@ -16,19 +14,29 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Récupérer l'email depuis la session Supabase (sécurisé, non falsifiable)
+    // Vérifier l'authentification (obligatoire)
     const authHeader = getHeader(event, 'authorization')
-    let userEmail: string | null = null
-
-    if (authHeader) {
-      const supabase = getSupabaseClient()
-      const token = authHeader.replace('Bearer ', '')
-      const { data: { user }, error } = await supabase.auth.getUser(token)
-      
-      if (!error && user) {
-        userEmail = user.email || null
-      }
+    
+    if (!authHeader) {
+      throw createError({
+        statusCode: 401,
+        message: 'Vous devez être connecté pour activer les notifications'
+      })
     }
+
+    // Récupérer l'utilisateur depuis le token
+    const supabase = getSupabaseClient()
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user || !user.email) {
+      throw createError({
+        statusCode: 401,
+        message: 'Session invalide. Veuillez vous reconnecter.'
+      })
+    }
+
+    const userEmail = user.email
 
     // Sauvegarder la subscription avec l'email (pooling réutilisé)
     const supabaseAdmin = getSupabaseServiceClient()

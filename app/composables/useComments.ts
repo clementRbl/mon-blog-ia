@@ -73,13 +73,22 @@ export const useComments = (articleId: string) => {
   }
 
   // Ajouter un commentaire via l'API serveur (modération automatique)
-  const addComment = async (content: string, authorName?: string) => {
+  const addComment = async (content: string) => {
     try {
+      // Récupérer le token de session
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        throw new Error('Vous devez être connecté pour commenter')
+      }
+
       const response = await $fetch('/api/comments', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        },
         body: {
           articleId,
-          authorName: authorName?.trim() || 'Anonyme',
           content: content.trim()
         }
       })

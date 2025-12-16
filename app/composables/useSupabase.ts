@@ -47,6 +47,14 @@ export const useSupabase = () => {
         return await supabase.auth.getUser()
       },
       
+      getSession: async () => {
+        return await supabase.auth.getSession()
+      },
+      
+      signInWithOAuth: async (options: any) => {
+        return await supabase.auth.signInWithOAuth(options)
+      },
+      
       onAuthStateChange: (callback: (event: string, session: any) => void) => {
         return supabase.auth.onAuthStateChange(callback)
       }

@@ -8,25 +8,57 @@ export default defineEventHandler(async (event) => {
   filter.add(filter.getDictionary('en')) // Anglais
   filter.add(filter.getDictionary('es')) // Espagnol
   
+  // Vérifier l'authentification
+  const supabaseClient = getSupabaseClient()
+  const authHeader = getHeader(event, 'authorization')
+  
+  if (!authHeader) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Vous devez être connecté pour commenter'
+    })
+  }
+  
+  // Récupérer l'utilisateur depuis le token
+  const { data: { user }, error: authError } = await supabaseClient.auth.getUser(
+    authHeader.replace('Bearer ', '')
+  )
+  
+  if (authError || !user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Session invalide. Veuillez vous reconnecter.'
+    })
+  }
+  
   // Récupérer le body de la requête
   const body = await readBody(event)
-  const { articleId, authorName, content } = body
+  const { articleId, content } = body
   
   // Validation basique
-  if (!articleId || !authorName || !content) {
+  if (!articleId || !content) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Données manquantes'
     })
   }
   
-  // Vérifier la longueur du nom
-  if (authorName.length < 2 || authorName.length > 50) {
+  // Récupérer le display_name depuis user_roles
+  const supabase = getSupabaseServiceClient()
+  const { data: userRole, error: roleError } = await supabase
+    .from('user_roles')
+    .select('display_name')
+    .eq('user_id', user.id)
+    .single()
+  
+  if (roleError || !userRole?.display_name) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Le nom doit contenir entre 2 et 50 caractères'
+      statusMessage: 'Veuillez définir votre nom d\'affichage dans votre profil avant de commenter'
     })
   }
+  
+  const finalAuthorName = userRole.display_name
   
   // Vérifier la longueur du contenu
   if (content.length < 3 || content.length > 2000) {
@@ -44,24 +76,15 @@ export default defineEventHandler(async (event) => {
     })
   }
   
-  // Modération : détection de profanités dans le nom
-  if (filter.check(authorName)) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Le nom d\'auteur contient du contenu inapproprié'
-    })
-  }
-  
-  // Connexion à Supabase avec la service role key (bypass RLS, pooling réutilisé)
-  const supabase = getSupabaseServiceClient()
-  
   // Insérer le commentaire dans la base de données
   // approved=true car leo-profanity a déjà validé le contenu
   const { data, error } = await supabase
     .from('comments')
     .insert({
       article_id: articleId,
-      author_name: authorName,
+      author_name: finalAuthorName,
+      author_email: user.email, // Stocker l'email de l'utilisateur authentifié
+      user_id: user.id, // Stocker l'ID de l'utilisateur pour liaison future
       content,
       approved: true, // Approuvé automatiquement après filtrage leo-profanity
       created_at: new Date().toISOString()
@@ -90,7 +113,7 @@ export default defineEventHandler(async (event) => {
       method: 'POST',
       body: {
         articleTitle: articleData?.title || 'Article inconnu',
-        commentAuthor: authorName,
+        commentAuthor: finalAuthorName,
         commentContent: content.substring(0, 100)
       }
     })
