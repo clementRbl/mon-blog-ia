@@ -5,21 +5,10 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   
   // Configuration du filtre multi-langues
-  // Charge les dictionnaires français, anglais, espagnol, allemand, etc.
+  // Charge les dictionnaires français, anglais, espagnol
   filter.loadDictionary('fr')
   filter.add(filter.getDictionary('en')) // Anglais
   filter.add(filter.getDictionary('es')) // Espagnol
-  
-  // Ajouter les mots personnalisés depuis le fichier JSON (si existe)
-  try {
-    const profanityWords = await import('../config/profanity-words.json')
-    if (profanityWords.default?.customWords) {
-      filter.add(profanityWords.default.customWords)
-    }
-  } catch (error) {
-    // Fichier non trouvé, utiliser uniquement les dictionnaires par défaut
-    console.warn('profanity-words.json non trouvé, utilisation des dictionnaires par défaut')
-  }
   
   // Récupérer le body de la requête
   const body = await readBody(event)
