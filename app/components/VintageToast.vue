@@ -43,8 +43,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
-
 const { toasts, remove } = useVintageToast()
 const processedToasts = ref<Set<number>>(new Set())
 

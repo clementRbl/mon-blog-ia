@@ -4,17 +4,15 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: '2024-05-07',
   devtools: { enabled: true },
 
   // Active le SSR (Server-Side Rendering)
   ssr: true,
 
-  // Compatibility date pour Netlify Functions 2.0 (streaming, blobs, etc.)
-  compatibilityDate: '2024-05-07',
-
   experimental: {
-    payloadExtraction: false
+    payloadExtraction: false,
+    viewTransition: true
   },
 
   modules: [
@@ -58,8 +56,9 @@ export default defineNuxtConfig({
 
   // Configuration Nitro pour Netlify (auto-détection)
   nitro: {
-    // Pas de preset nécessaire, Nitro détecte automatiquement Netlify
     compatibilityDate: '2024-05-07',
+    compressPublicAssets: true,
+    minify: true
   },
 
   // --- Configuration pour Netlify (pas de baseURL) ---
@@ -93,9 +92,11 @@ export default defineNuxtConfig({
         { name: 'referrer', content: 'strict-origin-when-cross-origin' },
       ],
       link: [
-        // Preconnect aux fonts Google pour réduire la latence
+        // Preconnect pour réduire la latence
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+        { rel: 'dns-prefetch', href: 'https://cloud.umami.is' },
+        { rel: 'dns-prefetch', href: 'https://gqkjpflpqghujliqkzts.supabase.co' },
         // Favicons
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
@@ -169,17 +170,6 @@ export default defineNuxtConfig({
     }
   },
 
-  content: {
-    build: {
-      markdown: {
-        highlight: {
-          theme: 'github-light',
-          langs: ['python', 'vue', 'bash', 'ts', 'json']
-        }
-      }
-    }
-  },
-
   pwa: {
     registerType: 'autoUpdate',
     base: '/',
@@ -230,6 +220,9 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
       navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,ico,woff,woff2}'],
       // Importer le script de gestion des push
@@ -307,17 +300,31 @@ export default defineNuxtConfig({
   vite: {
     build: {
       cssCodeSplit: true,
+      minify: 'esbuild',
       rollupOptions: {
         output: {
           manualChunks: {
+            'vendor': ['vue', 'vue-router'],
+            'supabase': ['@supabase/supabase-js'],
             'icons': ['@iconify/vue'],
+            'utils': ['marked', 'fuse.js']
           }
         }
       }
     }
   },
 
-  experimental: {
-    inlineSSRStyles: true
+  // Configuration image optimization
+  image: {
+    format: ['webp', 'avif'],
+    quality: 80,
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536
+    }
   }
 })
