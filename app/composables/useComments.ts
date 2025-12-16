@@ -10,15 +10,8 @@ export const useComments = (articleId: string) => {
   const loadComments = async () => {
     isLoading.value = true
     try {
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
-        .eq('article_id', articleId)
-        .eq('approved', true)
-        .order('created_at', { ascending: true })
-
-      if (error) throw error
-      comments.value = data || []
+      const response = await $fetch(`/api/comments?articleId=${articleId}`)
+      comments.value = response.comments || []
     } catch (error) {
       console.error('Erreur chargement commentaires:', error)
       comments.value = []
@@ -79,52 +72,23 @@ export const useComments = (articleId: string) => {
     }
   }
 
-  // Ajouter un commentaire
+  // Ajouter un commentaire via l'API serveur (modération automatique)
   const addComment = async (content: string, authorName?: string) => {
     try {
-      const { data, error } = await supabase
-        .from('comments')
-        .insert({
-          article_id: articleId,
-          content: content.trim(),
-          author_name: authorName?.trim() || null,
-          approved: false // En attente de modération
-        })
-        .select()
-        .single()
+      const response = await $fetch('/api/comments', {
+        method: 'POST',
+        body: {
+          articleId,
+          authorName: authorName?.trim() || 'Anonyme',
+          content: content.trim()
+        }
+      })
 
-      if (error) throw error
+      if (!response.success) throw new Error('Erreur lors de l\'ajout du commentaire')
+      
+      const data = response.comment
 
-      // Récupérer le titre de l'article pour la notification
-      const { data: articleData } = await supabase
-        .from('articles')
-        .select('title')
-        .eq('id', articleId)
-        .single()
-
-      // Envoyer une notification push à l'admin via Supabase Edge Function
-      try {
-        const config = useRuntimeConfig()
-        const supabaseUrl = config.public.supabaseUrl.replace(/\/+$/, '')
-        const supabaseKey = config.public.supabaseAnonKey
-        
-        await $fetch(`${supabaseUrl}/functions/v1/notify-admin-comment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseKey}`
-          },
-          body: {
-            articleTitle: articleData?.title || 'Article inconnu',
-            commentAuthor: authorName?.trim() || 'Anonyme',
-            commentContent: content.trim().substring(0, 100)
-          }
-        })
-      } catch (notifError) {
-        console.error('Erreur envoi notification:', notifError)
-        // Ne pas bloquer si la notification échoue
-      }
-
+      // La notification admin est gérée côté serveur automatiquement
       return { success: true, data }
     } catch (error) {
       console.error('Erreur ajout commentaire:', error)

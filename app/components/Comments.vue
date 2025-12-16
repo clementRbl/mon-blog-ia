@@ -27,9 +27,13 @@
             id="author-name"
             v-model="authorName"
             type="text"
+            maxlength="50"
             placeholder="Anonyme"
             class="w-full px-4 py-2 border-2 border-om-sepia/30 dark:border-om-darkGold/30 bg-om-paper dark:bg-om-darkBg text-om-dark dark:text-om-darkText placeholder-om-ink/40 dark:placeholder-om-darkText/40 font-sans focus:outline-none focus:ring-2 focus:ring-om-rust dark:focus:ring-om-darkGold transition-all"
           />
+          <p class="text-xs text-om-ink/60 dark:text-om-darkText/60 font-mono mt-2">
+            {{ authorName.length }}/50 caractères
+          </p>
         </div>
 
         <!-- Contenu -->
@@ -41,12 +45,13 @@
             id="comment-content"
             v-model="content"
             rows="4"
+            maxlength="2000"
             placeholder="Votre commentaire..."
             required
             class="w-full px-4 py-2 border-2 border-om-sepia/30 dark:border-om-darkGold/30 bg-om-paper dark:bg-om-darkBg text-om-dark dark:text-om-darkText placeholder-om-ink/40 dark:placeholder-om-darkText/40 font-sans focus:outline-none focus:ring-2 focus:ring-om-rust dark:focus:ring-om-darkGold transition-all resize-none"
           ></textarea>
           <p class="text-xs text-om-ink/60 dark:text-om-darkText/60 font-mono mt-2">
-            {{ content.length }}/1000 caractères
+            {{ content.length }}/2000 caractères
           </p>
         </div>
 
@@ -65,7 +70,7 @@
         <!-- Bouton -->
         <button
           type="submit"
-          :disabled="isSubmitting || content.trim().length === 0 || content.length > 1000"
+          :disabled="isSubmitting || content.trim().length === 0 || content.length > 2000"
           class="px-6 py-3 bg-om-rust dark:bg-om-darkGold text-white dark:text-om-darkBg font-mono uppercase text-sm tracking-wider border-2 border-om-rust dark:border-om-darkGold hover:bg-om-sepia dark:hover:bg-om-darkSepia hover:border-om-sepia dark:hover:border-om-darkSepia transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-retro hover:shadow-retro-hover"
         >
           <Icon v-if="isSubmitting" name="mdi:loading" size="16" class="inline mr-2 animate-spin" />
@@ -175,7 +180,7 @@ const getTimeUntilNextComment = () => {
 
 // Soumettre le commentaire
 const handleSubmit = async () => {
-  if (content.value.trim().length === 0 || content.value.length > 1000) return
+  if (content.value.trim().length === 0 || content.value.length > 2000) return
 
   // Vérifier le rate limiting
   if (!canSubmitComment()) {
