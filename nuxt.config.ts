@@ -61,6 +61,52 @@ export default defineNuxtConfig({
     minify: true
   },
 
+  // Route Rules pour cache SSR optimisé
+  routeRules: {
+    // Page d'accueil : 10 minutes (nouveaux articles apparaissent rapidement)
+    '/': { 
+      swr: 600,
+      cache: {
+        maxAge: 600,
+        staleMaxAge: 1200 // 20 min en mode stale (si serveur down)
+      }
+    },
+    
+    // Articles individuels : 30 minutes (ne changent jamais après publication)
+    '/blog/**': { 
+      swr: 1800,
+      cache: {
+        maxAge: 1800,
+        staleMaxAge: 3600 // 1h en mode stale
+      }
+    },
+    
+    // Pages de tags : 5 minutes (changent plus souvent)
+    '/tags/**': { 
+      swr: 300,
+      cache: {
+        maxAge: 300,
+        staleMaxAge: 600 // 10 min en mode stale
+      }
+    },
+
+    // API comments : pas de cache (données en temps réel)
+    '/api/comments/**': { cache: false },
+    
+    // Admin : jamais de cache
+    '/admin/**': { 
+      cache: false,
+      ssr: true 
+    },
+
+    // Assets statiques : cache long
+    '/_nuxt/**': { 
+      cache: {
+        maxAge: 31536000 // 1 an (avec hash dans le nom de fichier)
+      }
+    }
+  },
+
   // --- Configuration pour Netlify (pas de baseURL) ---
   app: {
     baseURL: '/', 
