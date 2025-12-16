@@ -2,8 +2,6 @@
 // L'email est automatiquement récupéré depuis la session auth
 // Impossible pour un client de falsifier son email
 
-import { createClient } from '@supabase/supabase-js'
-
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   
@@ -23,30 +21,17 @@ export default defineEventHandler(async (event) => {
     let userEmail: string | null = null
 
     if (authHeader) {
-      const supabase = createClient(
-        config.public.supabaseUrl,
-        config.public.supabaseAnonKey,
-        {
-          global: {
-            headers: {
-              authorization: authHeader
-            }
-          }
-        }
-      )
-
-      const { data: { user }, error } = await supabase.auth.getUser()
+      const supabase = getSupabaseClient()
+      const token = authHeader.replace('Bearer ', '')
+      const { data: { user }, error } = await supabase.auth.getUser(token)
       
       if (!error && user) {
         userEmail = user.email || null
       }
     }
 
-    // Sauvegarder la subscription avec l'email (peut être null pour utilisateurs non connectés)
-    const supabaseAdmin = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey || config.public.supabaseAnonKey
-    )
+    // Sauvegarder la subscription avec l'email (pooling réutilisé)
+    const supabaseAdmin = getSupabaseServiceClient()
 
     // Vérifier si la subscription existe déjà
     const { data: existing } = await supabaseAdmin

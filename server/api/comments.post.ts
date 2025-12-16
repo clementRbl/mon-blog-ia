@@ -1,8 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
 import filter from 'leo-profanity'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
   
   // Configuration du filtre multi-langues
   // Charge les dictionnaires français, anglais, espagnol
@@ -54,11 +52,8 @@ export default defineEventHandler(async (event) => {
     })
   }
   
-  // Connexion à Supabase avec la service role key (bypass RLS)
-  const supabase = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceRoleKey || config.public.supabaseAnonKey
-  )
+  // Connexion à Supabase avec la service role key (bypass RLS, pooling réutilisé)
+  const supabase = getSupabaseServiceClient()
   
   // Insérer le commentaire dans la base de données
   // approved=true car leo-profanity a déjà validé le contenu

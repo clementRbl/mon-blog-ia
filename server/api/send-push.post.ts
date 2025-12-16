@@ -1,5 +1,4 @@
 import webpush from 'web-push'
-import { createClient } from '@supabase/supabase-js'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -31,11 +30,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Connexion à Supabase
-  const supabase = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceRoleKey || config.public.supabaseAnonKey
-  )
+  // Connexion à Supabase (pooling réutilisé)
+  const supabase = getSupabaseServiceClient()
 
   // Récupérer toutes les souscriptions
   const { data: subscriptions, error } = await supabase

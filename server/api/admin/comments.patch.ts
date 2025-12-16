@@ -1,8 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  
   // Récupérer le body de la requête
   const body = await readBody(event)
   const { commentId, action } = body
@@ -21,11 +17,8 @@ export default defineEventHandler(async (event) => {
     })
   }
   
-  // Connexion à Supabase avec la service role key
-  const supabase = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceRoleKey || config.public.supabaseAnonKey
-  )
+  // Connexion à Supabase avec la service role key (pooling réutilisé)
+  const supabase = getSupabaseServiceClient()
   
   let result
   

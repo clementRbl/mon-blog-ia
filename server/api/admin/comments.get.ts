@@ -1,15 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
-
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
   const query = getQuery(event)
   const articleId = query.articleId
   
-  // Connexion à Supabase avec la service role key pour voir tous les commentaires
-  const supabase = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceRoleKey || config.public.supabaseAnonKey
-  )
+  // Connexion à Supabase avec la service role key (pooling réutilisé)
+  const supabase = getSupabaseServiceClient()
   
   let queryBuilder = supabase
     .from('comments')

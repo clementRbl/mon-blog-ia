@@ -1,14 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
 import type { Database } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   
-  // Créer le client Supabase côté serveur
-  const supabase = createClient<Database>(
-    config.public.supabaseUrl,
-    config.public.supabaseAnonKey
-  )
+  // Client Supabase côté serveur (pooling réutilisé)
+  const supabase = getSupabaseClient()
   
   const baseUrl = 'https://clementreboul.netlify.app'
   const currentDate = new Date().toUTCString()

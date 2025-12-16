@@ -1,5 +1,4 @@
 import webpush from 'web-push'
-import { createClient } from '@supabase/supabase-js'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -26,11 +25,8 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Récupérer toutes les subscriptions
-    const supabase = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey || config.public.supabaseAnonKey
-    )
+    // Récupérer toutes les subscriptions (pooling réutilisé)
+    const supabase = getSupabaseServiceClient()
 
     // Récupérer l'email admin depuis les variables d'environnement
     const adminEmail = config.adminEmail
