@@ -207,7 +207,7 @@ export default defineNuxtConfig({
       { name: 'JetBrains Mono', provider: 'google', weights: [400] }
     ],
     defaults: {
-      preload: true,
+      preload: false, // Désactivé : évite de précharger des fonts non utilisées
       fallbacks: {
         'serif': ['Georgia', 'Times New Roman'],
         'sans-serif': ['Arial', 'Helvetica'],
