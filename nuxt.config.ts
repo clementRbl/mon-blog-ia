@@ -104,6 +104,20 @@ export default defineNuxtConfig({
         { rel: 'manifest', href: '/manifest.webmanifest' },
       ],
       script: [
+        // Script inline pour éviter le flash blanc en dark mode (DOIT être en premier)
+        {
+          innerHTML: `
+            (function() {
+              const stored = document.cookie.split('; ').find(row => row.startsWith('darkMode='))?.split('=')[1];
+              if (stored === 'true') {
+                document.documentElement.classList.add('dark');
+              } else if (stored === undefined && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+              }
+            })();
+          `,
+          type: 'text/javascript'
+        },
         {
           defer: true,
           src: 'https://cloud.umami.is/script.js',

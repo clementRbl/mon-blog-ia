@@ -15,10 +15,10 @@ export const useDarkMode = () => {
   // Initialiser le mode sombre
   const initDarkMode = () => {
     if (process.client) {
-      // Vérifier le localStorage en premier
-      const stored = localStorage.getItem('darkMode')
+      // Vérifier le cookie en premier
+      const stored = document.cookie.split('; ').find(row => row.startsWith('darkMode='))?.split('=')[1]
       
-      if (stored !== null) {
+      if (stored !== undefined) {
         isDark.value = stored === 'true'
       } else {
         // Sinon, détecter la préférence système
@@ -34,7 +34,8 @@ export const useDarkMode = () => {
     isDark.value = !isDark.value
     
     if (process.client) {
-      localStorage.setItem('darkMode', String(isDark.value))
+      // Stocker dans un cookie avec expiration de 1 an
+      document.cookie = `darkMode=${isDark.value}; path=/; max-age=31536000; SameSite=Lax`
       applyDarkMode(isDark.value)
     }
   }
