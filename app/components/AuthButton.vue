@@ -4,6 +4,7 @@ const user = useSupabaseUser()
 
 const showAuthModal = ref(false)
 const showMenu = ref(false)
+const avatarUrl = ref('')
 
 // Récupérer le rôle depuis les custom claims du JWT
 const userRole = ref<string>('user')
@@ -24,10 +25,11 @@ const decodeJWT = (token: string) => {
   }
 }
 
-// Charger le rôle depuis la session
+// Charger le rôle et l'avatar depuis la session
 const loadUserRole = async () => {
   if (!user.value) {
     userRole.value = 'user'
+    avatarUrl.value = ''
     return
   }
   
@@ -35,6 +37,19 @@ const loadUserRole = async () => {
   if (session?.access_token) {
     const decoded = decodeJWT(session.access_token)
     userRole.value = decoded?.user_role || 'user'
+  }
+
+  // Charger l'avatar depuis user_roles
+  const { supabase } = useSupabase()
+  try {
+    const { data } = await supabase
+      .from('user_roles')
+      .select('avatar_url')
+      .eq('user_id', user.value.id)
+      .single()
+    avatarUrl.value = data?.avatar_url || ''
+  } catch (e) {
+    avatarUrl.value = ''
   }
 }
 
@@ -93,7 +108,10 @@ onMounted(() => {
         class="auth-button user-button"
         @click="showMenu = !showMenu"
       >
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <div v-if="avatarUrl" class="w-6 h-6 rounded-full overflow-hidden">
+          <img :src="avatarUrl" alt="Avatar" class="w-full h-full object-cover" />
+        </div>
+        <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
         </svg>
         <span class="hidden sm:inline truncate max-w-[150px]">

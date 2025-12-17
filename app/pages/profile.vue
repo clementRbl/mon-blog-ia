@@ -9,8 +9,18 @@
     <div v-else>
       <!-- Header -->
       <div class="mb-8 sm:mb-12 text-center">
-        <div class="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-om-gold dark:bg-om-darkGold mb-4">
-          <Icon name="mdi:account" size="48" class="text-white dark:text-om-darkBg" />
+        <div class="relative inline-block mb-4">
+          <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-om-gold dark:bg-om-darkGold overflow-hidden">
+            <img v-if="avatarUrl" :src="avatarUrl" alt="Avatar" class="w-full h-full object-cover" />
+            <Icon v-else name="mdi:account" size="48" class="text-white dark:text-om-darkBg absolute inset-0 m-auto" />
+          </div>
+          <label class="absolute bottom-0 right-0 bg-om-rust dark:bg-om-darkGold text-white dark:text-om-darkBg rounded-full p-2 cursor-pointer shadow-lg hover:scale-110 transition-transform" title="Changer l'avatar">
+            <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarSelect" :disabled="uploadingAvatar" />
+            <Icon name="mdi:camera" size="20" />
+          </label>
+        </div>
+        <div v-if="uploadingAvatar" class="text-xs text-om-rust dark:text-om-darkGold mb-2">
+          <Icon name="mdi:loading" size="16" class="animate-spin inline" /> Upload en cours...
         </div>
         <h1 class="font-serif text-3xl sm:text-4xl font-bold text-om-dark dark:text-om-darkText mb-2 px-4">
           {{ user.user_metadata?.full_name || 'Mon Profil' }}
@@ -239,6 +249,10 @@ const userComments = ref<any[]>([])
 const loadingComments = ref(true)
 const pushEnabled = ref(false)
 
+// Avatar upload
+const avatarUrl = ref('')
+const uploadingAvatar = ref(false)
+
 // Display name editing
 const userDisplayName = ref('')
 const editingName = ref(false)
@@ -246,14 +260,14 @@ const newDisplayName = ref('')
 const savingName = ref(false)
 const displayNameError = ref('')
 
-// Charger le display_name de l'utilisateur
+// Charger le display_name et l'avatar de l'utilisateur
 const loadDisplayName = async () => {
   if (!user.value) return
 
   try {
     const { data, error } = await supabase
       .from('user_roles')
-      .select('display_name')
+      .select('display_name, avatar_url')
       .eq('user_id', user.value.id)
       .single()
 
@@ -261,8 +275,63 @@ const loadDisplayName = async () => {
 
     userDisplayName.value = data?.display_name || user.value.user_metadata?.full_name || user.value.email?.split('@')[0] || ''
     newDisplayName.value = userDisplayName.value
+    avatarUrl.value = data?.avatar_url || ''
   } catch (error) {
     console.error('Erreur chargement display_name:', error)
+  }
+}
+
+// Sélectionner et uploader un avatar
+const onAvatarSelect = async (event: Event) => {
+  const input = event.target as HTMLInputElement
+  if (!input.files || !input.files[0] || !user.value) return
+
+  const file = input.files[0]
+  
+  // Validation taille (max 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('L\'image ne doit pas dépasser 2 MB')
+    return
+  }
+
+  uploadingAvatar.value = true
+
+  try {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `avatar.${fileExt}`
+    const filePath = `${user.value.id}/${fileName}`
+
+    // Upload vers Supabase Storage (bucket: images)
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(filePath, file, { 
+        upsert: true,
+        cacheControl: '3600'
+      })
+
+    if (uploadError) throw uploadError
+
+    // Récupérer l'URL publique
+    const { data: { publicUrl } } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath)
+
+    // Mettre à jour l'URL dans user_roles
+    const { error: updateError } = await supabase
+      .from('user_roles')
+      .update({ avatar_url: publicUrl })
+      .eq('user_id', user.value.id)
+
+    if (updateError) throw updateError
+
+    avatarUrl.value = publicUrl
+    alert('Avatar mis à jour avec succès !')
+  } catch (error) {
+    console.error('Erreur upload avatar:', error)
+    alert('Erreur lors de l\'upload de l\'avatar')
+  } finally {
+    uploadingAvatar.value = false
+    input.value = '' // Reset input
   }
 }
 

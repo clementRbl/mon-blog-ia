@@ -13,21 +13,19 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
   error.value = null
   
   try {
+    // Force l'utilisation de l'URL actuelle (window.location.origin) pour la redirection
+    // Cela garantit localhost:3000 en dev et netlify en prod
     const { data, error: signInError } = await auth.signInWithOAuth({
       provider,
       options: {
-        // En production, force l'URL de prod pour éviter les redirections vers localhost
-        redirectTo: process.env.NODE_ENV === 'production'
-          ? 'https://clementreboul.netlify.app/'
-          : `${window.location.origin}/`,
+        redirectTo: `${window.location.origin}/`,
+        skipBrowserRedirect: false
       }
     })
     
-    // ...
-    
     if (signInError) throw signInError
     
-    // Le modal se fermera automatiquement après la redirection
+    // Le modal se fermera automatiquement après la redirection OAuth
   } catch (e: any) {
     console.error('OAuth error:', e)
     error.value = e.message || 'Une erreur est survenue lors de la connexion'
