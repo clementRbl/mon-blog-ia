@@ -104,8 +104,9 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-om-gold dark:bg-om-darkGold flex items-center justify-center">
-              <Icon name="mdi:account" size="24" class="text-white dark:text-om-darkBg" />
+            <div class="w-10 h-10 rounded-full bg-om-gold dark:bg-om-darkGold flex items-center justify-center overflow-hidden">
+              <img v-if="comment.avatar_url" :src="comment.avatar_url" alt="Avatar" class="w-full h-full object-cover" />
+              <Icon v-else name="mdi:account" size="24" class="text-white dark:text-om-darkBg" />
             </div>
             <div>
               <p class="font-mono text-sm font-bold text-om-dark dark:text-om-darkText">
