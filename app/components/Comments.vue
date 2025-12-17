@@ -180,6 +180,10 @@ const getTimeUntilNextComment = () => {
   return Math.ceil(remaining / 1000) // en secondes
 }
 
+// Toast
+import { useVintageToast } from '@/composables/useVintageToast'
+const { success: showToastSuccess } = useVintageToast()
+
 // Soumettre le commentaire
 const handleSubmit = async () => {
   if (content.value.trim().length === 0 || content.value.length > 2000) return
@@ -206,6 +210,7 @@ const handleSubmit = async () => {
     // Réinitialiser le formulaire
     content.value = ''
     showSuccessMessage.value = true
+    showToastSuccess('Commentaire envoyé !')
 
     // Masquer le message après 5 secondes
     setTimeout(() => {

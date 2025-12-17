@@ -1,5 +1,8 @@
 <script setup lang="ts">
+// import removed, use correct relative import below
 const { auth } = useSupabase()
+const { success: showToastSuccess } = useVintageToast()
+import { useVintageToast } from "../composables/useVintageToast";
 const isOpen = defineModel<boolean>('isOpen', { default: false })
 
 const loading = ref(false)
@@ -33,6 +36,15 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
 }
 
 const close = () => {
+  // Afficher un toast après connexion réussie (OAuth ou email/password)
+  if (process.client) {
+    const { auth } = useSupabase()
+    auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        showToastSuccess('Connexion réussie !')
+      }
+    })
+  }
   if (!loading.value) {
     isOpen.value = false
     error.value = null

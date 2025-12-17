@@ -157,8 +157,19 @@ if (process.client) {
   }
 }
 
-// Gestion globale des erreurs pour iOS
+// Toast connexion réussie global (y compris après OAuth)
 if (process.client) {
+  const { auth } = useSupabase()
+  const { success: showToastSuccess } = useVintageToast()
+  let toastShown = false
+  auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session?.user && !toastShown) {
+      showToastSuccess('Connexion réussie !')
+      toastShown = true
+      setTimeout(() => { toastShown = false }, 5000)
+    }
+  })
+
   window.addEventListener('error', (event) => {
     console.error('Erreur globale capturée:', event.error)
     event.preventDefault()

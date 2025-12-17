@@ -43,9 +43,14 @@ watch(user, () => {
   loadUserRole()
 }, { immediate: true })
 
+
+import { useVintageToast } from '../composables/useVintageToast'
+const { success: showToastSuccess } = useVintageToast()
+
 const signOut = async () => {
   await auth.signOut()
   showMenu.value = false
+  showToastSuccess('Déconnexion réussie !')
   navigateTo('/')
 }
 
