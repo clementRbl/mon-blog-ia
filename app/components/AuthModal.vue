@@ -14,7 +14,10 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
     const { data, error: signInError } = await auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/`,
+        // En production, force l'URL de prod pour éviter les redirections vers localhost
+        redirectTo: process.env.NODE_ENV === 'production'
+          ? 'https://clementreboul.netlify.app/'
+          : `${window.location.origin}/`,
       }
     })
     
