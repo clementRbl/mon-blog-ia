@@ -10,7 +10,6 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
   error.value = null
   
   try {
-    console.log('Starting OAuth with', provider)
     const { data, error: signInError } = await auth.signInWithOAuth({
       provider,
       options: {
@@ -21,7 +20,7 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
       }
     })
     
-    console.log('OAuth response:', data, signInError)
+    // ...
     
     if (signInError) throw signInError
     

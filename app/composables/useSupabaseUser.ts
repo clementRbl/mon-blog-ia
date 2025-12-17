@@ -7,15 +7,14 @@ export const useSupabaseUser = () => {
   // Initialiser immédiatement côté client
   if (process.client && !user.value) {
     // Gérer la redirection OAuth (exchange code for session)
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       user.value = session?.user ?? null
-      console.log('Initial session:', session?.user?.email)
     })
 
     // Écouter les changements d'authentification
     supabase.auth.onAuthStateChange((event, session) => {
       user.value = session?.user ?? null
-      console.log('Auth state changed:', event, session?.user?.email)
     })
   }
 
