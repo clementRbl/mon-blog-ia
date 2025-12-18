@@ -161,13 +161,24 @@ if (process.client) {
 if (process.client) {
   const { auth } = useSupabase()
   const { success: showToastSuccess } = useVintageToast()
-  let toastShown = false
+  
+  // Flag pour éviter d'afficher le toast au chargement initial
+  let isInitialLoad = true
+  
   auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session?.user && !toastShown) {
-      showToastSuccess('Connexion réussie !')
-      toastShown = true
-      setTimeout(() => { toastShown = false }, 5000)
+    // Ne jamais afficher de toast lors du chargement initial (INITIAL_SESSION)
+    if (event === 'INITIAL_SESSION') {
+      isInitialLoad = false
+      return
     }
+    
+    // Afficher le toast uniquement pour une vraie connexion (pas une restauration)
+    if (event === 'SIGNED_IN' && session?.user && !isInitialLoad) {
+      showToastSuccess('Connexion réussie !')
+    }
+    
+    // Après le premier événement, on n'est plus en chargement initial
+    isInitialLoad = false
   })
 
   window.addEventListener('error', (event) => {

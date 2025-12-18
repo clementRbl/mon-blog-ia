@@ -34,15 +34,7 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
 }
 
 const close = () => {
-  // Afficher un toast après connexion réussie (OAuth ou email/password)
-  if (process.client) {
-    const { auth } = useSupabase()
-    auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        showToastSuccess('Connexion réussie !')
-      }
-    })
-  }
+  // Le toast de connexion est géré globalement dans app.vue
   if (!loading.value) {
     isOpen.value = false
     error.value = null
