@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Côté client uniquement
   if (process.client) {
     // Vérifier si l'utilisateur est authentifié
-    const { auth, client } = useSupabase()
+    const { auth, supabase } = useSupabase()
     const { data: { session } } = await auth.getSession()
 
     // Si pas authentifié, rediriger vers login
@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     // Vérifier le rôle admin directement dans la base de données
-    const { data: userRole, error: roleError } = await client
+    const { data: userRole, error: roleError } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', session.user.id)
