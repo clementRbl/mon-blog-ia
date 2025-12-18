@@ -3,8 +3,8 @@ import type { Database } from '~/types/supabase'
 export default defineEventHandler(async () => {
   const config = useRuntimeConfig()
   
-  // Client Supabase côté serveur (pooling réutilisé)
-  const supabase = getSupabaseClient()
+  // Utiliser le service client pour éviter les problèmes d'authentification
+  const supabase = getSupabaseServiceClient()
   
   const baseUrl = 'https://clementreboul.netlify.app'
   
