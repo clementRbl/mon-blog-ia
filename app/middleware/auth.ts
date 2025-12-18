@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Côté client uniquement
   if (process.client) {
     // Vérifier si l'utilisateur est authentifié
-    const { auth } = useSupabase()
+    const { auth, client } = useSupabase()
     const { data: { session } } = await auth.getSession()
 
     // Si pas authentifié, rediriger vers login
@@ -15,26 +15,26 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       return navigateTo('/admin/login')
     }
 
-    // Vérifier le rôle admin depuis le JWT
-    const decodeJWT = (token: string) => {
-      try {
-        const base64Url = token.split('.')[1]
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        }).join(''))
-        return JSON.parse(jsonPayload)
-      } catch (e) {
-        return null
-      }
-    }
+    // Vérifier le rôle admin directement dans la base de données
+    const { data: userRole, error: roleError } = await client
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', session.user.id)
+      .single()
 
-    const decoded = decodeJWT(session.access_token)
-    const userRole = decoded?.user_role || 'user'
-
-    // Si pas admin, rediriger vers la page d'accueil
-    if (userRole !== 'admin') {
+    if (roleError) {
+      console.error('[Auth Middleware] Error fetching role:', roleError)
       return navigateTo('/')
     }
+
+    console.log('[Auth Middleware] User role:', userRole?.role, 'for user:', session.user.id)
+
+    // Si pas admin, rediriger vers la page d'accueil
+    if (!userRole || userRole.role !== 'admin') {
+      console.warn('[Auth Middleware] Access denied - not admin')
+      return navigateTo('/')
+    }
+    
+    console.log('[Auth Middleware] Access granted - user is admin')
   }
 })
