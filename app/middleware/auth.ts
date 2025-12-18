@@ -27,7 +27,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       return navigateTo('/')
     }
 
-    console.log('[Auth Middleware] User role:', userRole?.role, 'for user:', session.user.id)
 
     // Si pas admin, rediriger vers la page d'accueil
     if (!userRole || userRole.role !== 'admin') {
@@ -35,6 +34,5 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       return navigateTo('/')
     }
     
-    console.log('[Auth Middleware] Access granted - user is admin')
-  }
+    }
 })
