@@ -40,7 +40,7 @@ export const useSupabase = () => {
       },
       
       signOut: async () => {
-        return await supabase.auth.signOut()
+        return await supabase.auth.signOut({ scope: 'local' })
       },
       
       getUser: async () => {

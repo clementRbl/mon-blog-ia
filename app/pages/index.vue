@@ -131,10 +131,19 @@
               {{ article.description }}
             </p>
             
-            <div class="mt-4 text-xs font-mono text-om-sepia dark:text-om-darkSepia group-hover:text-om-rust dark:group-hover:text-om-darkGold transition-all duration-300 md:hidden flex items-center gap-1">
-              <span class="group-hover:translate-x-1 transition-transform">Lire la suite</span>
-              <span class="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
+            <!-- Bouton Like et "Lire la suite" -->
+            <ClientOnly>
+              <div class="mt-4 flex items-center justify-between relative z-20">
+                <div @click.stop>
+                  <LikeButton :article-id="article.id" size="sm" />
+                </div>
+                
+                <div class="text-xs font-mono text-om-sepia dark:text-om-darkSepia group-hover:text-om-rust dark:group-hover:text-om-darkGold transition-all duration-300 md:hidden flex items-center gap-1">
+                  <span class="group-hover:translate-x-1 transition-transform">Lire la suite</span>
+                  <span class="group-hover:translate-x-2 transition-transform">→</span>
+                </div>
+              </div>
+            </ClientOnly>
           </article>
         </div>
 
