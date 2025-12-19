@@ -88,6 +88,13 @@
               </button>
             </ClientOnly>
           </div>
+          
+          <!-- Bouton Like -->
+          <div class="mt-6 pt-6 border-t border-om-ink/10 dark:border-om-darkText/10">
+            <ClientOnly>
+              <LikeButton :article-id="article.id" :show-label="true" />
+            </ClientOnly>
+          </div>
         </header>
 
         <!-- Table des matières mobile uniquement -->
