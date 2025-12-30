@@ -117,14 +117,21 @@ const initTypewriter = async (toastId: number, message: string) => {
   }
 }
 
-// Observer les nouveaux toasts
-watch(() => toasts.value, (newToasts) => {
-  newToasts.forEach(toast => {
+// Observer les nouveaux toasts (sans immediate pour éviter la ré-exécution)
+watch(() => toasts.value.length, () => {
+  toasts.value.forEach(toast => {
     if (toast.visible && !processedToasts.value.has(toast.id)) {
       initTypewriter(toast.id, toast.message)
     }
   })
-}, { deep: true, immediate: true })
+}, { immediate: false })
+
+// Nettoyer les toasts traités qui n'existent plus
+watch(() => toasts.value, (newToasts) => {
+  const currentIds = new Set(newToasts.map(t => t.id))
+  const toRemove = Array.from(processedToasts.value).filter(id => !currentIds.has(id))
+  toRemove.forEach(id => processedToasts.value.delete(id))
+}, { deep: true })
 </script>
 
 <style scoped>

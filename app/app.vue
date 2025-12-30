@@ -164,6 +164,7 @@ if (process.client) {
   
   // Flag pour éviter d'afficher le toast au chargement initial
   let isInitialLoad = true
+  let lastShownTimestamp = 0
   
   auth.onAuthStateChange((event, session) => {
     // Ne jamais afficher de toast lors du chargement initial (INITIAL_SESSION)
@@ -172,9 +173,21 @@ if (process.client) {
       return
     }
     
+    // Éviter de montrer plusieurs fois le même toast (throttle de 5 secondes)
+    const now = Date.now()
+    if (now - lastShownTimestamp < 5000) {
+      return
+    }
+    
+    // Ne pas montrer de toast si la page était en arrière-plan (mobile/changement d'onglet)
+    if (document.hidden) {
+      return
+    }
+    
     // Afficher le toast uniquement pour une vraie connexion (pas une restauration)
     if (event === 'SIGNED_IN' && session?.user && !isInitialLoad) {
       showToastSuccess('Connexion réussie !')
+      lastShownTimestamp = now
     }
     
     // Après le premier événement, on n'est plus en chargement initial

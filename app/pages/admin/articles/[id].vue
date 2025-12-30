@@ -251,13 +251,35 @@ const form = ref({
 })
 
 // Tags
-const availableTags = ref(['IA', 'Machine Learning', 'Deep Learning', 'NLP', 'Technologie', 'Innovation', 'Éthique', 'Industrie', 'Société', 'Sécurité', 'Horlogerie', 'Histoire'])
+const availableTags = ref<string[]>([])
 const selectedTags = ref<string[]>([])
 const selectedTagFromList = ref('')
 const newTagInput = ref('')
 const loading = ref(false)
 const initialLoading = ref(true)
 const error = ref('')
+
+// Charger tous les tags existants depuis les articles
+const loadAvailableTags = async () => {
+  try {
+    const { data: articles } = await articlesAPI.getAll()
+    if (articles) {
+      // Extraire tous les tags uniques de tous les articles
+      const allTags = new Set<string>()
+      articles.forEach(article => {
+        if (article.tags && Array.isArray(article.tags)) {
+          article.tags.forEach(tag => allTags.add(tag))
+        }
+      })
+      // Convertir en tableau et trier alphabétiquement
+      availableTags.value = Array.from(allTags).sort((a, b) => a.localeCompare(b, 'fr'))
+    }
+  } catch (e) {
+    console.error('Erreur lors du chargement des tags:', e)
+    // Liste par défaut en cas d'erreur
+    availableTags.value = ['IA', 'Machine Learning', 'Deep Learning', 'NLP', 'Technologie']
+  }
+}
 
 // Gestion des tags
 const addTagFromList = () => {
@@ -273,6 +295,8 @@ const addNewTag = () => {
     selectedTags.value.push(tag)
     if (!availableTags.value.includes(tag)) {
       availableTags.value.push(tag)
+      // Trier la liste alphabétiquement après l'ajout
+      availableTags.value.sort((a, b) => a.localeCompare(b, 'fr'))
     }
   }
   newTagInput.value = ''
@@ -284,6 +308,10 @@ const removeTag = (tag: string) => {
 
 // Charger les données au montage
 onMounted(async () => {
+  // Charger la liste des tags disponibles
+  await loadAvailableTags()
+  
+  // Charger l'article si on édite
   if (!isNew.value) {
     await loadArticle()
   }
