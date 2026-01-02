@@ -444,7 +444,9 @@ const checkPushStatus = async () => {
 
 // Déconnexion
 const handleSignOut = async () => {
+  const { success: showToastSuccess } = useVintageToast()
   await auth.signOut()
+  showToastSuccess('Déconnexion réussie !')
   router.push('/')
 }
 

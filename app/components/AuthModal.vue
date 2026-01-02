@@ -1,8 +1,8 @@
 <script setup lang="ts">
-// import removed, use correct relative import below
+import { useVintageToast } from "../composables/useVintageToast";
+
 const { auth } = useSupabase()
 const { success: showToastSuccess } = useVintageToast()
-import { useVintageToast } from "../composables/useVintageToast";
 const isOpen = defineModel<boolean>('isOpen', { default: false })
 
 const loading = ref(false)
@@ -13,6 +13,9 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
   error.value = null
   
   try {
+    // Marquer qu'on lance une connexion OAuth pour afficher le toast au retour
+    sessionStorage.setItem('oauth_in_progress', 'true')
+    
     // Force l'utilisation de l'URL actuelle (window.location.origin) pour la redirection
     // Cela garantit localhost:3000 en dev et netlify en prod
     const { data, error: signInError } = await auth.signInWithOAuth({
@@ -26,15 +29,16 @@ const signInWithProvider = async (provider: 'google' | 'facebook' | 'linkedin_oi
     if (signInError) throw signInError
     
     // Le modal se fermera automatiquement après la redirection OAuth
+    // Le toast "Connexion réussie !" est géré dans app.vue
   } catch (e: any) {
     console.error('OAuth error:', e)
+    sessionStorage.removeItem('oauth_in_progress')
     error.value = e.message || 'Une erreur est survenue lors de la connexion'
     loading.value = false
   }
 }
 
 const close = () => {
-  // Le toast de connexion est géré globalement dans app.vue
   if (!loading.value) {
     isOpen.value = false
     error.value = null

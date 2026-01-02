@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useVintageToast } from '../composables/useVintageToast'
+
 const { auth } = useSupabase()
 const user = useSupabaseUser()
+const { success: showToastSuccess } = useVintageToast()
 
 const showAuthModal = ref(false)
 const showMobileMenu = ref(false)
@@ -44,6 +47,7 @@ watch(user, () => {
 const signOut = async () => {
   await auth.signOut()
   showMobileMenu.value = false
+  showToastSuccess('Déconnexion réussie !')
   navigateTo('/')
 }
 

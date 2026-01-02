@@ -121,18 +121,7 @@ const isNavigating = ref(false)
 if (process.client) {
   const nuxtApp = useNuxtApp()
   
-  // Afficher le loader au démarrage de l'app PWA
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                       window.navigator.standalone === true ||
-                       document.referrer.includes('android-app://')
-  
-  if (isStandalone) {
-    // Loader au premier chargement de la PWA
-    isNavigating.value = true
-    setTimeout(() => {
-      isNavigating.value = false
-    }, 800) // 0.8s : assez pour voir l'animation, assez court pour ne pas ralentir
-  }
+  // Loader désactivé au démarrage de la PWA pour éviter les rafraîchissements intempestifs
   
   nuxtApp.hook('page:start', () => {
     isNavigating.value = true
@@ -157,41 +146,26 @@ if (process.client) {
   }
 }
 
-// Toast connexion réussie global (y compris après OAuth)
+// Toast de connexion global (vérification au retour OAuth uniquement)
 if (process.client) {
   const { auth } = useSupabase()
   const { success: showToastSuccess } = useVintageToast()
   
-  // Flag pour éviter d'afficher le toast au chargement initial
-  let isInitialLoad = true
-  let lastShownTimestamp = 0
+  // Vérifier si on revient d'une connexion OAuth
+  const wasOAuthInProgress = sessionStorage.getItem('oauth_in_progress') === 'true'
+  let hasShownToast = false
   
   auth.onAuthStateChange((event, session) => {
-    // Ne jamais afficher de toast lors du chargement initial (INITIAL_SESSION)
-    if (event === 'INITIAL_SESSION') {
-      isInitialLoad = false
-      return
-    }
     
-    // Éviter de montrer plusieurs fois le même toast (throttle de 5 secondes)
-    const now = Date.now()
-    if (now - lastShownTimestamp < 5000) {
-      return
-    }
-    
-    // Ne pas montrer de toast si la page était en arrière-plan (mobile/changement d'onglet)
-    if (document.hidden) {
-      return
-    }
-    
-    // Afficher le toast uniquement pour une vraie connexion (pas une restauration)
-    if (event === 'SIGNED_IN' && session?.user && !isInitialLoad) {
+    // Afficher le toast UNIQUEMENT si :
+    // 1. On revient d'OAuth (marqueur présent)
+    // 2. On a une session
+    // 3. On n'a pas déjà affiché le toast
+    if (event === 'INITIAL_SESSION' && session?.user && wasOAuthInProgress && !hasShownToast) {
       showToastSuccess('Connexion réussie !')
-      lastShownTimestamp = now
+      sessionStorage.removeItem('oauth_in_progress')
+      hasShownToast = true
     }
-    
-    // Après le premier événement, on n'est plus en chargement initial
-    isInitialLoad = false
   })
 
   window.addEventListener('error', (event) => {
@@ -395,7 +369,7 @@ body::before {
   z-index: 1;
   background-image: 
     /* Motif fleurs de lys */
-    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='40' text-anchor='middle' dominant-baseline='middle' opacity='0.08' fill='%238B7355'%3E⚜%3C/text%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='40' text-anchor='middle' dominant-baseline='middle' opacity='0.15' fill='%238B7355'%3E⚜%3C/text%3E%3C/svg%3E"),
     /* Grain de papier */
     repeating-linear-gradient(
       0deg,
@@ -417,7 +391,7 @@ body::before {
 .dark body::before {
   background-image: 
     /* Motif fleurs de lys pour dark mode */
-    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='40' text-anchor='middle' dominant-baseline='middle' opacity='0.02' fill='%23D4B574'%3E⚜%3C/text%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='40' text-anchor='middle' dominant-baseline='middle' opacity='0.06' fill='%23D4B574'%3E⚜%3C/text%3E%3C/svg%3E"),
     /* Grain de papier */
     repeating-linear-gradient(
       0deg,
